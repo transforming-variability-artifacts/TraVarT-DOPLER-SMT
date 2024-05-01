@@ -1,0 +1,32 @@
+package edu.kit.dopler.model;
+
+import java.util.Set;
+
+public class Rule {
+
+    private IExpression condition;
+    private Set<IAction> actions;
+
+    public Rule(IExpression condition, Set<IAction> actions) {
+        this.condition = condition;
+        this.actions = actions;
+    }
+
+
+    public IExpression getCondition() {
+        return condition;
+    }
+
+    public void setCondition(IExpression condition) {
+        this.condition = condition;
+    }
+
+    public Set<IAction> getActions() {
+        return actions;
+    }
+
+    public void setActions(Set<IAction> actions) {
+        this.actions = actions;
+    }
+
+}
