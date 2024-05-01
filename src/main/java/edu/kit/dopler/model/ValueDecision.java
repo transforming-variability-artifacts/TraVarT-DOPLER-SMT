@@ -9,8 +9,8 @@ public abstract class ValueDecision extends DecisionType{
 
     private Set<IExpression> validityConditions = Collections.emptySet();
 
-    public ValueDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<IExpression> validityConditions) {
-        super(question, description, visibilityCondition, taken);
+    public ValueDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Set<IExpression> validityConditions) {
+        super(question, description, visibilityCondition, taken, rules);
         this.validityConditions = validityConditions;
     }
 
