@@ -10,8 +10,8 @@ public class EnumerationDecision extends DecisionType{
     private int maxCardinaltiy;
 
 
-    public EnumerationDecision(String question, String description, IExpression visibilityCondition, Enum enumeration, int minCardinality, int maxCardinaltiy) {
-        super(question, description, visibilityCondition);
+    public EnumerationDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Enum enumeration, int minCardinality, int maxCardinaltiy) {
+        super(question, description, visibilityCondition, taken, rules);
         this.enumeration = enumeration;
         this.minCardinality = minCardinality;
         this.maxCardinaltiy = maxCardinaltiy;
