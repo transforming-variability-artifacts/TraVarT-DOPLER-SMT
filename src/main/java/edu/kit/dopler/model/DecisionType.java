@@ -64,6 +64,9 @@ abstract class DecisionType implements IDecisionType {
         this.visibilityCondition = visibilityCondition;
     }
 
+    public boolean isVisible(){
+        return visibilityCondition.evaluate();
+    }
 
     public boolean isTaken() {
         return taken;
