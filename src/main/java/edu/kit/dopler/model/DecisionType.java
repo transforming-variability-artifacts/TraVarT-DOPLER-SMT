@@ -55,6 +55,15 @@ abstract class DecisionType implements IDecisionType {
     }
 
     @Override
+    public void executeRules() {
+        for(Rule rule : rules){
+            if(rule.getCondition().evaluate()){
+
+            }
+        }
+    }
+
+    @Override
     public IExpression getVisibilityCondition() {
         return visibilityCondition;
     }

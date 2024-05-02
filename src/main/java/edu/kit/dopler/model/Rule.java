@@ -29,4 +29,16 @@ public class Rule {
         this.actions = actions;
     }
 
+    public void executeActions(){
+
+        try {
+            for(IAction action: actions){
+
+            }
+        }catch (Exception e){
+
+        }
+
+    }
+
 }

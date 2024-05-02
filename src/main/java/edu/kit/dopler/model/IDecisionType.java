@@ -13,9 +13,11 @@ public interface IDecisionType {
     Set<Rule> getRules();
     void addRule(Rule rule);
     void removeRule(Rule rule);
+    void executeRules();
 
     IExpression getVisibilityCondition();
     void setVisibilityCondition(IExpression visibilityCondition);
 
+    boolean isVisible();
 
 }
