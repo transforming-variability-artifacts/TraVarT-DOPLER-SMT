@@ -17,6 +17,6 @@ public class BooleanDecision extends DecisionType {
         getVisibilityCondition().toSMTStream(builder);
 
 
-        builder.add(")");
+        builder.add(")"); //closing the ite of the visibilityDecision
     }
 }

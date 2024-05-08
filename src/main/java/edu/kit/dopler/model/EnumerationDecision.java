@@ -1,6 +1,7 @@
 package edu.kit.dopler.model;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class EnumerationDecision extends DecisionType{
 
@@ -15,5 +16,10 @@ public class EnumerationDecision extends DecisionType{
         this.enumeration = enumeration;
         this.minCardinality = minCardinality;
         this.maxCardinaltiy = maxCardinaltiy;
+    }
+
+    @Override
+    public void toSMTStream(Stream.Builder<String> builder) {
+        //not yet implemented
     }
 }
