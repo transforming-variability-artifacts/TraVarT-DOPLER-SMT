@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import java.util.stream.Stream;
+
 public class OR extends BinaryExpression{
 
 
@@ -11,4 +13,14 @@ public class OR extends BinaryExpression{
     public boolean evaluate() {
         return getLeftExpression().evaluate() || getRightExpression().evaluate();
     }
+
+    @Override
+    public void toSMTStream(Stream.Builder<String> builder) {
+        builder.add("(or");
+        getLeftExpression().toSMTStream(builder);
+        getRightExpression().toSMTStream(builder);
+        builder.add(")");
+    }
+
+
 }

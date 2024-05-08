@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import java.util.stream.Stream;
+
 public class DecisionVisibilityCallExpression extends DecisionCallExpression{
 
 
@@ -15,5 +17,10 @@ public class DecisionVisibilityCallExpression extends DecisionCallExpression{
     @Override
     public boolean evaluate() {
         return visible;
+    }
+
+    @Override
+    public void toSMTStream(Stream.Builder<String> builder) {
+        //not yet implemented
     }
 }

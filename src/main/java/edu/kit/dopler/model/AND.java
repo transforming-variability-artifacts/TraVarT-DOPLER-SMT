@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import java.util.stream.Stream;
+
 public class AND extends BinaryExpression{
 
 
@@ -11,4 +13,14 @@ public class AND extends BinaryExpression{
     public boolean evaluate() {
         return getLeftExpression().evaluate() && getRightExpression().evaluate();
     }
+
+    @Override
+    public void toSMTStream(Stream.Builder<String> builder) {
+        builder.add("(and");
+        getLeftExpression().toSMTStream(builder);
+        getRightExpression().toSMTStream(builder);
+        builder.add(")");
+    }
+
+
 }

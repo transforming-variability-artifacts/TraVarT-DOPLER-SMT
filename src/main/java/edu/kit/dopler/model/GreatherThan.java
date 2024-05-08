@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import java.util.stream.Stream;
+
 public class GreatherThan extends BinaryExpression{
 
     public GreatherThan(IExpression leftExpression, IExpression rightExpression) {
@@ -9,5 +11,13 @@ public class GreatherThan extends BinaryExpression{
     @Override
     public boolean evaluate() {
         return false;
+    }
+
+    @Override
+    public void toSMTStream(Stream.Builder<String> builder) {
+        builder.add("(>");
+        getLeftExpression().toSMTStream(builder);
+        getRightExpression().toSMTStream(builder);
+        builder.add(")");
     }
 }

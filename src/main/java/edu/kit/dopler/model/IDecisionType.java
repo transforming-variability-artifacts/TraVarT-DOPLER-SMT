@@ -1,6 +1,7 @@
 package edu.kit.dopler.model;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 public interface IDecisionType {
 
@@ -19,5 +20,5 @@ public interface IDecisionType {
     void setVisibilityCondition(IExpression visibilityCondition);
 
     boolean isVisible();
-
+    void toSMTStream(Stream.Builder<String> builder);
 }

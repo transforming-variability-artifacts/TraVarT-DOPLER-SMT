@@ -2,6 +2,7 @@ package edu.kit.dopler.model;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class Dopler {
 
@@ -46,5 +47,17 @@ public class Dopler {
 
     public void setEnumSet(Set<Enum> enumSet) {
         this.enumSet = enumSet;
+    }
+
+    public Stream<String> toSMTStream(){
+        Stream.Builder<String> builder = Stream.builder();
+        // open question on assert per decision ? or only one assert
+        for (IDecisionType decisionType: decisions){
+            builder.add("(assert");
+            decisionType.toSMTStream(builder);
+            builder.add(")");
+        }
+
+        return  builder.build();
     }
 }

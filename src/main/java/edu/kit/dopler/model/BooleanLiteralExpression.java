@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import java.util.stream.Stream;
+
 public class BooleanLiteralExpression extends LiteralExpression{
 
 
@@ -9,6 +11,11 @@ public class BooleanLiteralExpression extends LiteralExpression{
     @Override
     public boolean evaluate() {
         return literal;
+    }
+
+    @Override
+    public void toSMTStream(Stream.Builder<String> builder) {
+        //not yet implemented
     }
 
 
