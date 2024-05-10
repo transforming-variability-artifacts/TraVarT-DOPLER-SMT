@@ -1,0 +1,17 @@
+package edu.kit.dopler.model;
+
+public final class BooleanValue extends AbstractValue<Boolean> {
+
+    private BooleanValue(Boolean value) {
+        super(value);
+    }
+
+    public static BooleanValue getTrue() {
+        return new BooleanValue(true);
+    }
+
+    public static BooleanValue getFalse() {
+        return new BooleanValue(false);
+    }
+
+}

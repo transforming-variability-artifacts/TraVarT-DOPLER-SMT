@@ -3,7 +3,7 @@ package edu.kit.dopler.model;
 import java.util.Collections;
 import java.util.Set;
 
-public abstract class ValueDecision extends DecisionType{
+public abstract class ValueDecision<T> extends DecisionType<T>{
 
 
 

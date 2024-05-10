@@ -1,20 +1,9 @@
 package edu.kit.dopler.model;
 
-public class Range extends Expression{
+import java.util.LinkedHashSet;
+
+public class Range<T> extends LinkedHashSet<AbstractValue<T>> implements IRange<AbstractValue<T>>{
 
 
 
-    private double min = 0.0;
-    private double max = 0.0;
-
-    public Range(double min, double max) {
-        this.min = min;
-        this.max = max;
-    }
-
-
-    @Override
-    public boolean evaluate() {
-        return false;
-    }
 }

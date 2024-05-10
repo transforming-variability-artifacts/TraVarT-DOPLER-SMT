@@ -2,13 +2,15 @@ package edu.kit.dopler.model;
 
 import java.util.Set;
 
-abstract class DecisionType implements IDecisionType {
+abstract class DecisionType<T> implements IDecisionType<T> {
+
 
     private String question;
     private String description;
     private IExpression visibilityCondition;
     private Set<Rule> rules;
     private boolean taken;
+    private boolean select;
 
     public DecisionType(String question, String description, IExpression visibilityCondition, boolean taken,Set<Rule> rules) {
         this.question = question;
@@ -16,6 +18,17 @@ abstract class DecisionType implements IDecisionType {
         this.visibilityCondition = visibilityCondition;
         this.taken = taken;
         this.rules = rules;
+    }
+
+    @Override
+    public final void setSelected(final boolean select) {
+        this.select = select;
+        setTaken(true);
+    }
+
+    @Override
+    public final boolean isSelected() {
+        return select;
     }
 
 
