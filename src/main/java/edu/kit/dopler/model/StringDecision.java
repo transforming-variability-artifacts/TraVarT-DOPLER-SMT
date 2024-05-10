@@ -15,6 +15,11 @@ public class StringDecision extends ValueDecision<String>{
         value = new StringValue("");
     }
 
+    @Override
+    void toSMTStreamValueDecisionSpecific(Stream.Builder<String> builder) {
+
+    }
+
 
     @Override
     public Range<String> getRange() {
@@ -49,8 +54,5 @@ public class StringDecision extends ValueDecision<String>{
         return false;
     }
 
-    @Override
-    public void toSMTStream(Stream.Builder<String> builder) {
-        //not yet implemented
-    }
+
 }

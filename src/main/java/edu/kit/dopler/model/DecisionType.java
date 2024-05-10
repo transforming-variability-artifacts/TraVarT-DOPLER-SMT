@@ -1,6 +1,7 @@
 package edu.kit.dopler.model;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 abstract class DecisionType<T> implements IDecisionType<T> {
 
@@ -90,6 +91,20 @@ abstract class DecisionType<T> implements IDecisionType<T> {
         return visibilityCondition.evaluate();
     }
 
+    @Override
+    public void toSMTStream(Stream.Builder<String> builder) {
+
+        builder.add("(ite");
+        getVisibilityCondition().toSMTStream(builder); //if condition
+        toSMTStreamDecisionSpecific(builder);   //if part
+        //else part needs to be added here
+        builder.add(")"); //closing the ite of the visibilityDecision
+
+
+    }
+
+    abstract void toSMTStreamDecisionSpecific(Stream.Builder<String> builder);
+
     public boolean isTaken() {
         return taken;
     }
@@ -97,4 +112,6 @@ abstract class DecisionType<T> implements IDecisionType<T> {
     public void setTaken(boolean taken) {
         this.taken = taken;
     }
+
+
 }

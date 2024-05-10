@@ -2,6 +2,7 @@ package edu.kit.dopler.model;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public abstract class ValueDecision<T> extends DecisionType<T>{
 
@@ -23,4 +24,25 @@ public abstract class ValueDecision<T> extends DecisionType<T>{
         this.validityConditions = validityConditions;
     }
 
+
+    @Override
+    void toSMTStreamDecisionSpecific(Stream.Builder<String> builder) {
+        if(!getValidityConditions().isEmpty()) {
+            builder.add("(ite");
+            //may check if size == 1 because i dont know what happens if in Smt and only gets one parameter
+            builder.add("(and");
+            for (IExpression expression : getValidityConditions()){
+                expression.toSMTStream(builder);
+            }
+            builder.add(")"); // closing and of the ValidityExpressions
+            toSMTStreamValueDecisionSpecific(builder);
+            builder.add(")"); //closing the ite of validityConditions
+        }else{
+            toSMTStreamValueDecisionSpecific(builder);
+        }
+
+
+    }
+
+    abstract void toSMTStreamValueDecisionSpecific(Stream.Builder<String> builder);
 }

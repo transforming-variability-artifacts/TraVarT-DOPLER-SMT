@@ -18,6 +18,11 @@ public class BooleanDecision extends DecisionType<Boolean> {
         value = BooleanValue.getFalse();
     }
 
+    @Override
+    void toSMTStreamDecisionSpecific(Stream.Builder<String> builder) {
+
+    }
+
 
     @Override
     public Range<Boolean> getRange() {
@@ -43,12 +48,5 @@ public class BooleanDecision extends DecisionType<Boolean> {
     }
 
 
-    @Override
-    public void toSMTStream(Stream.Builder<String> builder) {
-        builder.add("(ite");
-        getVisibilityCondition().toSMTStream(builder);
 
-
-        builder.add(")"); //closing the ite of the visibilityDecision
-    }
 }
