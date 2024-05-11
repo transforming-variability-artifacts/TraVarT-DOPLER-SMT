@@ -3,8 +3,28 @@ package edu.kit.dopler.model;
 import java.util.Set;
 import java.util.stream.Stream;
 
-abstract class DecisionType<T> implements IDecisionType<T> {
+abstract class Decision<T> implements IDecision<T> {
 
+
+
+    public enum DecisionType {
+        BOOLEAN("Boolean"), NUMBER("Double"), STRING("String"), ENUM("Enumeration");
+
+        private String type;
+
+        DecisionType(final String type) {
+            this.type = type;
+        }
+
+        public boolean equalString(final String type) {
+            return this.type.equals(type);
+        }
+
+        @Override
+        public String toString() {
+            return type;
+        }
+    }
 
     private String question;
     private String description;
@@ -12,13 +32,15 @@ abstract class DecisionType<T> implements IDecisionType<T> {
     private Set<Rule> rules;
     private boolean taken;
     private boolean select;
+    private DecisionType decisionType;
 
-    public DecisionType(String question, String description, IExpression visibilityCondition, boolean taken,Set<Rule> rules) {
+    public Decision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules,DecisionType decisionType) {
         this.question = question;
         this.description = description;
         this.visibilityCondition = visibilityCondition;
         this.taken = taken;
         this.rules = rules;
+        this.decisionType = decisionType;
     }
 
     @Override
@@ -105,13 +127,21 @@ abstract class DecisionType<T> implements IDecisionType<T> {
 
     abstract void toSMTStreamDecisionSpecific(Stream.Builder<String> builder);
 
+    @Override
     public boolean isTaken() {
         return taken;
     }
 
+    @Override
     public void setTaken(boolean taken) {
         this.taken = taken;
     }
 
+    public DecisionType getDecisionType() {
+        return decisionType;
+    }
 
+    public void setDecisionType(DecisionType decisionType) {
+        this.decisionType = decisionType;
+    }
 }

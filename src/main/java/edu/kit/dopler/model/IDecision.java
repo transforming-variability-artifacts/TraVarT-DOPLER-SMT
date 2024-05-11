@@ -3,7 +3,7 @@ package edu.kit.dopler.model;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public interface IDecisionType<T> {
+public interface IDecision<T> {
 
     String getQuestion();
     void setQuestion(String question);
@@ -32,4 +32,8 @@ public interface IDecisionType<T> {
 
     boolean isVisible();
     void toSMTStream(Stream.Builder<String> builder);
+
+    boolean isTaken();
+    void setTaken(boolean taken);
+
 }
