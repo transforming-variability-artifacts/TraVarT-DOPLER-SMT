@@ -7,6 +7,7 @@ abstract class Decision<T> implements IDecision<T> {
 
 
 
+
     public enum DecisionType {
         BOOLEAN("Boolean"), NUMBER("Double"), STRING("String"), ENUM("Enumeration");
 
@@ -26,6 +27,7 @@ abstract class Decision<T> implements IDecision<T> {
         }
     }
 
+    private String id;
     private String question;
     private String description;
     private IExpression visibilityCondition;
@@ -93,9 +95,7 @@ abstract class Decision<T> implements IDecision<T> {
     @Override
     public void executeRules() {
         for(Rule rule : rules){
-            if(rule.getCondition().evaluate()){
-
-            }
+           rule.executeActions();
         }
     }
 
@@ -117,8 +117,13 @@ abstract class Decision<T> implements IDecision<T> {
     public void toSMTStream(Stream.Builder<String> builder) {
 
         builder.add("(ite");
-        getVisibilityCondition().toSMTStream(builder); //if condition
-        toSMTStreamDecisionSpecific(builder);   //if part
+        getVisibilityCondition().toSMTStream(builder); //if isVisible condition
+            builder.add("(ite");
+            builder.add("(" + isTaken() + ")"); // if isTaken
+            toSMTStreamDecisionSpecific(builder);   //if part
+            // else part of isTaken
+            builder.add(")");
+
         //else part needs to be added here
         builder.add(")"); //closing the ite of the visibilityDecision
 
@@ -135,6 +140,10 @@ abstract class Decision<T> implements IDecision<T> {
     @Override
     public void setTaken(boolean taken) {
         this.taken = taken;
+    }
+
+    public String toStringConstforSMT(){
+        return "DECISION_" + id;
     }
 
     public DecisionType getDecisionType() {

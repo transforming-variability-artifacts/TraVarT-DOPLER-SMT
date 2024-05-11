@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import java.util.stream.Stream;
+
 public class Enforce extends ValueRestrictionAction{
 
     private AbstractValue value;
@@ -18,5 +20,10 @@ public class Enforce extends ValueRestrictionAction{
         }
 
 
+    }
+
+    @Override
+    void toSMTStream(Stream.Builder<String> builder) {
+        builder.add("(= " +  "POST_" + getDecisionType().toStringConstforSMT() + " " + value.toString());
     }
 }

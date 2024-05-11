@@ -32,9 +32,12 @@ public class Rule {
     public void executeActions(){
 
         try {
-            for(IAction action: actions){
-
+            if(condition.evaluate()){
+                for(IAction action: actions){
+                    action.execute();
+                }
             }
+
         }catch (Exception e){
 
         }

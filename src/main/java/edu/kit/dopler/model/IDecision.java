@@ -36,4 +36,5 @@ public interface IDecision<T> {
     boolean isTaken();
     void setTaken(boolean taken);
 
+    String toStringConstforSMT();
 }
