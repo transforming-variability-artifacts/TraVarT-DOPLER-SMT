@@ -6,7 +6,11 @@ public class BooleanLiteralExpression extends LiteralExpression{
 
 
 
-    private boolean literal = false;
+    private boolean literal;
+
+    public BooleanLiteralExpression(boolean literal){
+        this.literal = literal;
+    }
 
     @Override
     public boolean evaluate() {

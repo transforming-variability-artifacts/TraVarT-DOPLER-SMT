@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 public class EnumeratorExpression extends DecisionCallExpression{
 
 
-    public EnumeratorExpression(IDecisionType decision) {
+    public EnumeratorExpression(IDecision decision) {
         super(decision);
     }
 

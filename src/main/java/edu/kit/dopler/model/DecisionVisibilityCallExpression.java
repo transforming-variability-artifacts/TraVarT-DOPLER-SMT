@@ -6,17 +6,13 @@ public class DecisionVisibilityCallExpression extends DecisionCallExpression{
 
 
 
-
-    private boolean visible;
-
-    public DecisionVisibilityCallExpression(IDecisionType decision, boolean visible) {
+    public DecisionVisibilityCallExpression(IDecision decision) {
         super(decision);
-        this.visible = visible;
     }
 
     @Override
     public boolean evaluate() {
-        return visible;
+        return getDecision().isVisible();
     }
 
     @Override

@@ -1,11 +1,10 @@
 package edu.kit.dopler.model;
 
-import java.util.Enumeration;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class EnumerationDecision extends DecisionType<String>{
+public class EnumerationDecision extends Decision<String> {
 
 
     private Enum enumeration;
@@ -16,7 +15,7 @@ public class EnumerationDecision extends DecisionType<String>{
 
 
     public EnumerationDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Enum enumeration, int minCardinality, int maxCardinaltiy) {
-        super(question, description, visibilityCondition, taken, rules);
+        super(question, description, visibilityCondition, taken, rules, DecisionType.ENUM);
         this.enumeration = enumeration;
         this.minCardinality = minCardinality;
         this.maxCardinaltiy = maxCardinaltiy;
@@ -59,8 +58,9 @@ public class EnumerationDecision extends DecisionType<String>{
     }
 
 
+
     @Override
-    public void toSMTStream(Stream.Builder<String> builder) {
-        //not yet implemented
+    void toSMTStreamDecisionSpecific(Stream.Builder<String> builder) {
+
     }
 }

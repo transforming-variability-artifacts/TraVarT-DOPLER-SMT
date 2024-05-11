@@ -5,14 +5,18 @@ import java.util.stream.Stream;
 public class DecisionValueCallExpression extends DecisionCallExpression{
 
 
-    public DecisionValueCallExpression(IDecisionType decision) {
+    public DecisionValueCallExpression(IDecision decision) {
         super(decision);
     }
 
 
     @Override
     public boolean evaluate() {
-        return false;
+        return getDecision().isTaken();
+    }
+
+    public IValue getValue(){
+       return getDecision().getValue();
     }
 
     @Override

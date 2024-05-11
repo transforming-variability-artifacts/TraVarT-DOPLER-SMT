@@ -4,14 +4,14 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public abstract class ValueDecision<T> extends DecisionType<T>{
+public abstract class ValueDecision<T> extends Decision<T> {
 
 
 
     private Set<IExpression> validityConditions = Collections.emptySet();
 
-    public ValueDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Set<IExpression> validityConditions) {
-        super(question, description, visibilityCondition, taken, rules);
+    public ValueDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Set<IExpression> validityConditions, DecisionType decisionType) {
+        super(question, description, visibilityCondition, taken, rules,decisionType);
         this.validityConditions = validityConditions;
     }
 

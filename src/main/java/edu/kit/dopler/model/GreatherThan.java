@@ -10,7 +10,11 @@ public class GreatherThan extends BinaryExpression{
 
     @Override
     public boolean evaluate() {
-        return false;
+
+        double left = ((DoubleLiteralExpression) getLeftExpression()).getLiteral();
+        double right = ((DoubleLiteralExpression) getRightExpression()).getLiteral();
+
+        return left > right;
     }
 
     @Override

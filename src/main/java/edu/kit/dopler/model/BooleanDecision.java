@@ -4,18 +4,19 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class BooleanDecision extends DecisionType<Boolean> {
+public class BooleanDecision extends Decision<Boolean> {
 
     private final Range<Boolean> range;
     private AbstractValue<Boolean> value;
 
 
     public BooleanDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules) {
-        super(question, description, visibilityCondition, taken, rules);
+        super(question, description, visibilityCondition, taken, rules, DecisionType.BOOLEAN);
         range = new Range<>();
         range.add(BooleanValue.getFalse());
         range.add(BooleanValue.getTrue());
         value = BooleanValue.getFalse();
+
     }
 
     @Override

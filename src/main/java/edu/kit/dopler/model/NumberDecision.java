@@ -10,7 +10,7 @@ public class NumberDecision extends ValueDecision<Double>{
     private AbstractValue<Double> value;
 
     public NumberDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Set<IExpression> validityConditions) {
-        super(question, description, visibilityCondition, taken, rules, validityConditions);
+        super(question, description, visibilityCondition, taken, rules, validityConditions, DecisionType.NUMBER);
         range = new Range<>();
         value = new DoubleValue(Double.NaN);
     }

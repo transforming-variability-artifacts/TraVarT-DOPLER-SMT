@@ -2,29 +2,30 @@ package edu.kit.dopler.model;
 
 import java.util.stream.Stream;
 
-public class DoubleLiteralExpression extends LiteralExpression{
+public class StringLiteralExpression extends LiteralExpression{
 
-    private double literal = 0.0;
+    private String literal;
 
-    public DoubleLiteralExpression(double literal){
+    public StringLiteralExpression(String literal) {
         this.literal = literal;
     }
 
+
     @Override
     public boolean evaluate() {
-        return literal >= 1.0;
+        return false;
     }
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder) {
-        //not yet implemented
+
     }
 
-    public double getLiteral() {
+    public String getLiteral() {
         return literal;
     }
 
-    public void setLiteral(double literal) {
+    public void setLiteral(String literal) {
         this.literal = literal;
     }
 }

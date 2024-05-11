@@ -10,7 +10,7 @@ public class StringDecision extends ValueDecision<String>{
     private AbstractValue<String> value;
 
     public StringDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Set<IExpression> validityConditions) {
-        super(question, description, visibilityCondition, taken, rules, validityConditions);
+        super(question, description, visibilityCondition, taken, rules, validityConditions, DecisionType.STRING);
         range = new Range<>();
         value = new StringValue("");
     }
