@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.NotInRangeException;
+
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -37,11 +39,13 @@ public class StringDecision extends ValueDecision<String>{
     }
 
     @Override
-    public void setValue(String value) {
+    public void setValue(String value) throws NotInRangeException{
         String v = Objects.requireNonNull(value);
         if(inRange(v)){
-            this.value = new StringValue(v);
+            this.value.setValue(v);
             setSelected(true);
+        } else {
+            throw new NotInRangeException("Value: " + v + " not in Range" + getRange().toString());
         }
     }
 

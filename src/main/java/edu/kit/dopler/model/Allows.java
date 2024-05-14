@@ -1,5 +1,9 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.ActionExecutionException;
+
+import java.util.stream.Stream;
+
 public class Allows extends ValueRestrictionAction{
 
 
@@ -11,13 +15,18 @@ public class Allows extends ValueRestrictionAction{
     }
 
     @Override
-    public void execute() {
+    public void execute() throws ActionExecutionException {
         try {
             Range range = getDecisionType().getRange();
             range.add(allowedValue);
             getDecisionType().setRange(range);
         }catch(Exception e){
-
+            throw new ActionExecutionException(e);
         }
+    }
+
+    @Override
+    void toSMTStream(Stream.Builder<String> builder) {
+
     }
 }

@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.ActionExecutionException;
+
 import java.util.stream.Stream;
 
 public class Enforce extends ValueRestrictionAction{
@@ -12,11 +14,11 @@ public class Enforce extends ValueRestrictionAction{
     }
 
     @Override
-    public void execute() {
+    public void execute() throws ActionExecutionException {
         try{
             getDecisionType().setValue(value);
         }catch (Exception e){
-
+            throw new ActionExecutionException(e);
         }
 
 

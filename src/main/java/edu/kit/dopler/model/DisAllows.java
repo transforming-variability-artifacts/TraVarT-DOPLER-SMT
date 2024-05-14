@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.ActionExecutionException;
+
 import java.util.stream.Stream;
 
 public class DisAllows extends ValueRestrictionAction{
@@ -12,12 +14,19 @@ public class DisAllows extends ValueRestrictionAction{
     }
 
     @Override
-    public void execute() {
-        Range range = getDecisionType().getRange();
-        if(range.contains(disAllowValue)){
-            range.remove(disAllowValue);
-            getDecisionType().setRange(range);
+    public void execute()  throws ActionExecutionException {
+        try {
+            Range range = getDecisionType().getRange();
+            if(range.contains(disAllowValue)){
+                range.remove(disAllowValue);
+                getDecisionType().setRange(range);
+            }else{
+                throw new ActionExecutionException("disAllowValue: " + disAllowValue + " not in Range of Decision ( " + range.toString() + ")");
+            }
+        }catch (Exception e){
+            throw new ActionExecutionException(e);
         }
+
     }
 
     @Override
