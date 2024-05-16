@@ -4,5 +4,5 @@ import edu.kit.dopler.exceptions.ActionExecutionException;
 
 public interface IAction {
 
-    public void execute() throws ActionExecutionException;
+    void execute() throws ActionExecutionException;
 }

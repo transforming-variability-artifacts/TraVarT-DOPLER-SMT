@@ -1,5 +1,6 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.ActionExecutionException;
 import edu.kit.dopler.exceptions.InvalidCardinalityException;
 import edu.kit.dopler.exceptions.NotInRangeException;
 
@@ -17,7 +18,7 @@ public interface IDecision<T> {
     Set<Rule> getRules();
     void addRule(Rule rule);
     void removeRule(Rule rule);
-    void executeRules();
+    void executeRules() throws ActionExecutionException;
 
 
     Range<T> getRange();
@@ -25,7 +26,7 @@ public interface IDecision<T> {
 
 
     IValue<T> getValue();
-    void setValue(T value) throws NotInRangeException;
+    void setValue(IValue<T> value) throws NotInRangeException;
 
     void setSelected(final boolean select);
     boolean isSelected();
@@ -40,4 +41,6 @@ public interface IDecision<T> {
     void setTaken(boolean taken);
 
     String toStringConstforSMT();
+
+    Decision.DecisionType getDecisionType();
 }

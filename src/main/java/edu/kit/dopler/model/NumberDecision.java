@@ -39,8 +39,8 @@ public class NumberDecision extends ValueDecision<Double>{
     }
 
     @Override
-    public void setValue(Double value) throws NotInRangeException {
-        Double v = Objects.requireNonNull(value);
+    public void setValue(IValue<Double> value) throws NotInRangeException {
+        Double v = Objects.requireNonNull(value.getValue());
         if(checkInRange(v)){
             this.value.setValue(v);
         }else {

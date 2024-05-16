@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.ActionExecutionException;
+
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -11,7 +13,7 @@ abstract class Decision<T> implements IDecision<T> {
     public enum DecisionType {
         BOOLEAN("Boolean"), NUMBER("Double"), STRING("String"), ENUM("Enumeration");
 
-        private String type;
+        private final String type;
 
         DecisionType(final String type) {
             this.type = type;
@@ -31,7 +33,7 @@ abstract class Decision<T> implements IDecision<T> {
     private String question;
     private String description;
     private IExpression visibilityCondition;
-    private Set<Rule> rules;
+    private final Set<Rule> rules;
     private boolean taken;
     private boolean select;
     private DecisionType decisionType;
@@ -93,7 +95,7 @@ abstract class Decision<T> implements IDecision<T> {
     }
 
     @Override
-    public void executeRules() {
+    public void executeRules() throws ActionExecutionException {
         for(Rule rule : rules){
            rule.executeActions();
         }

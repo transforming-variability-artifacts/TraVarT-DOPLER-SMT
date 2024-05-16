@@ -6,17 +6,24 @@ import java.util.stream.Stream;
 
 public class Enforce extends ValueRestrictionAction{
 
-    private AbstractValue value;
+    private final IValue<?> value;
 
-    public Enforce(final IDecision decisionType, final AbstractValue value) {
-        super(decisionType);
+    public Enforce(final IDecision decision, final IValue<?> value) {
+        super(decision);
         this.value = value;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         try{
-            getDecisionType().setValue(value);
+            switch (getDecision().getDecisionType()){
+                case BOOLEAN:
+                    IDecision<Boolean> booleanIDecision = (IDecision<Boolean>) getDecision();
+                    IValue<Boolean> booleanIValue = (IValue<Boolean>) value;
+                    booleanIDecision.setValue(booleanIValue);
+                case STRING:
+            }
+            getDecision().setTaken(true);
         }catch (Exception e){
             throw new ActionExecutionException(e);
         }
@@ -26,6 +33,6 @@ public class Enforce extends ValueRestrictionAction{
 
     @Override
     void toSMTStream(Stream.Builder<String> builder) {
-        builder.add("(= " +  "POST_" + getDecisionType().toStringConstforSMT() + " " + value.toString());
+        builder.add("(= " +  "POST_" + getDecision().toStringConstforSMT() + " " + value.toString());
     }
 }

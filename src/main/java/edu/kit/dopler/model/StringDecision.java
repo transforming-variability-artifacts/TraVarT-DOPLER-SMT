@@ -39,8 +39,8 @@ public class StringDecision extends ValueDecision<String>{
     }
 
     @Override
-    public void setValue(String value) throws NotInRangeException{
-        String v = Objects.requireNonNull(value);
+    public void setValue(IValue<String> value) throws NotInRangeException{
+        String v = Objects.requireNonNull(value.getValue());
         if(inRange(v)){
             this.value.setValue(v);
             setSelected(true);
@@ -50,7 +50,7 @@ public class StringDecision extends ValueDecision<String>{
     }
 
     private boolean inRange(String value){
-        for (AbstractValue<String> r : range) {
+        for (IValue<String> r : range) {
             if (r.getValue().equals(value)) {
                 return true;
             }

@@ -4,16 +4,16 @@ import java.util.stream.Stream;
 
 public abstract class ValueRestrictionAction extends Action{
 
-    private final IDecision decisionType;
+    private final IDecision<?> decision;
 
 
-    public ValueRestrictionAction(IDecision decisionType) {
-        this.decisionType = decisionType;
+    public ValueRestrictionAction(IDecision<?> decision) {
+        this.decision = decision;
     }
 
 
-    public IDecision getDecisionType() {
-        return decisionType;
+    public IDecision<?> getDecision() {
+        return decision;
     }
 
     abstract void toSMTStream(Stream.Builder<String> builder);

@@ -2,10 +2,10 @@ package edu.kit.dopler.model;
 
 import java.util.stream.Stream;
 
-public class EnumeratorExpression extends DecisionCallExpression{
+public class EnumeratorLiteralExpression extends DecisionCallExpression{
 
 
-    public EnumeratorExpression(IDecision decision) {
+    public EnumeratorLiteralExpression(IDecision decision) {
         super(decision);
     }
 

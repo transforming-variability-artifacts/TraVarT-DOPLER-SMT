@@ -9,19 +9,18 @@ import java.util.stream.Stream;
 
 public class EnumerationDecision extends Decision<String> {
 
-
-    private Enum enumeration;
-    private int minCardinality;
-    private int maxCardinaltiy;
+    private final Enum enumeration;
+    private final int minCardinality;
+    private final int maxCardinality;
     private Range<String> range;
-    private AbstractValue<String> value;
+    private final AbstractValue<String> value;
 
 
-    public EnumerationDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Enum enumeration, int minCardinality, int maxCardinaltiy) {
+    public EnumerationDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Enum enumeration, int minCardinality, int maxCardinality) {
         super(question, description, visibilityCondition, taken, rules, DecisionType.ENUM);
         this.enumeration = enumeration;
         this.minCardinality = minCardinality;
-        this.maxCardinaltiy = maxCardinaltiy;
+        this.maxCardinality = maxCardinality;
         range = new Range<>();
         value = new StringValue("None");
     }
@@ -33,7 +32,7 @@ public class EnumerationDecision extends Decision<String> {
 
     @Override
     public void setRange(Range<String> range) throws InvalidCardinalityException{
-        if(range.size() < maxCardinaltiy && range.size() > minCardinality){
+        if(range.size() < maxCardinality && range.size() > minCardinality){
             this.range = Objects.requireNonNull(range);
         }else {
             throw new InvalidCardinalityException("Range does not match the Min or Max Caridnality");
@@ -47,8 +46,8 @@ public class EnumerationDecision extends Decision<String> {
     }
 
     @Override
-    public void setValue(String value) throws NotInRangeException {
-        String v = Objects.requireNonNull(value);
+    public void setValue(IValue<String> value) throws NotInRangeException {
+        String v = Objects.requireNonNull(value.getValue());
         if(inRange(v)){
             this.value.setValue(v);
             setSelected(true);
@@ -58,7 +57,7 @@ public class EnumerationDecision extends Decision<String> {
     }
 
     private boolean inRange(String value){
-        for (AbstractValue<String> r : range) {
+        for (IValue<String> r : range) {
             if (r.getValue().equals(value)) {
                 return true;
             }

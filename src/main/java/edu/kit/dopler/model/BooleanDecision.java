@@ -31,10 +31,8 @@ public class BooleanDecision extends Decision<Boolean> {
     }
 
     @Override
-    public void setRange(Range<Boolean> range) {
-        /**
-         * the Range of boolean can not be modified
-         */
+    public void setRange(Range<Boolean> range) throws UnsupportedOperationException{
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -43,9 +41,9 @@ public class BooleanDecision extends Decision<Boolean> {
     }
 
     @Override
-    public void setValue(Boolean value) {
-        this.value = (Objects.requireNonNull(value)) ? BooleanValue.getTrue() : BooleanValue.getFalse();
-        setSelected(value);
+    public void setValue(IValue<Boolean> value) {
+        this.value = (Objects.requireNonNull(value.getValue())) ? BooleanValue.getTrue() : BooleanValue.getFalse();
+        setSelected(value.getValue());
     }
 
 

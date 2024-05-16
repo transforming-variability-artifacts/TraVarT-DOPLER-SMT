@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.ActionExecutionException;
+
 import java.util.Set;
 
 public class Rule {
@@ -29,17 +31,12 @@ public class Rule {
         this.actions = actions;
     }
 
-    public void executeActions(){
+    public void executeActions() throws ActionExecutionException {
 
-        try {
-            if(condition.evaluate()){
-                for(IAction action: actions){
-                    action.execute();
-                }
+        if(condition.evaluate()){
+            for(IAction action: actions){
+                action.execute();
             }
-
-        }catch (Exception e){
-
         }
 
     }

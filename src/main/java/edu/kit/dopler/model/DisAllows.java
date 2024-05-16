@@ -6,9 +6,9 @@ import java.util.stream.Stream;
 
 public class DisAllows extends ValueRestrictionAction{
 
-    AbstractValue disAllowValue;
+    IValue<?> disAllowValue;
 
-    public DisAllows(IDecision decisionType, AbstractValue disAllowValue) {
+    public DisAllows(IDecision<?> decisionType, IValue<?> disAllowValue) {
         super(decisionType);
         this.disAllowValue = disAllowValue;
     }
@@ -16,10 +16,10 @@ public class DisAllows extends ValueRestrictionAction{
     @Override
     public void execute()  throws ActionExecutionException {
         try {
-            Range range = getDecisionType().getRange();
+            Range range = getDecision().getRange();
             if(range.contains(disAllowValue)){
                 range.remove(disAllowValue);
-                getDecisionType().setRange(range);
+                getDecision().setRange(range);
             }else{
                 throw new ActionExecutionException("disAllowValue: " + disAllowValue + " not in Range of Decision ( " + range.toString() + ")");
             }
@@ -32,7 +32,7 @@ public class DisAllows extends ValueRestrictionAction{
     @Override
     void toSMTStream(Stream.Builder<String> builder) {
         builder.add("(distinct ");
-        builder.add("POST_" + getDecisionType().toStringConstforSMT());
+        builder.add("POST_" + getDecision().toStringConstforSMT());
         builder.add(disAllowValue.toString());
         builder.add(")");
     }

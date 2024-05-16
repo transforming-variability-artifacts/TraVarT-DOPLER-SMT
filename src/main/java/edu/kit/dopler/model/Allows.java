@@ -7,19 +7,19 @@ import java.util.stream.Stream;
 public class Allows extends ValueRestrictionAction{
 
 
-    private AbstractValue allowedValue;
+    private final IValue<?> allowedValue;
 
-    public Allows(IDecision decisionType, AbstractValue allowedValue) {
-        super(decisionType);
+    public Allows(IDecision<?> decision, IValue<?> allowedValue) {
+        super(decision);
         this.allowedValue = allowedValue;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            Range range = getDecisionType().getRange();
+            Range range = getDecision().getRange();
             range.add(allowedValue);
-            getDecisionType().setRange(range);
+            getDecision().setRange(range);
         }catch(Exception e){
             throw new ActionExecutionException(e);
         }
