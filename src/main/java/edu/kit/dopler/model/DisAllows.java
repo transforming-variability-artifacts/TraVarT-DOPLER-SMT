@@ -2,6 +2,7 @@ package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.ActionExecutionException;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class DisAllows extends ValueRestrictionAction{
@@ -13,15 +14,32 @@ public class DisAllows extends ValueRestrictionAction{
         this.disAllowValue = disAllowValue;
     }
 
+
+    // default Wert muss angenommen werden wenn der Wert davor gesetzt wurde und die decision wir wieder aud nicht getroffen gesetzt
     @Override
     public void execute()  throws ActionExecutionException {
         try {
-            Range range = getDecision().getRange();
-            if(range.contains(disAllowValue)){
-                range.remove(disAllowValue);
-                getDecision().setRange(range);
-            }else{
-                throw new ActionExecutionException("disAllowValue: " + disAllowValue + " not in Range of Decision ( " + range.toString() + ")");
+            switch (getDecision().getDecisionType()){
+                case ENUM:
+                    EnumerationDecision decision = (EnumerationDecision) getDecision();
+                    decision.addDissallowed(new EnumerationLiteral(disAllowValue.toString()));
+                case BOOLEAN:
+                    BooleanDecision decision1 = (BooleanDecision) getDecision();
+                    IValue<Boolean> booleanIValue = (boolean) disAllowValue.getValue() ? BooleanValue.getFalse(): BooleanValue.getTrue();
+                    decision1.setValue(booleanIValue);
+                case STRING:
+                    ValueDecision<?> decision2 = (ValueDecision<?>) getDecision();
+                    Set<IExpression> conditions = decision2.getValidityConditions();
+                    IExpression expression = new Equals(new DecisionValueCallExpression(getDecision()), new StringLiteralExpression(disAllowValue.getValue().toString()));
+                    conditions.add(expression);
+                    decision2.setValidityConditions(conditions);
+                case NUMBER:
+                    ValueDecision<?> decision3 = (ValueDecision<?>) getDecision();
+                    Set<IExpression> conditions2 = decision3.getValidityConditions();
+                    IExpression expression2 = new Equals(new DecisionValueCallExpression(getDecision()), new DoubleLiteralExpression((double) disAllowValue.getValue()));
+                    conditions2.add(expression2);
+                    decision3.setValidityConditions(conditions2);
+
             }
         }catch (Exception e){
             throw new ActionExecutionException(e);

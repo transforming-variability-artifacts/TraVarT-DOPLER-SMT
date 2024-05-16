@@ -6,7 +6,7 @@ import java.security.PrivilegedActionException;
 /**
  * Indicates that the Value, which should be set is not in the Range
  */
-public class NotInRangeException extends Exception {
+public class ValidityConditionException extends Exception {
 
 
     /**
@@ -23,7 +23,7 @@ public class NotInRangeException extends Exception {
      *              unknown.)
      * @since 1.4
      */
-    public NotInRangeException(Throwable cause) {
+    public ValidityConditionException(Throwable cause) {
         super(cause);
     }
 
@@ -35,7 +35,7 @@ public class NotInRangeException extends Exception {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public NotInRangeException(String message) {
+    public ValidityConditionException(String message) {
         super(message);
     }
 }

@@ -24,6 +24,15 @@ public abstract class ValueDecision<T> extends Decision<T> {
         this.validityConditions = validityConditions;
     }
 
+    public boolean checkValidity(){
+        for(IExpression expression: validityConditions){
+            if(! expression.evaluate()){
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     @Override
     void toSMTStreamDecisionSpecific(Stream.Builder<String> builder) {

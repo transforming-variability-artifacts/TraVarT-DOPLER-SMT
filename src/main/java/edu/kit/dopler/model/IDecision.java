@@ -1,8 +1,7 @@
 package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.ActionExecutionException;
-import edu.kit.dopler.exceptions.InvalidCardinalityException;
-import edu.kit.dopler.exceptions.NotInRangeException;
+import edu.kit.dopler.exceptions.ValidityConditionException;
 
 import java.util.Set;
 import java.util.stream.Stream;
@@ -21,12 +20,8 @@ public interface IDecision<T> {
     void executeRules() throws ActionExecutionException;
 
 
-    Range<T> getRange();
-    void setRange(Range<T> range) throws InvalidCardinalityException;
-
-
     IValue<T> getValue();
-    void setValue(IValue<T> value) throws NotInRangeException;
+    void setValue(IValue<T> value) throws ValidityConditionException;
 
     void setSelected(final boolean select);
     boolean isSelected();

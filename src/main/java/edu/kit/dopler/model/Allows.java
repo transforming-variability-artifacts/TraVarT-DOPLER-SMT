@@ -17,9 +17,7 @@ public class Allows extends ValueRestrictionAction{
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            Range range = getDecision().getRange();
-            range.add(allowedValue);
-            getDecision().setRange(range);
+
         }catch(Exception e){
             throw new ActionExecutionException(e);
         }
@@ -27,6 +25,7 @@ public class Allows extends ValueRestrictionAction{
 
     @Override
     void toSMTStream(Stream.Builder<String> builder) {
-
+        // should not change anything in the SMT stream
+        // solver already checks the whole range of the value
     }
 }

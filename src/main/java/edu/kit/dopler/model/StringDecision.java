@@ -1,6 +1,6 @@
 package edu.kit.dopler.model;
 
-import edu.kit.dopler.exceptions.NotInRangeException;
+import edu.kit.dopler.exceptions.ValidityConditionException;
 
 import java.util.Objects;
 import java.util.Set;
@@ -8,12 +8,10 @@ import java.util.stream.Stream;
 
 public class StringDecision extends ValueDecision<String>{
 
-    private Range<String> range;
     private AbstractValue<String> value;
 
     public StringDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Set<IExpression> validityConditions) {
         super(question, description, visibilityCondition, taken, rules, validityConditions, DecisionType.STRING);
-        range = new Range<>();
         value = new StringValue("");
     }
 
@@ -23,15 +21,6 @@ public class StringDecision extends ValueDecision<String>{
     }
 
 
-    @Override
-    public Range<String> getRange() {
-        return range;
-    }
-
-    @Override
-    public void setRange(Range<String> range) {
-        this.range = range;
-    }
 
     @Override
     public IValue<String> getValue() {
@@ -39,24 +28,18 @@ public class StringDecision extends ValueDecision<String>{
     }
 
     @Override
-    public void setValue(IValue<String> value) throws NotInRangeException{
+    public void setValue(IValue<String> value) throws ValidityConditionException {
         String v = Objects.requireNonNull(value.getValue());
-        if(inRange(v)){
-            this.value.setValue(v);
+        this.value.setValue(v);
+        if(checkValidity()){
             setSelected(true);
         } else {
-            throw new NotInRangeException("Value: " + v + " not in Range" + getRange().toString());
+            this.value.setValue("");
+            throw new ValidityConditionException("Value: " + v + "does not fullfil validity condition");
         }
     }
 
-    private boolean inRange(String value){
-        for (IValue<String> r : range) {
-            if (r.getValue().equals(value)) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
 
 }

@@ -8,11 +8,13 @@ public class Enforce extends ValueRestrictionAction{
 
     private final IValue<?> value;
 
-    public Enforce(final IDecision decision, final IValue<?> value) {
+    public Enforce(final IDecision<?> decision, final IValue<?> value) {
         super(decision);
         this.value = value;
     }
 
+
+    // should be changed
     @Override
     public void execute() throws ActionExecutionException {
         try{
