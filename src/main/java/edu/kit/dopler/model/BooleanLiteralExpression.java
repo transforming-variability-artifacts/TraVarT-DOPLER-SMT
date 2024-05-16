@@ -19,7 +19,7 @@ public class BooleanLiteralExpression extends LiteralExpression{
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder) {
-        //not yet implemented
+        builder.add("(" + literal + ")");
     }
 
 

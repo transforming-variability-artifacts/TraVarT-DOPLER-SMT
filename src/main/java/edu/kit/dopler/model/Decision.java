@@ -38,7 +38,8 @@ abstract class Decision<T> implements IDecision<T> {
     private boolean select;
     private DecisionType decisionType;
 
-    public Decision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules,DecisionType decisionType) {
+    public Decision(String id, String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules,DecisionType decisionType) {
+        this.id = id;
         this.question = question;
         this.description = description;
         this.visibilityCondition = visibilityCondition;
@@ -120,11 +121,8 @@ abstract class Decision<T> implements IDecision<T> {
 
         builder.add("(ite");
         getVisibilityCondition().toSMTStream(builder); //if isVisible condition
-            builder.add("(ite");
-            builder.add("(" + isTaken() + ")"); // if isTaken
-            toSMTStreamDecisionSpecific(builder);   //if part
-            // else part of isTaken
-            builder.add(")");
+        toSMTStreamDecisionSpecific(builder);   //if part
+
 
         //else part needs to be added here
         builder.add(")"); //closing the ite of the visibilityDecision

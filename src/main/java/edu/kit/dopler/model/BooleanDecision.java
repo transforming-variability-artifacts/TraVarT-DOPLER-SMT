@@ -9,8 +9,8 @@ public class BooleanDecision extends Decision<Boolean> {
     private AbstractValue<Boolean> value;
 
 
-    public BooleanDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules) {
-        super(question, description, visibilityCondition, taken, rules, DecisionType.BOOLEAN);
+    public BooleanDecision(String id, String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules) {
+        super(id, question, description, visibilityCondition, taken, rules, DecisionType.BOOLEAN);
         value = BooleanValue.getFalse();
 
     }
@@ -20,7 +20,7 @@ public class BooleanDecision extends Decision<Boolean> {
 
     }
 
-    
+
 
     @Override
     public IValue<Boolean> getValue() {

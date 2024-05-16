@@ -52,14 +52,49 @@ public class Dopler {
 
     public Stream<String> toSMTStream(){
         Stream.Builder<String> builder = Stream.builder();
-        // open question on assert per decision ? or only one assert
-        for (Object decision: decisions){
-            IDecision<?> decision1 = (IDecision<?>) decision;
+
+        createConstants(builder);
+
+
+        Object[] decisionsArray = decisions.toArray();
+        for (int i = 0; i < decisions.size() - 1; i++){
+            IDecision<?> decision1 = (IDecision<?>) decisionsArray[i];
+            IDecision<?> decision2 = (IDecision<?>) decisionsArray[i+1];
+
             builder.add("(assert");
             decision1.toSMTStream(builder);
             builder.add(")");
+            builder.add("(assert (and ");
+            for (Object decision: decisions){
+                IDecision<?> decision3 = (IDecision<?>) decision;
+
+                builder.add("(= " + decision1.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_POST "  + decision2.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_PRE");
+
+                builder.add(")");
+            }
+            builder.add("))");
+
         }
 
         return  builder.build();
+    }
+
+    public void createConstants(Stream.Builder<String> builder){
+        for (Object decision: decisions){
+            IDecision<?> decision1 = (IDecision<?>) decision;
+            for(Object decision2: decisions){
+                IDecision<?> decision3 = (IDecision<?>) decision2;
+                String type = "";
+                switch (decision1.getDecisionType()){
+                    case BOOLEAN -> type = "bool";
+                    case NUMBER -> type = "double";
+                    case STRING, ENUM -> type = "String";
+                }
+
+                builder.add("(declare-const "+ decision1.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() +  "_PRE " + type + ")");
+                builder.add("(declare-const "  + decision1.toStringConstforSMT() +  "_" + decision3.toStringConstforSMT() +  "_POST " + type + ")");
+            }
+
+        }
     }
 }

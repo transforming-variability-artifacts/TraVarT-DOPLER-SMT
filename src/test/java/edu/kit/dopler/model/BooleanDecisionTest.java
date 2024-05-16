@@ -15,33 +15,19 @@ public class BooleanDecisionTest {
     public void setValueTest(){
         IValue<Boolean> value = BooleanValue.getTrue();
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test","test", expression,false, Collections.emptySet());
+        BooleanDecision decision = new BooleanDecision("1","test","test", expression,false, Collections.emptySet());
         decision.setValue(value);
         assertTrue(decision.isTaken());
         assertSame(decision.getValue().getValue(), value.getValue());
     }
 
-    @Test
-    public void checkRangeValues(){
-        IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test","test", expression,false, Collections.emptySet());
-        assertSame(decision.getRange().size(),2);
-    }
-
-    @Test
-    public void testSetRange(){
-        Range<Boolean> range = new Range();
-        IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test","test", expression,false, Collections.emptySet());
-        assertThrows(UnsupportedOperationException.class,() -> decision.setRange(range));
-    }
 
     @Test
     public void BooleanEnforceActionTest(){
         IValue<Boolean> value = BooleanValue.getTrue();
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test","test", expression,false, new HashSet<>());
-        BooleanDecision decision2 = new BooleanDecision("test","test", expression,false, new HashSet<>());
+        BooleanDecision decision = new BooleanDecision("1","test","test", expression,false, new HashSet<>());
+        BooleanDecision decision2 = new BooleanDecision("2","test","test", expression,false, new HashSet<>());
 
         assertFalse(decision2.isTaken());
         assertFalse(decision2.getValue().getValue());
