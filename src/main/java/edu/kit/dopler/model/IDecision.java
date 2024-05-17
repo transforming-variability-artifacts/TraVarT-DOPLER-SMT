@@ -19,6 +19,7 @@ public interface IDecision<T> {
     void removeRule(Rule rule);
     void executeRules() throws ActionExecutionException;
 
+    IValue<T> getStandardValue();
 
     IValue<T> getValue();
     void setValue(IValue<T> value) throws ValidityConditionException;

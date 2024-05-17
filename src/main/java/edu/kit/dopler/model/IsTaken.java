@@ -18,6 +18,10 @@ public class IsTaken extends DecisionCallExpression{
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder) {
-        //not yet implemented
+        builder.add("(distinct");
+        builder.add(getDecision().getValue().getValue().toString());
+        builder.add(" ");
+        builder.add(getDecision().getStandardValue().getValue().toString());
+        builder.add(")");
     }
 }

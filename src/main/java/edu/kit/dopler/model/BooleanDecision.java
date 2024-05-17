@@ -21,6 +21,10 @@ public class BooleanDecision extends Decision<Boolean> {
     }
 
 
+    @Override
+    public IValue<Boolean> getStandardValue() {
+        return BooleanValue.getFalse();
+    }
 
     @Override
     public IValue<Boolean> getValue() {

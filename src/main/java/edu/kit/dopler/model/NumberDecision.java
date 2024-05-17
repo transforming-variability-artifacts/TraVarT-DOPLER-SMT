@@ -22,6 +22,11 @@ public class NumberDecision extends ValueDecision<Double>{
 
 
     @Override
+    public IValue<Double> getStandardValue() {
+        return new DoubleValue(-1.0);
+    }
+
+    @Override
     public IValue<Double> getValue() {
         return value;
     }

@@ -28,6 +28,11 @@ public class EnumerationDecision extends Decision<String> {
 
 
     @Override
+    public IValue<String> getStandardValue() {
+        return new StringValue("null");
+    }
+
+    @Override
     public IValue<String> getValue() {
         return value;
     }
