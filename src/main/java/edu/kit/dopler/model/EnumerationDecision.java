@@ -60,6 +60,8 @@ public class EnumerationDecision extends Decision<String> {
         disAllowed.add(literal);
     }
 
+    public void removeDissallowed(EnumerationLiteral literal){disAllowed.remove(literal);}
+
     @Override
     void toSMTStreamDecisionSpecific(Stream.Builder<String> builder) {
 

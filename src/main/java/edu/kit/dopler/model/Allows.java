@@ -19,6 +19,9 @@ public class Allows extends ValueRestrictionAction{
         try {
             if(getDecision().getDecisionType() == Decision.DecisionType.ENUM){
 
+                EnumerationDecision enumerationDecision = (EnumerationDecision) getDecision();
+                EnumerationLiteral enumerationLiteral = new EnumerationLiteral((String) allowedValue.getValue());
+                enumerationDecision.removeDissallowed(enumerationLiteral);
 
             }else {
                 throw new ActionExecutionException("Action only possible for DecisionType Enum");

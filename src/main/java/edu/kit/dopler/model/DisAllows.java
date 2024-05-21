@@ -15,14 +15,14 @@ public class DisAllows extends ValueRestrictionAction{
     }
 
 
-    // default Wert muss angenommen werden wenn der Wert davor gesetzt wurde und die decision wir wieder aud nicht getroffen gesetzt
+    // default Wert muss angenommen werden wenn der Wert davor gesetzt wurde und die decision wird wieder auf nicht getroffen gesetzt
     @Override
     public void execute()  throws ActionExecutionException {
         try {
             switch (getDecision().getDecisionType()){
                 case ENUM:
                     EnumerationDecision decision = (EnumerationDecision) getDecision();
-                    decision.addDissallowed(new EnumerationLiteral(disAllowValue.toString()));
+                    decision.addDissallowed(new EnumerationLiteral((String) disAllowValue.getValue()));
             /**
                 case BOOLEAN:
                     BooleanDecision decision1 = (BooleanDecision) getDecision();
