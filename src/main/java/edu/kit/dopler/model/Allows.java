@@ -17,6 +17,13 @@ public class Allows extends ValueRestrictionAction{
     @Override
     public void execute() throws ActionExecutionException {
         try {
+            if(getDecision().getDecisionType() == Decision.DecisionType.ENUM){
+
+
+            }else {
+                throw new ActionExecutionException("Action only possible for DecisionType Enum");
+            }
+
 
         }catch(Exception e){
             throw new ActionExecutionException(e);

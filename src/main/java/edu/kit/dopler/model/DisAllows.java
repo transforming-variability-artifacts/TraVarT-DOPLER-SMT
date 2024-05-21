@@ -23,6 +23,7 @@ public class DisAllows extends ValueRestrictionAction{
                 case ENUM:
                     EnumerationDecision decision = (EnumerationDecision) getDecision();
                     decision.addDissallowed(new EnumerationLiteral(disAllowValue.toString()));
+            /**
                 case BOOLEAN:
                     BooleanDecision decision1 = (BooleanDecision) getDecision();
                     IValue<Boolean> booleanIValue = (boolean) disAllowValue.getValue() ? BooleanValue.getFalse(): BooleanValue.getTrue();
@@ -40,6 +41,9 @@ public class DisAllows extends ValueRestrictionAction{
                     conditions2.add(expression2);
                     decision3.setValidityConditions(conditions2);
 
+            **/
+                default:
+                    throw new ActionExecutionException("Action only possible for EnumDecisions");
             }
         }catch (Exception e){
             throw new ActionExecutionException(e);
