@@ -22,7 +22,7 @@ public class EnumerationDecision extends Decision<String> {
         this.enumeration = enumeration;
         this.minCardinality = minCardinality;
         this.maxCardinality = maxCardinality;
-        value = new StringValue("None");
+        value = new StringValue("null");
         disAllowed = new HashSet<>();
     }
 
@@ -42,7 +42,7 @@ public class EnumerationDecision extends Decision<String> {
         String v = Objects.requireNonNull(value.getValue());
         if(inRange(v) && allowed(v)){
             this.value.setValue(v);
-            setSelected(true);
+            setTaken(true);
         }else {
             throw new ValidityConditionException("Value: " + v + " not in Range");
         }
@@ -53,7 +53,7 @@ public class EnumerationDecision extends Decision<String> {
     }
 
     private boolean allowed(String value){
-        return disAllowed.stream().noneMatch(enumerationLiteral -> enumerationLiteral.getValue().equals("value"));
+        return disAllowed.stream().noneMatch(enumerationLiteral -> enumerationLiteral.getValue().equals(value));
     }
 
     public void addDissallowed(EnumerationLiteral literal){

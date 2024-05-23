@@ -21,6 +21,46 @@ public class BooleanDecisionTest {
         assertSame(decision.getValue().getValue(), value.getValue());
     }
 
+    @Test
+    public void testDecisionType(){
+
+        IExpression expression = new BooleanLiteralExpression(true);
+        BooleanDecision decision = new BooleanDecision("1","test","test", expression,false, Collections.emptySet());
+        assertSame(decision.getDecisionType(), Decision.DecisionType.BOOLEAN);
+
+    }
+
+
+    @Test
+    public void testStandardValue(){
+        IExpression expression = new BooleanLiteralExpression(true);
+        BooleanDecision decision = new BooleanDecision("1","test","test", expression,false, Collections.emptySet());
+        assertSame(decision.getStandardValue().getValue(),BooleanValue.getFalse().getValue());
+    }
+
+    @Test
+    public void testSetTaken(){
+        IExpression expression = new BooleanLiteralExpression(true);
+        BooleanDecision decision = new BooleanDecision("1","test","test", expression,false, Collections.emptySet());
+        decision.setTaken(true);
+
+        assertTrue(decision.isTaken());
+    }
+
+    @Test
+    public void checkVisibilityWithTrueVisibilityCond(){
+        IExpression expression = new BooleanLiteralExpression(true);
+        BooleanDecision decision = new BooleanDecision("1","test","test", expression,false, Collections.emptySet());
+        assertTrue(decision.isVisible());
+    }
+
+    @Test
+    public void checkVisibilityWithFalseVisibilityCond(){
+        IExpression expression = new BooleanLiteralExpression(false);
+        BooleanDecision decision = new BooleanDecision("1","test","test", expression,false, Collections.emptySet());
+        assertFalse(decision.isVisible());
+    }
+
 
     @Test
     public void BooleanEnforceActionTest(){

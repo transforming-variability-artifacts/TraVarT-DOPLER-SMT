@@ -12,7 +12,7 @@ public class NumberDecision extends ValueDecision<Double>{
 
     public NumberDecision( String id, String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Set<IExpression> validityConditions) {
         super(id, question, description, visibilityCondition, taken, rules, validityConditions, DecisionType.NUMBER);
-        value = new DoubleValue(Double.NaN);
+        value = new DoubleValue(-1.0);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class NumberDecision extends ValueDecision<Double>{
         if(checkValidity()){
             setSelected(true);
         } else {
-            this.value.setValue(0.0);
+            this.value.setValue(getStandardValue().getValue());
             throw new ValidityConditionException("Value: " + v + "does not fullfil validity condition");
         }
 
