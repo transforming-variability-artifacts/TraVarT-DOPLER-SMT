@@ -18,6 +18,20 @@ public class BooleanDecision extends Decision<Boolean> {
     @Override
     void toSMTStreamDecisionSpecific(Stream.Builder<String> builder) {
 
+        for(Rule rule: getRules()){
+            builder.add("(ite");
+            rule.getCondition().toSMTStream(builder); // if condition
+            builder.add("(and"); //if part
+            for(IAction action: rule.getActions()){
+                action.toSMTStream(builder, toStringConstforSMT());
+            }
+            builder.add(")");
+            // else part
+            builder.add(")");
+        }
+
+
+
     }
 
 

@@ -34,7 +34,7 @@ public class Allows extends ValueRestrictionAction{
     }
 
     @Override
-    void toSMTStream(Stream.Builder<String> builder) {
+    public void toSMTStream(Stream.Builder<String> builder, String selectedDecisionString) {
         // should not change anything in the SMT stream
         // solver already checks the whole range of the value
     }

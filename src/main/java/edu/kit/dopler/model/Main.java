@@ -14,6 +14,11 @@ public class Main {
 
         BooleanDecision decision = new BooleanDecision("1","test","test", expression,false, new HashSet<>());
         BooleanDecision decision2 = new BooleanDecision("2","test","test", expression,false, new HashSet<>());
+        Set<IAction> actions = new HashSet<>();
+        Enforce enforce = new BooleanEnforce(decision2,BooleanValue.getTrue());
+        actions.add(enforce);
+        Rule rule = new Rule(expression,actions);
+        decision2.addRule(rule);
         decisions.add(decision);
         decisions.add(decision2);
 

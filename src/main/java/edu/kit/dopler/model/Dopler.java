@@ -57,22 +57,26 @@ public class Dopler {
 
 
         Object[] decisionsArray = decisions.toArray();
-        for (int i = 0; i < decisions.size() - 1; i++){
+        for (int i = 0; i < decisions.size(); i++){
             IDecision<?> decision1 = (IDecision<?>) decisionsArray[i];
-            IDecision<?> decision2 = (IDecision<?>) decisionsArray[i+1];
 
             builder.add("(assert");
             decision1.toSMTStream(builder);
             builder.add(")");
-            builder.add("(assert (and ");
-            for (Object decision: decisions){
-                IDecision<?> decision3 = (IDecision<?>) decision;
+            int checkLastVariable = i + 1;
+            if(checkLastVariable < decisions.size()) {
 
-                builder.add("(= " + decision1.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_POST "  + decision2.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_PRE");
+                IDecision<?> decision2 = (IDecision<?>) decisionsArray[i + 1];
+                builder.add("(assert (and ");
+                for (Object decision : decisions) {
+                    IDecision<?> decision3 = (IDecision<?>) decision;
 
-                builder.add(")");
+                    builder.add("(= " + decision1.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_POST " + decision2.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_PRE");
+
+                    builder.add(")");
+                }
+                builder.add("))");
             }
-            builder.add("))");
 
         }
 

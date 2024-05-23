@@ -34,7 +34,7 @@ public class BooleanDecisionTest {
 
         Rule rule = new Rule(expression,Collections.emptySet());
         Set<IAction> set = new HashSet<>();
-        IAction action = new BooleanEnforce(decision2,BooleanValue.getTrue());
+        IAction action = new BooleanEnforce(decision2,value);
         set.add(action);
         rule.setActions(set);
         decision.addRule(rule);

@@ -16,5 +16,5 @@ public abstract class ValueRestrictionAction extends Action{
         return decision;
     }
 
-    abstract void toSMTStream(Stream.Builder<String> builder);
+
 }

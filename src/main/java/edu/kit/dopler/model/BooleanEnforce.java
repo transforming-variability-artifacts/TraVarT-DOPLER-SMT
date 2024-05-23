@@ -5,7 +5,7 @@ import edu.kit.dopler.exceptions.ActionExecutionException;
 public class BooleanEnforce extends Enforce{
 
 
-    public BooleanEnforce(BooleanDecision decision, BooleanValue value) {
+    public BooleanEnforce(BooleanDecision decision, IValue<Boolean> value) {
         super(decision, value);
     }
 
