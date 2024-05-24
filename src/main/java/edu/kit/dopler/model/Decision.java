@@ -124,8 +124,9 @@ abstract class Decision<T> implements IDecision<T> {
         getVisibilityCondition().toSMTStream(builder); //if isVisible condition
         toSMTStreamDecisionSpecific(builder);   //if part
 
-
+        builder.add("(");
         //else part needs to be added here
+        builder.add(")");
         builder.add(")"); //closing the ite of the visibilityDecision
 
 

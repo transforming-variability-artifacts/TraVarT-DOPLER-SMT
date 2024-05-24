@@ -79,6 +79,8 @@ public class Dopler {
             }
 
         }
+        builder.add("(check-sat)");
+        builder.add("(exit)");
 
         return  builder.build();
     }

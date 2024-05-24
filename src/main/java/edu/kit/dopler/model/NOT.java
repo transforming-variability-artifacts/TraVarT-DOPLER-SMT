@@ -13,6 +13,7 @@ public class NOT extends UnaryExpression{
 
     @Override
     public boolean evaluate() throws EvaluationException {
+
         return !getChild().evaluate();
     }
 
