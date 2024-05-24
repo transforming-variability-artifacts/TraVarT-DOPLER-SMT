@@ -21,7 +21,7 @@ public class IsTaken extends DecisionCallExpression{
         builder.add("(distinct");
         builder.add(getDecision().getValue().getValue().toString());
         builder.add(" ");
-        builder.add(getDecision().getStandardValue().getValue().toString());
+        builder.add(getDecision().getStandardValue().toString());
         builder.add(")");
     }
 }

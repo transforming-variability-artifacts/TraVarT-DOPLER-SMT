@@ -35,7 +35,7 @@ public class EnumerationDecisionTest extends TestCase {
 
     public void testSetValueCorrect() throws ValidityConditionException {
         assertFalse(enumerationDecision.isTaken());
-        assertSame(enumerationDecision.getValue().getValue(),enumerationDecision.getStandardValue().getValue());
+        assertSame(enumerationDecision.getValue().getValue(),enumerationDecision.getStandardValue());
         IValue<String> testLiteral = new StringValue("test1");
         enumerationDecision.setValue(testLiteral);
         assertSame(enumerationDecision.getValue().getValue(),testLiteral.getValue());
@@ -43,7 +43,7 @@ public class EnumerationDecisionTest extends TestCase {
     }
 
     public void testStandardValue(){
-        assertSame(enumerationDecision.getStandardValue().getValue(),"null");
+        assertSame(enumerationDecision.getStandardValue(),"null");
     }
 
 }

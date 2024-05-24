@@ -10,6 +10,18 @@ public class GreatherThan extends BinaryExpression{
 
     @Override
     public boolean evaluate() {
+        if(getLeftExpression() instanceof DoubleLiteralExpression && getRightExpression() instanceof DecisionValueCallExpression){
+            double left = ((DoubleLiteralExpression) getLeftExpression()).getLiteral();
+            double right = (double) ((DecisionValueCallExpression) getRightExpression()).getValue().getValue();
+            return left > right;
+        }
+        if(getLeftExpression() instanceof DecisionValueCallExpression && getRightExpression() instanceof DoubleLiteralExpression){
+            double left = (double) ((DecisionValueCallExpression) getLeftExpression()).getValue().getValue();
+            double right = ((DoubleLiteralExpression) getRightExpression()).getLiteral();
+            return left > right;
+        }
+
+
 
         double left = ((DoubleLiteralExpression) getLeftExpression()).getLiteral();
         double right = ((DoubleLiteralExpression) getRightExpression()).getLiteral();

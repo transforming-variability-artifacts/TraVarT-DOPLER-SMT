@@ -21,9 +21,7 @@ public class NumberDecisionTest extends TestCase {
     }
 
 
-    public void testStandardValue(){
-        assertSame("-1.0",numberDecision.getStandardValue().getValue().toString());
-    }
+
 
     public void testSetValueWhichDontFullFillsValidityCondition(){
         DoubleLiteralExpression doubleLiteralExpression = new DoubleLiteralExpression(2.0);
@@ -33,8 +31,27 @@ public class NumberDecisionTest extends TestCase {
         expressions.add(greatherThan);
         numberDecision.setValidityConditions(expressions);
         assertThrows(ValidityConditionException.class,() -> numberDecision.setValue(new DoubleValue(1.0)));
+        assertEquals(new DoubleValue(-1.0).getValue(), numberDecision.getValue().getValue());
     }
 
 
+    public void testSetValueWhichFullFillsValidityCondition() throws ValidityConditionException {
+        DoubleLiteralExpression doubleLiteralExpression = new DoubleLiteralExpression(2.0);
+        DecisionValueCallExpression decisionValueCallExpression = new DecisionValueCallExpression(numberDecision);
+        LessThan lessThan = new LessThan(decisionValueCallExpression,doubleLiteralExpression);
+        Set<IExpression> expressions = new HashSet<>();
+        expressions.add(lessThan);
+        numberDecision.setValidityConditions(expressions);
+        DoubleValue doubleValue  = new DoubleValue(1.0);
+        numberDecision.setValue(doubleValue);
+        assertEquals(doubleValue.getValue(),numberDecision.getValue().getValue());
+        assertTrue(numberDecision.isTaken());
+        assertTrue(numberDecision.checkValidity());
+
+    }
+
+    public void testStandardValue(){
+        assertEquals(-1.0,numberDecision.getStandardValue());
+    }
 
 }

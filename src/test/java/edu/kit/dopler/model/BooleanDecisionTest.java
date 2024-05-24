@@ -35,7 +35,7 @@ public class BooleanDecisionTest {
     public void testStandardValue(){
         IExpression expression = new BooleanLiteralExpression(true);
         BooleanDecision decision = new BooleanDecision("1","test","test", expression,false, Collections.emptySet());
-        assertSame(decision.getStandardValue().getValue(),BooleanValue.getFalse().getValue());
+        assertSame(decision.getStandardValue(),BooleanValue.getFalse().getValue());
     }
 
     @Test

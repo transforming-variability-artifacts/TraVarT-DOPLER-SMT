@@ -15,7 +15,7 @@ public class DecisionValueCallExpression extends DecisionCallExpression{
         return getDecision().isTaken();
     }
 
-    public IValue getValue(){
+    public IValue<?> getValue(){
        return getDecision().getValue();
     }
 

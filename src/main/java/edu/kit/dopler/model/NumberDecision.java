@@ -8,11 +8,12 @@ import java.util.stream.Stream;
 
 public class NumberDecision extends ValueDecision<Double>{
 
-    private AbstractValue<Double> value;
+    private final AbstractValue<Double> value;
+    private final double standardValue = -1.0;
 
     public NumberDecision( String id, String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Set<IExpression> validityConditions) {
         super(id, question, description, visibilityCondition, taken, rules, validityConditions, DecisionType.NUMBER);
-        value = new DoubleValue(-1.0);
+        value = new DoubleValue(standardValue);
     }
 
     @Override
@@ -22,8 +23,8 @@ public class NumberDecision extends ValueDecision<Double>{
 
 
     @Override
-    public IValue<Double> getStandardValue() {
-        return new DoubleValue(-1.0);
+    public Double getStandardValue() {
+        return standardValue;
     }
 
     @Override
@@ -36,9 +37,10 @@ public class NumberDecision extends ValueDecision<Double>{
         Double v = Objects.requireNonNull(value.getValue());
         this.value.setValue(v);
         if(checkValidity()){
-            setSelected(true);
+            setTaken(true);
         } else {
-            this.value.setValue(getStandardValue().getValue());
+
+            this.value.setValue(standardValue);
             throw new ValidityConditionException("Value: " + v + "does not fullfil validity condition");
         }
 
