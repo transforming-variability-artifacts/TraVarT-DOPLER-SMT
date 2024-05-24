@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.EvaluationException;
+
 import java.util.stream.Stream;
 
 public class XOR extends BinaryExpression{
@@ -8,7 +10,7 @@ public class XOR extends BinaryExpression{
     }
 
     @Override
-    public boolean evaluate() {
+    public boolean evaluate() throws EvaluationException {
         return getLeftExpression().evaluate() ^ getRightExpression().evaluate();
     }
 

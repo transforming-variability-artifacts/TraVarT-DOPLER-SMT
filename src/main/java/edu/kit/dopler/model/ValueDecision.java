@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.EvaluationException;
+
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -24,7 +26,7 @@ public abstract class ValueDecision<T> extends Decision<T> {
         this.validityConditions = validityConditions;
     }
 
-    public boolean checkValidity(){
+    public boolean checkValidity() throws EvaluationException {
         for(IExpression expression: validityConditions){
             if(! expression.evaluate()){
                 return false;

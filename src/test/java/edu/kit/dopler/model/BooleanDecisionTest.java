@@ -1,5 +1,6 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.EvaluationException;
 import org.junit.Test;
 
 import java.beans.Visibility;
@@ -48,14 +49,14 @@ public class BooleanDecisionTest {
     }
 
     @Test
-    public void checkVisibilityWithTrueVisibilityCond(){
+    public void checkVisibilityWithTrueVisibilityCond() throws EvaluationException {
         IExpression expression = new BooleanLiteralExpression(true);
         BooleanDecision decision = new BooleanDecision("1","test","test", expression,false, Collections.emptySet());
         assertTrue(decision.isVisible());
     }
 
     @Test
-    public void checkVisibilityWithFalseVisibilityCond(){
+    public void checkVisibilityWithFalseVisibilityCond() throws EvaluationException {
         IExpression expression = new BooleanLiteralExpression(false);
         BooleanDecision decision = new BooleanDecision("1","test","test", expression,false, Collections.emptySet());
         assertFalse(decision.isVisible());

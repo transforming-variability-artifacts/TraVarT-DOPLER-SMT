@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.InvalidTypeInLiteralExpressionCheckException;
+
 import java.util.stream.Stream;
 
 public class DoubleLiteralExpression extends LiteralExpression{
@@ -26,5 +28,17 @@ public class DoubleLiteralExpression extends LiteralExpression{
 
     public void setLiteral(double literal) {
         this.literal = literal;
+    }
+
+
+
+    @Override
+    boolean equalsForLiteralExpressions(IValue<?> value) throws InvalidTypeInLiteralExpressionCheckException {
+        if(value instanceof DoubleValue){
+            return literal == ((DoubleValue) value).getValue();
+        }else {
+            throw new InvalidTypeInLiteralExpressionCheckException("Parameter was not of Type StringValue in Equals");
+        }
+
     }
 }

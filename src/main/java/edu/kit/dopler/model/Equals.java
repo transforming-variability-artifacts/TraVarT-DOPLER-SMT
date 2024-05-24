@@ -1,5 +1,8 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.EvaluationException;
+import edu.kit.dopler.exceptions.InvalidTypeInLiteralExpressionCheckException;
+
 import java.util.stream.Stream;
 
 public class Equals extends BinaryExpression{
@@ -10,22 +13,25 @@ public class Equals extends BinaryExpression{
     }
 
     @Override
-    public boolean evaluate() {
+    public boolean evaluate() throws EvaluationException {
+
+        try {
+            if(getLeftExpression() instanceof LiteralExpression && getRightExpression() instanceof DecisionValueCallExpression){
+                IValue<?> right = ((DecisionValueCallExpression) getRightExpression()).getValue();
+                return ((LiteralExpression) getLeftExpression()).equalsForLiteralExpressions(right);
+            }
+            if(getLeftExpression() instanceof DecisionValueCallExpression && getRightExpression() instanceof LiteralExpression){
+                IValue<?> left = ((DecisionValueCallExpression) getLeftExpression()).getValue();
+                return ((LiteralExpression) getRightExpression()).equalsForLiteralExpressions(left);
+            }
 
 
-        if(getLeftExpression() instanceof DoubleLiteralExpression && getRightExpression() instanceof DecisionValueCallExpression){
-            double left = ((DoubleLiteralExpression) getLeftExpression()).getLiteral();
-            double right = (double) ((DecisionValueCallExpression) getRightExpression()).getValue().getValue();
-            return left == right;
+            return getLeftExpression() == getRightExpression();
+        }catch (InvalidTypeInLiteralExpressionCheckException e){
+            throw new EvaluationException(e);
         }
-        if(getLeftExpression() instanceof DecisionValueCallExpression && getRightExpression() instanceof DoubleLiteralExpression){
-            double left = (double) ((DecisionValueCallExpression) getLeftExpression()).getValue().getValue();
-            double right = ((DoubleLiteralExpression) getRightExpression()).getLiteral();
-            return left == right;
-        }
 
 
-        return getLeftExpression() == getRightExpression();
     }
 
     @Override

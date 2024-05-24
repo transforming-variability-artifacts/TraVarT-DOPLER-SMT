@@ -1,5 +1,6 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.EvaluationException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
 import java.util.Objects;
@@ -36,13 +37,18 @@ public class NumberDecision extends ValueDecision<Double>{
     public void setValue(IValue<Double> value) throws ValidityConditionException {
         Double v = Objects.requireNonNull(value.getValue());
         this.value.setValue(v);
-        if(checkValidity()){
-            setTaken(true);
-        } else {
+        try {
+            if(checkValidity()){
+                setTaken(true);
+            } else {
 
-            this.value.setValue(standardValue);
-            throw new ValidityConditionException("Value: " + v + "does not fullfil validity condition");
+                this.value.setValue(standardValue);
+                throw new ValidityConditionException("Value: " + v + "does not fullfil validity condition");
+            }
+        }catch (EvaluationException e){
+            throw new ValidityConditionException(e);
         }
+
 
     }
 

@@ -1,6 +1,7 @@
 package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.ActionExecutionException;
+import edu.kit.dopler.exceptions.EvaluationException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
 import java.util.Set;
@@ -17,7 +18,7 @@ public interface IDecision<T> {
     Set<Rule> getRules();
     void addRule(Rule rule);
     void removeRule(Rule rule);
-    void executeRules() throws ActionExecutionException;
+    void executeRules() throws ActionExecutionException, EvaluationException;
 
     T getStandardValue();
 
@@ -30,7 +31,7 @@ public interface IDecision<T> {
     IExpression getVisibilityCondition();
     void setVisibilityCondition(IExpression visibilityCondition);
 
-    boolean isVisible();
+    boolean isVisible() throws EvaluationException;
     void toSMTStream(Stream.Builder<String> builder);
 
     boolean isTaken();

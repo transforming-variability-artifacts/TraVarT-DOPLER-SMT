@@ -1,6 +1,7 @@
 package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.ActionExecutionException;
+import edu.kit.dopler.exceptions.EvaluationException;
 
 import java.util.Set;
 
@@ -31,7 +32,7 @@ public class Rule {
         this.actions = actions;
     }
 
-    public void executeActions() throws ActionExecutionException {
+    public void executeActions() throws ActionExecutionException, EvaluationException {
 
         if(condition.evaluate()){
             for(IAction action: actions){

@@ -1,5 +1,6 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.EvaluationException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 import junit.framework.TestCase;
 
@@ -35,7 +36,7 @@ public class NumberDecisionTest extends TestCase {
     }
 
 
-    public void testSetValueWhichFullFillsValidityCondition() throws ValidityConditionException {
+    public void testSetValueWhichFullFillsValidityCondition() throws ValidityConditionException, EvaluationException {
         DoubleLiteralExpression doubleLiteralExpression = new DoubleLiteralExpression(2.0);
         DecisionValueCallExpression decisionValueCallExpression = new DecisionValueCallExpression(numberDecision);
         LessThan lessThan = new LessThan(decisionValueCallExpression,doubleLiteralExpression);

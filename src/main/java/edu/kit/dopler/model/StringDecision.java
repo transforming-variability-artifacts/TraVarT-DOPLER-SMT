@@ -1,5 +1,6 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.EvaluationException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
 import java.util.Objects;
@@ -9,6 +10,7 @@ import java.util.stream.Stream;
 public class StringDecision extends ValueDecision<String>{
 
     private AbstractValue<String> value;
+    private String standardValue = "null";
 
     public StringDecision(String id, String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Set<IExpression> validityConditions) {
         super(id, question, description, visibilityCondition, taken, rules, validityConditions, DecisionType.STRING);
@@ -23,7 +25,7 @@ public class StringDecision extends ValueDecision<String>{
 
     @Override
     public String getStandardValue() {
-        return "null";
+        return standardValue;
     }
 
     @Override
@@ -35,12 +37,17 @@ public class StringDecision extends ValueDecision<String>{
     public void setValue(IValue<String> value) throws ValidityConditionException {
         String v = Objects.requireNonNull(value.getValue());
         this.value.setValue(v);
-        if(checkValidity()){
-            setSelected(true);
-        } else {
-            this.value.setValue("");
-            throw new ValidityConditionException("Value: " + v + "does not fullfil validity condition");
+        try {
+            if(checkValidity()){
+                setSelected(true);
+            } else {
+                this.value.setValue(standardValue);
+                throw new ValidityConditionException("Value: " + v + "does not fullfil validity condition");
+            }
+        }catch (EvaluationException e){
+            throw new ValidityConditionException(e);
         }
+
     }
 
 

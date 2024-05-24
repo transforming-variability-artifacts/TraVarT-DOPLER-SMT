@@ -1,6 +1,7 @@
 package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.ActionExecutionException;
+import edu.kit.dopler.exceptions.EvaluationException;
 
 import java.util.Set;
 import java.util.stream.Stream;
@@ -96,7 +97,7 @@ abstract class Decision<T> implements IDecision<T> {
     }
 
     @Override
-    public void executeRules() throws ActionExecutionException {
+    public void executeRules() throws ActionExecutionException, EvaluationException {
         for(Rule rule : rules){
            rule.executeActions();
         }
@@ -112,7 +113,7 @@ abstract class Decision<T> implements IDecision<T> {
         this.visibilityCondition = visibilityCondition;
     }
 
-    public boolean isVisible(){
+    public boolean isVisible() throws EvaluationException {
         return visibilityCondition.evaluate();
     }
 
