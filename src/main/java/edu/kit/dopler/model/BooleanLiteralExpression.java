@@ -20,8 +20,9 @@ public class BooleanLiteralExpression extends LiteralExpression{
     }
 
     @Override
-    public void toSMTStream(Stream.Builder<String> builder) {
-        builder.add("(" + literal + ")");
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
+
+        builder.add(" " + literal + " ");
     }
 
 

@@ -35,10 +35,10 @@ public class Equals extends BinaryExpression{
     }
 
     @Override
-    public void toSMTStream(Stream.Builder<String> builder) {
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecision) {
         builder.add("(=");
-        getLeftExpression().toSMTStream(builder);
-        getRightExpression().toSMTStream(builder);
+        getLeftExpression().toSMTStream(builder, callingDecision);
+        getRightExpression().toSMTStream(builder, callingDecision);
         builder.add(")");
     }
 }

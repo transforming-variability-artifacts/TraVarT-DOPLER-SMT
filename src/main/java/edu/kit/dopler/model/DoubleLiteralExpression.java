@@ -18,8 +18,8 @@ public class DoubleLiteralExpression extends LiteralExpression{
     }
 
     @Override
-    public void toSMTStream(Stream.Builder<String> builder) {
-        //not yet implemented
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
+        builder.add(" " + literal + " ");
     }
 
     public double getLiteral() {

@@ -17,7 +17,7 @@ public class IsTaken extends DecisionCallExpression{
     }
 
     @Override
-    public void toSMTStream(Stream.Builder<String> builder) {
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
         builder.add("(distinct");
         builder.add(getDecision().getValue().getValue().toString());
         builder.add(" ");

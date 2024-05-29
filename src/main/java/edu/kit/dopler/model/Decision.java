@@ -29,8 +29,8 @@ abstract class Decision<T> implements IDecision<T> {
             return type;
         }
     }
-
-    private String id;
+    private static int uid = 0;
+    private final int id;
     private String question;
     private String description;
     private IExpression visibilityCondition;
@@ -39,8 +39,8 @@ abstract class Decision<T> implements IDecision<T> {
     private boolean select;
     private DecisionType decisionType;
 
-    public Decision(String id, String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules,DecisionType decisionType) {
-        this.id = id;
+    public Decision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules,DecisionType decisionType) {
+        this.id = uid++;
         this.question = question;
         this.description = description;
         this.visibilityCondition = visibilityCondition;
@@ -118,17 +118,33 @@ abstract class Decision<T> implements IDecision<T> {
     }
 
     @Override
-    public void toSMTStream(Stream.Builder<String> builder) {
+    public void toSMTStream(Stream.Builder<String> builder,int numberDecisions) {
 
-        builder.add("(ite");
-        getVisibilityCondition().toSMTStream(builder); //if isVisible condition
-        toSMTStreamDecisionSpecific(builder);   //if part
+        if(getVisibilityCondition() instanceof LiteralExpression){
+            try {
+                if(getVisibilityCondition().evaluate()){
 
-        builder.add("(");
-        //else part needs to be added here
-        builder.add(")");
-        builder.add(")"); //closing the ite of the visibilityDecision
+                    toSMTStreamDecisionSpecific(builder);
+                }
+            } catch (EvaluationException e) {
+                throw new RuntimeException(e);
+            }
+        }else {
+            builder.add("(ite");
+            getVisibilityCondition().toSMTStream(builder, toStringConstforSMT()); //if isVisible condition
+            toSMTStreamDecisionSpecific(builder);   //if part
 
+
+            builder.add("(and"); //else
+            for (int i = 0; i < numberDecisions; i++) {
+                builder.add("(=");
+                builder.add(toStringConstforSMT() + "_DECISION_" + i + "_PRE");
+                builder.add(toStringConstforSMT() + "_DECISION_" + i + "_POST");
+                builder.add(")");
+            }
+            builder.add(")");      //else
+            builder.add(")"); //closing the ite of the visibilityDecision
+        }
 
     }
 
@@ -154,5 +170,9 @@ abstract class Decision<T> implements IDecision<T> {
 
     public void setDecisionType(DecisionType decisionType) {
         this.decisionType = decisionType;
+    }
+
+    public int getId() {
+        return id;
     }
 }

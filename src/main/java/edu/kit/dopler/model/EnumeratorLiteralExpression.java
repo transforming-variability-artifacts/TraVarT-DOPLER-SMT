@@ -15,7 +15,7 @@ public class EnumeratorLiteralExpression extends DecisionCallExpression{
     }
 
     @Override
-    public void toSMTStream(Stream.Builder<String> builder) {
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
         //not yet implemented
     }
 }

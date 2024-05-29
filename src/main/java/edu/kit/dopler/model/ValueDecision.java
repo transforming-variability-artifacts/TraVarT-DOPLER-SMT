@@ -12,8 +12,8 @@ public abstract class ValueDecision<T> extends Decision<T> {
 
     private Set<IExpression> validityConditions = Collections.emptySet();
 
-    public ValueDecision(String id,String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Set<IExpression> validityConditions, DecisionType decisionType) {
-        super(id, question, description, visibilityCondition, taken, rules,decisionType);
+    public ValueDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Set<IExpression> validityConditions, DecisionType decisionType) {
+        super(question, description, visibilityCondition, taken, rules,decisionType);
         this.validityConditions = validityConditions;
     }
 
@@ -43,7 +43,7 @@ public abstract class ValueDecision<T> extends Decision<T> {
             //may check if size == 1 because i dont know what happens if in Smt and only gets one parameter
             builder.add("(and");
             for (IExpression expression : getValidityConditions()){
-                expression.toSMTStream(builder);
+                expression.toSMTStream(builder, toStringConstforSMT());
             }
             builder.add(")"); // closing and of the ValidityExpressions
             toSMTStreamValueDecisionSpecific(builder);

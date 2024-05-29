@@ -17,7 +17,8 @@ public abstract class Enforce extends ValueRestrictionAction{
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String selectedDecisionString) {
-        builder.add("(= " +  "POST_"+ selectedDecisionString + "_" + getDecision().toStringConstforSMT() + " " + value.getValue().toString());
+        builder.add("(= " + selectedDecisionString + "_" + getDecision().toStringConstforSMT() +  "_PRE" + " " + value.getValue().toString()  +  ")");
+        builder.add("(= " + selectedDecisionString + "_" + getDecision().toStringConstforSMT() +  "_POST" + " " + value.getValue().toString() + ")");
     }
 
     public IValue<?> getValue() {

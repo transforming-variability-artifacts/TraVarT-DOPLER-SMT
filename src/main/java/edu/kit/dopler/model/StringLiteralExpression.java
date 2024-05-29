@@ -19,8 +19,8 @@ public class StringLiteralExpression extends LiteralExpression{
     }
 
     @Override
-    public void toSMTStream(Stream.Builder<String> builder) {
-
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
+        builder.add(" " + literal + " ");
     }
 
     public String getLiteral() {

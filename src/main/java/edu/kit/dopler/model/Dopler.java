@@ -2,6 +2,7 @@ package edu.kit.dopler.model;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -50,19 +51,31 @@ public class Dopler {
         this.enumSet = enumSet;
     }
 
-    public Stream<String> toSMTStream(){
+    public Stream.Builder<String> toSMTStream(){
         Stream.Builder<String> builder = Stream.builder();
 
         createConstants(builder);
 
+        Comparator<Object> comparator = new Comparator<Object>() {
+            @Override
+            public int compare(Object o1, Object o2) {
+               Decision<?> decision1 = (Decision<?>) o1;
+               Decision<?> decision2 = (Decision<?>) o2;
 
-        Object[] decisionsArray = decisions.toArray();
+
+                return  decision1.getId() -  decision2.getId();
+            }
+        };
+
+        Object[] decisionsArray = decisions.stream().sorted(comparator).toArray();
         for (int i = 0; i < decisions.size(); i++){
             IDecision<?> decision1 = (IDecision<?>) decisionsArray[i];
-
-            builder.add("(assert");
-            decision1.toSMTStream(builder);
-            builder.add(")");
+            //there is nothing to assert for the decision if the rules are empty
+            if(!decision1.getRules().isEmpty()){
+                builder.add("(assert");
+                decision1.toSMTStream(builder, decisions.size());
+                builder.add(")");
+            }
             int checkLastVariable = i + 1;
             if(checkLastVariable < decisions.size()) {
 
@@ -79,10 +92,7 @@ public class Dopler {
             }
 
         }
-        builder.add("(check-sat)");
-        builder.add("(exit)");
-
-        return  builder.build();
+       return builder;
     }
 
     public void createConstants(Stream.Builder<String> builder){

@@ -12,7 +12,7 @@ public class JavaExpression extends Expression{
     }
 
     @Override
-    public void toSMTStream(Stream.Builder<String> builder) {
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
         //not yet implemented
     }
 }

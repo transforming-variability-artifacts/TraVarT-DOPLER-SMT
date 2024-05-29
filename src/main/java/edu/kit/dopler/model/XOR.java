@@ -15,10 +15,10 @@ public class XOR extends BinaryExpression{
     }
 
     @Override
-    public void toSMTStream(Stream.Builder<String> builder) {
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
         builder.add("(distinct");
-        getLeftExpression().toSMTStream(builder);
-        getRightExpression().toSMTStream(builder);
+        getLeftExpression().toSMTStream(builder, callingDecisionConst);
+        getRightExpression().toSMTStream(builder, callingDecisionConst);
         builder.add(")");
     }
 }

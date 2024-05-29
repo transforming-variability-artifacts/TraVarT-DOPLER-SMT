@@ -1,5 +1,7 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.EvaluationException;
+
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -9,8 +11,8 @@ public class BooleanDecision extends Decision<Boolean> {
     private AbstractValue<Boolean> value;
 
 
-    public BooleanDecision(String id, String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules) {
-        super(id, question, description, visibilityCondition, taken, rules, DecisionType.BOOLEAN);
+    public BooleanDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules) {
+        super(question, description, visibilityCondition, taken, rules, DecisionType.BOOLEAN);
         value = BooleanValue.getFalse();
 
     }
@@ -18,16 +20,33 @@ public class BooleanDecision extends Decision<Boolean> {
     @Override
     void toSMTStreamDecisionSpecific(Stream.Builder<String> builder) {
 
+        if(getRules().isEmpty()){
+            return;
+        }
         for(Rule rule: getRules()){
-            builder.add("(ite");
-            rule.getCondition().toSMTStream(builder); // if condition
-            builder.add("(and"); //if part
-            for(IAction action: rule.getActions()){
-                action.toSMTStream(builder, toStringConstforSMT());
+            if (rule.getCondition() instanceof LiteralExpression){
+                try {
+                    if(rule.getCondition().evaluate()){
+                        builder.add("(and"); //if part
+                        for (IAction action : rule.getActions()) {
+                            action.toSMTStream(builder, toStringConstforSMT());
+                        }
+                        builder.add(")");
+                    }
+                } catch (EvaluationException e) {
+                    throw new RuntimeException(e);
+                }
+            }else {
+                builder.add("(ite");
+                rule.getCondition().toSMTStream(builder, toStringConstforSMT()); // if condition
+                builder.add("(and"); //if part
+                for (IAction action : rule.getActions()) {
+                    action.toSMTStream(builder, toStringConstforSMT());
+                }
+                builder.add(")");
+                // else part
+                builder.add(")");
             }
-            builder.add(")");
-            // else part
-            builder.add(")");
         }
 
 

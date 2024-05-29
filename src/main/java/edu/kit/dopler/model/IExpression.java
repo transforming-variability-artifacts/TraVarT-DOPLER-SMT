@@ -8,5 +8,5 @@ public interface IExpression {
 
     boolean evaluate() throws EvaluationException;
 
-    void toSMTStream(Stream.Builder<String> builder);
+    void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst);
 }
