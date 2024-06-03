@@ -1,7 +1,6 @@
 package edu.kit.dopler.model;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -17,10 +16,10 @@ public class Main {
       IExpression expression = new BooleanLiteralExpression(true);
 
 
-      BooleanDecision decision = new BooleanDecision("test","test", expression,false, new HashSet<>());
+      BooleanDecision decision = new BooleanDecision("test","test", expression, new HashSet<>());
 
       IExpression expression2 = new Equals(new DecisionValueCallExpression(decision), expression);
-      BooleanDecision decision2 = new BooleanDecision("test","test", expression2,false, new HashSet<>());
+      BooleanDecision decision2 = new BooleanDecision("test","test", expression2, new HashSet<>());
       Set<IAction> actions = new HashSet<>();
       Enforce enforce = new BooleanEnforce(decision,BooleanValue.getFalse());
       actions.add(enforce);

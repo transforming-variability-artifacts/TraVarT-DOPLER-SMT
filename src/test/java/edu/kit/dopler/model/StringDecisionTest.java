@@ -16,7 +16,7 @@ public class StringDecisionTest extends TestCase {
         super.setUp();
 
         Expression expression = new BooleanLiteralExpression(true);
-        stringDecision = new StringDecision("test","test",expression,false, new HashSet<>(),new HashSet<>());
+        stringDecision = new StringDecision("test","test",expression, new HashSet<>(),new HashSet<>());
     }
 
 

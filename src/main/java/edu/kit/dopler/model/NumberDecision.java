@@ -5,15 +5,14 @@ import edu.kit.dopler.exceptions.ValidityConditionException;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
 
 public class NumberDecision extends ValueDecision<Double>{
 
     private final AbstractValue<Double> value;
     private final double standardValue = -1.0;
 
-    public NumberDecision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules, Set<IExpression> validityConditions) {
-        super(question, description, visibilityCondition, taken, rules, validityConditions, DecisionType.NUMBER);
+    public NumberDecision(String question, String description, IExpression visibilityCondition, Set<Rule> rules, Set<IExpression> validityConditions) {
+        super(question, description, visibilityCondition, rules, validityConditions, DecisionType.NUMBER);
         value = new DoubleValue(standardValue);
     }
 

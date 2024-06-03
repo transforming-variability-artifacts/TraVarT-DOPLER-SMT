@@ -3,7 +3,6 @@ package edu.kit.dopler.model;
 import junit.framework.TestCase;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import static edu.kit.dopler.model.Main.checkSat;
 
@@ -15,7 +14,7 @@ public class SATEncoderTest extends TestCase {
     public void testDoplerModelVaMoS() throws Exception {
 
         Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>());
-        BooleanDecision decision1 = new BooleanDecision("Support GSM 1900 protocol?","",new BooleanLiteralExpression(true),false,new HashSet<>());
+        BooleanDecision decision1 = new BooleanDecision("Support GSM 1900 protocol?","",new BooleanLiteralExpression(true), new HashSet<>());
         dopler.addDecision(decision1);
 
 
@@ -23,10 +22,10 @@ public class SATEncoderTest extends TestCase {
             add(new EnumerationLiteral("WAV"));
             add(new EnumerationLiteral("MP3"));
         }});
-        EnumerationDecision decision2 = new EnumerationDecision("Which audio formats shall be supported?","", new BooleanLiteralExpression(true),false,new HashSet<>(),enumerationDecision2,1,2);
+        EnumerationDecision decision2 = new EnumerationDecision("Which audio formats shall be supported?","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision2,1,2);
         dopler.addDecision(decision2);
 
-        BooleanDecision decision3 = new BooleanDecision("Support for taking photos?","",new BooleanLiteralExpression(true),false,new HashSet<>());
+        BooleanDecision decision3 = new BooleanDecision("Support for taking photos?","",new BooleanLiteralExpression(true), new HashSet<>());
         dopler.addDecision(decision3);
 
 
@@ -37,14 +36,14 @@ public class SATEncoderTest extends TestCase {
         }});
 
         IExpression expression = new Equals(new DecisionValueCallExpression(decision3),new BooleanLiteralExpression(true));
-        EnumerationDecision decision4 = new EnumerationDecision("Required camera resolution?","", expression,false,new HashSet<>(),enumerationDecision4,1,3);
+        EnumerationDecision decision4 = new EnumerationDecision("Required camera resolution?","", expression, new HashSet<>(),enumerationDecision4,1,3);
         dopler.addDecision(decision4);
 
 
 
 
 
-        BooleanDecision decision5 = new BooleanDecision("Support for recording MP3 audio?","",new BooleanLiteralExpression(true),false,new HashSet<>());
+        BooleanDecision decision5 = new BooleanDecision("Support for recording MP3 audio?","",new BooleanLiteralExpression(true), new HashSet<>());
         IExpression expression2 = new Equals(new DecisionValueCallExpression(decision5),new BooleanLiteralExpression(true));
 
         Rule rule = new Rule(expression2,new HashSet<>(){{

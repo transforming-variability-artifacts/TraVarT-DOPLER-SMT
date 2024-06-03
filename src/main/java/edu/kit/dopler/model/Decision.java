@@ -39,12 +39,12 @@ abstract class Decision<T> implements IDecision<T> {
     private boolean select;
     private DecisionType decisionType;
 
-    public Decision(String question, String description, IExpression visibilityCondition, boolean taken, Set<Rule> rules,DecisionType decisionType) {
+    public Decision(String question, String description, IExpression visibilityCondition, Set<Rule> rules, DecisionType decisionType) {
         this.id = uid++;
         this.question = question;
         this.description = description;
         this.visibilityCondition = visibilityCondition;
-        this.taken = taken;
+        this.taken = false;
         this.rules = rules;
         this.decisionType = decisionType;
     }
