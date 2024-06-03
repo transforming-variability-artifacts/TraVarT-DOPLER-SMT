@@ -56,6 +56,7 @@ public class DisAllows extends ValueRestrictionAction{
 
         builder.add("(distinct ");
         builder.add( selectedDecisionString + "_" + getDecision().toStringConstforSMT() +  "_POST");
+        builder.add(" ");
         builder.add(disAllowValue.toString());
         builder.add(")");
     }

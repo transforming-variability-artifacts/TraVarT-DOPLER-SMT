@@ -19,6 +19,15 @@ public class DecisionVisibilityCallExpression extends DecisionCallExpression{
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
-        //not yet implemented
+        try {
+            builder.add("(= ");
+            builder.add(String.valueOf(getDecision().isVisible()));
+            builder.add(" true");
+            builder.add(")");
+        } catch (EvaluationException ignored) {
+
+        }
+
+
     }
 }

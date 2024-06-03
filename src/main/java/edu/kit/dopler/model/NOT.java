@@ -19,7 +19,7 @@ public class NOT extends UnaryExpression{
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
-        builder.add("(not");
+        builder.add("(not ");
         getChild().toSMTStream(builder, callingDecisionConst);
         builder.add(")");
     }

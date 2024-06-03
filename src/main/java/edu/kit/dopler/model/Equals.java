@@ -36,7 +36,7 @@ public class Equals extends BinaryExpression{
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String callingDecision) {
-        builder.add("(=");
+        builder.add("(= ");
         getLeftExpression().toSMTStream(builder, callingDecision);
         getRightExpression().toSMTStream(builder, callingDecision);
         builder.add(")");

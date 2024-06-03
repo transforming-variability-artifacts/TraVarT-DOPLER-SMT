@@ -31,7 +31,7 @@ public class GreatherThan extends BinaryExpression{
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
-        builder.add("(>");
+        builder.add("(> ");
         getLeftExpression().toSMTStream(builder, callingDecisionConst);
         getRightExpression().toSMTStream(builder, callingDecisionConst);
         builder.add(")");
