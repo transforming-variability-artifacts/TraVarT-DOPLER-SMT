@@ -53,11 +53,9 @@ public class DisAllows extends ValueRestrictionAction{
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String selectedDecisionString) {
-
         builder.add("(distinct ");
         builder.add( selectedDecisionString + "_" + getDecision().toStringConstforSMT() +  "_POST");
-        builder.add(" ");
-        builder.add(disAllowValue.toString());
+        builder.add(disAllowValue.getValue().toString());
         builder.add(")");
     }
 }

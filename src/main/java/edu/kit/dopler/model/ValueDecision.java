@@ -49,6 +49,8 @@ public abstract class ValueDecision<T> extends Decision<T> {
             mapPreToPostConstants(builder, numberDecisions); //else part
             builder.add(")"); //closing the ite of validityConditions
 
+        }else{
+            toSMTStreamRules(builder);
         }
     }
 }
