@@ -17,42 +17,6 @@ public class BooleanDecision extends Decision<Boolean> {
 
     }
 
-    @Override
-    void toSMTStreamDecisionSpecific(Stream.Builder<String> builder) {
-
-        if(getRules().isEmpty()){
-            return;
-        }
-        for(Rule rule: getRules()){
-            if (rule.getCondition() instanceof LiteralExpression){
-                try {
-                    if(rule.getCondition().evaluate()){
-                        builder.add("(and"); //if part
-                        for (IAction action : rule.getActions()) {
-                            action.toSMTStream(builder, toStringConstforSMT());
-                        }
-                        builder.add(")");
-                    }
-                } catch (EvaluationException e) {
-                    throw new RuntimeException(e);
-                }
-            }else {
-                builder.add("(ite");
-                rule.getCondition().toSMTStream(builder, toStringConstforSMT()); // if condition
-                builder.add("(and"); //if part
-                for (IAction action : rule.getActions()) {
-                    action.toSMTStream(builder, toStringConstforSMT());
-                }
-                builder.add(")");
-                // else part
-                builder.add(")");
-            }
-        }
-
-
-
-    }
-
 
     @Override
     public Boolean getStandardValue() {
@@ -71,5 +35,8 @@ public class BooleanDecision extends Decision<Boolean> {
     }
 
 
+    @Override
+    void toSMTStreamValidityConditions(Stream.Builder<String> builder, int numberDecisions) {
 
+    }
 }

@@ -98,6 +98,7 @@ public class Dopler {
     public void createConstants(Stream.Builder<String> builder){
         for (Object decision: decisions){
             IDecision<?> decision1 = (IDecision<?>) decision;
+            builder.add("(declare-const "+ decision1.toStringConstforSMT() +  "_TAKEN " + "bool" + ")");
             for(Object decision2: decisions){
                 IDecision<?> decision3 = (IDecision<?>) decision2;
                 String type = "";

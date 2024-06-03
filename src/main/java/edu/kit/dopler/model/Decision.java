@@ -119,12 +119,14 @@ abstract class Decision<T> implements IDecision<T> {
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder,int numberDecisions) {
-
+        builder.add("(ite");
+        builder.add("(= " + toStringConstforSMT() + "_TAKEN " + "false" + ")");
+        // if part
         if(getVisibilityCondition() instanceof LiteralExpression){
             try {
                 if(getVisibilityCondition().evaluate()){
 
-                    toSMTStreamDecisionSpecific(builder);
+                    toSMTStreamDecisionSpecific(builder, numberDecisions);
                 }
             } catch (EvaluationException e) {
                 throw new RuntimeException(e);
@@ -132,23 +134,84 @@ abstract class Decision<T> implements IDecision<T> {
         }else {
             builder.add("(ite");
             getVisibilityCondition().toSMTStream(builder, toStringConstforSMT()); //if isVisible condition
-            toSMTStreamDecisionSpecific(builder);   //if part
-
-
-            builder.add("(and"); //else
-            for (int i = 0; i < numberDecisions; i++) {
-                builder.add("(=");
-                builder.add(toStringConstforSMT() + "_DECISION_" + i + "_PRE");
-                builder.add(toStringConstforSMT() + "_DECISION_" + i + "_POST");
-                builder.add(")");
-            }
-            builder.add(")");      //else
+            toSMTStreamDecisionSpecific(builder, numberDecisions);   //if part
+            mapPreToPostConstants(builder, numberDecisions);      //else
             builder.add(")"); //closing the ite of the visibilityDecision
         }
+        //else of IsTaken
+        builder.add("(and");
+        for (int i = 0; i < numberDecisions; i++) {
+            builder.add("(=");
+            builder.add(toStringConstforSMT() + "_DECISION_" + i + "_PRE");
+            builder.add(toStringConstforSMT() + "_DECISION_" + i + "_POST");
+            builder.add(")");
+        }
+        builder.add(")");
+        builder.add(")"); // closing the ite
+    }
+
+    void toSMTStreamRules(Stream.Builder<String> builder){
+        if(getRules().isEmpty()){
+            builder.add("(= " + toStringConstforSMT() + "_TAKEN" + " " + "true" +  ")");
+        }
+        for(Rule rule: getRules()){
+            if (rule.getCondition() instanceof LiteralExpression){
+                try {
+                    if(rule.getCondition().evaluate()){
+                        builder.add("(and"); //if part
+                        for (IAction action : rule.getActions()) {
+                            action.toSMTStream(builder, toStringConstforSMT());
+                        }
+                        builder.add("(= " + toStringConstforSMT() + "_TAKEN" + " " + "true" +  ")");
+                        builder.add(")");
+                    }
+                } catch (EvaluationException e) {
+                    throw new RuntimeException(e);
+                }
+            }else {
+                builder.add("(ite");
+                rule.getCondition().toSMTStream(builder, toStringConstforSMT()); // if condition
+                builder.add("(and"); //if part
+                for (IAction action : rule.getActions()) {
+                    action.toSMTStream(builder, toStringConstforSMT());
+                }
+                builder.add("(= " + toStringConstforSMT() + "_TAKEN" + " " + "true" +  ")");
+                builder.add(")");
+                // else part
+                builder.add(")");
+            }
+        }
+    }
+
+    abstract void toSMTStreamValidityConditions(Stream.Builder<String> builder, int numberDecisions);
+
+    void toSMTStreamDecisionSpecific(Stream.Builder<String> builder, int numberDecisions){
+
+        if(getDecisionType() == DecisionType.NUMBER || getDecisionType() == DecisionType.STRING){
+
+            toSMTStreamValidityConditions(builder, numberDecisions);
+
+        }else{
+            toSMTStreamRules(builder);
+        }
+
+
+
 
     }
 
-    abstract void toSMTStreamDecisionSpecific(Stream.Builder<String> builder);
+
+    void mapPreToPostConstants(Stream.Builder<String> builder, int numberDecisions){
+        builder.add("(and");
+        for (int i = 0; i < numberDecisions; i++) {
+            builder.add("(=");
+            builder.add(toStringConstforSMT() + "_DECISION_" + i + "_PRE");
+            builder.add(toStringConstforSMT() + "_DECISION_" + i + "_POST");
+            builder.add(")");
+        }
+        builder.add(")");
+    }
+
 
     @Override
     public boolean isTaken() {

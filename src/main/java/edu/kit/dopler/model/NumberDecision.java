@@ -17,10 +17,7 @@ public class NumberDecision extends ValueDecision<Double>{
         value = new DoubleValue(standardValue);
     }
 
-    @Override
-    void toSMTStreamValueDecisionSpecific(Stream.Builder<String> builder) {
 
-    }
 
 
     @Override

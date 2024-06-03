@@ -37,23 +37,18 @@ public abstract class ValueDecision<T> extends Decision<T> {
 
 
     @Override
-    void toSMTStreamDecisionSpecific(Stream.Builder<String> builder) {
+    void toSMTStreamValidityConditions(Stream.Builder<String> builder, int numberDecisions) {
         if(!getValidityConditions().isEmpty()) {
-            builder.add("(ite");
-            //may check if size == 1 because i dont know what happens if in Smt and only gets one parameter
+            builder.add("(ite ");
             builder.add("(and");
             for (IExpression expression : getValidityConditions()){
                 expression.toSMTStream(builder, toStringConstforSMT());
             }
             builder.add(")"); // closing and of the ValidityExpressions
-            toSMTStreamValueDecisionSpecific(builder);
+            toSMTStreamRules(builder); //if part
+            mapPreToPostConstants(builder, numberDecisions); //else part
             builder.add(")"); //closing the ite of validityConditions
-        }else{
-            toSMTStreamValueDecisionSpecific(builder);
+
         }
-
-
     }
-
-    abstract void toSMTStreamValueDecisionSpecific(Stream.Builder<String> builder);
 }

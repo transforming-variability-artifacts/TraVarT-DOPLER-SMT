@@ -17,10 +17,7 @@ public class StringDecision extends ValueDecision<String>{
         value = new StringValue("");
     }
 
-    @Override
-    void toSMTStreamValueDecisionSpecific(Stream.Builder<String> builder) {
 
-    }
 
 
     @Override

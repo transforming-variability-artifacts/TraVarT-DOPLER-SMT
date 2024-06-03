@@ -40,7 +40,19 @@ public class Main {
       dopler.toSMTStream().build().forEach(System.out::println);
 
         try {
-            System.out.println(checkSat(dopler));
+            Stream.Builder<String> builder = dopler.toSMTStream();
+            builder.add("(check-sat)");
+            // builder.add("(get-model)");
+            builder.add("(exit)");
+            Stream<String> stream = builder.build();
+            Scanner scanner = satSolver(stream);
+            if (scanner == null){
+                throw new Exception();
+            }
+            while(scanner.hasNextLine()) {
+                System.out.println(scanner.nextLine());
+            }
+
         } catch (Exception e) {
            System.out.println(e);
         }
