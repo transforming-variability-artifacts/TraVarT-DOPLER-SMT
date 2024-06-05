@@ -14,4 +14,8 @@ public final class BooleanValue extends AbstractValue<Boolean> {
         return new BooleanValue(false);
     }
 
+    @Override
+    public Boolean getSMTValue() {
+        return getValue();
+    }
 }

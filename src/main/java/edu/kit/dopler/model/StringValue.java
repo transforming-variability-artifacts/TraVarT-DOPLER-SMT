@@ -7,4 +7,9 @@ public class StringValue extends AbstractValue<String>{
     protected StringValue(String value) {
         super(Objects.requireNonNull(value));
     }
+
+    @Override
+    public String getSMTValue() {
+        return " \"" + getValue() + "\"";
+    }
 }

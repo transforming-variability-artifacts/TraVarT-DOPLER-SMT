@@ -9,4 +9,8 @@ public class DoubleValue extends AbstractValue<Double>{
     }
 
 
+    @Override
+    public Double getSMTValue() {
+        return getValue();
+    }
 }
