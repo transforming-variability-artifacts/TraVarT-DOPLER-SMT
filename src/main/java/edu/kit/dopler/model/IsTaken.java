@@ -19,7 +19,7 @@ public class IsTaken extends DecisionCallExpression{
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
         builder.add("(= ");
-        builder.add(getDecision().toStringConstforSMT() + "_TAKEN");
+        builder.add(getDecision().toStringConstforSMT() + "_TAKEN_POST");
         builder.add(" ");
         builder.add("true");
         builder.add(")");

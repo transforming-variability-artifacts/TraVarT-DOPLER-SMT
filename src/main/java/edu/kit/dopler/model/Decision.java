@@ -121,17 +121,16 @@ abstract class Decision<T> implements IDecision<T> {
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder,int numberDecisions) {
-        builder.add("(ite ");
-        builder.add("(= " + toStringConstforSMT() + "_TAKEN " + "false" + ")");
+        //builder.add("(ite ");
+        //builder.add("(= " + toStringConstforSMT() + "_TAKEN_PRE" + " " + "false" + ")");
         // if part
         if(getVisibilityCondition() instanceof LiteralExpression){
             try {
                 if(getVisibilityCondition().evaluate()){
-
                     toSMTStreamDecisionSpecific(builder, numberDecisions);
 
                 }else{
-                    builder.add("(= " + toStringConstforSMT() + "_TAKEN " + "false" + ")");
+                    builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST"+ " " + "false" + ")");
                 }
             } catch (EvaluationException e) {
                 throw new RuntimeException(e);
@@ -143,41 +142,48 @@ abstract class Decision<T> implements IDecision<T> {
 
             builder.add("(and "); //else
             mapPreToPostConstants(builder, numberDecisions);      //else
-            builder.add("(= " + toStringConstforSMT() + "_TAKEN " + "false" + ")"); //else
+            builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "false" + ")"); //else
             builder.add(")"); //else
             builder.add(")"); //closing the ite of the visibilityDecision
         }
-        mapPreToPostConstants(builder, numberDecisions);  //else of IsTaken
-        builder.add(")"); // closing the ite
+       // mapPreToPostConstants(builder, numberDecisions);  //else of IsTaken
+        //builder.add(")"); // closing the ite
     }
 
     void toSMTStreamRules(Stream.Builder<String> builder, int numberDecisions){
+
         if(getRules().isEmpty()){
-
-            builder.add("(= " + toStringConstforSMT() + "_TAKEN" + " " + "true" +  ")");
+            builder.add("(and ");
+            builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST" + " " + "true" +  ")");
             mapPreToPostConstants(builder, numberDecisions);
-        }
-        for(Rule rule: getRules()){
+            builder.add(")");
+        }else {
+            builder.add("(and");
+            builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST" + " " + "true" + ")");
+            for (Rule rule : getRules()) {
 
-            if (rule.getCondition() instanceof LiteralExpression){
+                if (rule.getCondition() instanceof LiteralExpression) {
 
-                try {
-                    if(rule.getCondition().evaluate()){
-                        toSMTStreamActionsPerRule(builder,rule,numberDecisions);
-                    }else {
-                        mapPreToPostConstants(builder,numberDecisions);
+                    try {
+                        if (rule.getCondition().evaluate()) {
+                            System.out.println(getQuestion());
+                            toSMTStreamActionsPerRule(builder, rule, numberDecisions);
+                        } else {
+                            mapPreToPostConstants(builder, numberDecisions);
+                        }
+                    } catch (EvaluationException e) {
+                        throw new RuntimeException(e);
                     }
-                } catch (EvaluationException e) {
-                    throw new RuntimeException(e);
-                }
-            }else {
+                } else {
 
-                builder.add("(ite ");
-                rule.getCondition().toSMTStream(builder, toStringConstforSMT()); // if condition
-                toSMTStreamActionsPerRule(builder,rule,numberDecisions);
-                // else part
-                builder.add(")");
+                    builder.add("(ite ");
+                    rule.getCondition().toSMTStream(builder, toStringConstforSMT()); // if condition
+                    toSMTStreamActionsPerRule(builder, rule, numberDecisions);
+                    mapPreToPostConstants(builder, numberDecisions);// else part
+                    builder.add(")");
+                }
             }
+            builder.add(")");
         }
     }
 
@@ -186,7 +192,6 @@ abstract class Decision<T> implements IDecision<T> {
         for (IAction action : rule.getActions()) {
             action.toSMTStream(builder, toStringConstforSMT());
         }
-        builder.add("(= " + toStringConstforSMT() + "_TAKEN" + " " + "true" +  ")");
         mapPreToPostConstants(builder, numberDecisions);
         builder.add(")");
     }
@@ -199,7 +204,6 @@ abstract class Decision<T> implements IDecision<T> {
             toSMTStreamValidityConditions(builder, numberDecisions);
 
         }else{
-
             toSMTStreamRules(builder, numberDecisions);
         }
 

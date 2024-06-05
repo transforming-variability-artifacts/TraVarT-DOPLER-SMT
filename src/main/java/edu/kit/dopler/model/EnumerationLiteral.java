@@ -12,4 +12,8 @@ public class EnumerationLiteral {
     public String getValue() {
         return value;
     }
+
+    public String getSMTValue() {
+        return "\"" + value + "\"";
+    }
 }

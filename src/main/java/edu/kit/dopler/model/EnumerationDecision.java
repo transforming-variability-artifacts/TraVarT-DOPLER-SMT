@@ -66,4 +66,7 @@ public class EnumerationDecision extends Decision<String> {
 
     }
 
+    public Enumeration getEnumeration() {
+        return enumeration;
+    }
 }
