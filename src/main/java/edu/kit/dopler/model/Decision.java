@@ -29,6 +29,8 @@ abstract class Decision<T> implements IDecision<T> {
             return type;
         }
     }
+
+
     private static int uid = 0;
     private final int id;
     private String question;
@@ -127,6 +129,9 @@ abstract class Decision<T> implements IDecision<T> {
                 if(getVisibilityCondition().evaluate()){
 
                     toSMTStreamDecisionSpecific(builder, numberDecisions);
+
+                }else{
+                    builder.add("(= " + toStringConstforSMT() + "_TAKEN " + "false" + ")");
                 }
             } catch (EvaluationException e) {
                 throw new RuntimeException(e);
@@ -135,17 +140,22 @@ abstract class Decision<T> implements IDecision<T> {
             builder.add("(ite ");
             getVisibilityCondition().toSMTStream(builder, toStringConstforSMT()); //if isVisible condition
             toSMTStreamDecisionSpecific(builder, numberDecisions);   //if part
+
+            builder.add("(and "); //else
             mapPreToPostConstants(builder, numberDecisions);      //else
+            builder.add("(= " + toStringConstforSMT() + "_TAKEN " + "false" + ")"); //else
+            builder.add(")"); //else
             builder.add(")"); //closing the ite of the visibilityDecision
         }
         mapPreToPostConstants(builder, numberDecisions);  //else of IsTaken
         builder.add(")"); // closing the ite
     }
 
-    void toSMTStreamRules(Stream.Builder<String> builder){
+    void toSMTStreamRules(Stream.Builder<String> builder, int numberDecisions){
         if(getRules().isEmpty()){
 
             builder.add("(= " + toStringConstforSMT() + "_TAKEN" + " " + "true" +  ")");
+            mapPreToPostConstants(builder, numberDecisions);
         }
         for(Rule rule: getRules()){
 
@@ -153,12 +163,9 @@ abstract class Decision<T> implements IDecision<T> {
 
                 try {
                     if(rule.getCondition().evaluate()){
-                        builder.add("(and "); //if part
-                        for (IAction action : rule.getActions()) {
-                            action.toSMTStream(builder, toStringConstforSMT());
-                        }
-                        builder.add("(= " + toStringConstforSMT() + "_TAKEN" + " " + "true" +  ")");
-                        builder.add(")");
+                        toSMTStreamActionsPerRule(builder,rule,numberDecisions);
+                    }else {
+                        mapPreToPostConstants(builder,numberDecisions);
                     }
                 } catch (EvaluationException e) {
                     throw new RuntimeException(e);
@@ -167,20 +174,22 @@ abstract class Decision<T> implements IDecision<T> {
 
                 builder.add("(ite ");
                 rule.getCondition().toSMTStream(builder, toStringConstforSMT()); // if condition
-                builder.add("(and "); //if part
-
-                for (IAction action : rule.getActions()) {
-
-                    action.toSMTStream(builder, toStringConstforSMT());
-                }
-                builder.add("(= " + toStringConstforSMT() + "_TAKEN" + " " + "true" +  ")");
-                builder.add(")");
+                toSMTStreamActionsPerRule(builder,rule,numberDecisions);
                 // else part
                 builder.add(")");
             }
         }
     }
 
+    void toSMTStreamActionsPerRule(Stream.Builder<String> builder,Rule rule, int numberDecisions) {
+        builder.add("(and ");
+        for (IAction action : rule.getActions()) {
+            action.toSMTStream(builder, toStringConstforSMT());
+        }
+        builder.add("(= " + toStringConstforSMT() + "_TAKEN" + " " + "true" +  ")");
+        mapPreToPostConstants(builder, numberDecisions);
+        builder.add(")");
+    }
     abstract void toSMTStreamValidityConditions(Stream.Builder<String> builder, int numberDecisions);
 
     void toSMTStreamDecisionSpecific(Stream.Builder<String> builder, int numberDecisions){
@@ -191,10 +200,8 @@ abstract class Decision<T> implements IDecision<T> {
 
         }else{
 
-            toSMTStreamRules(builder);
+            toSMTStreamRules(builder, numberDecisions);
         }
-
-
 
 
     }

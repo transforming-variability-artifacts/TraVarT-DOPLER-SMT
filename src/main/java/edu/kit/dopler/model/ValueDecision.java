@@ -45,12 +45,12 @@ public abstract class ValueDecision<T> extends Decision<T> {
                 expression.toSMTStream(builder, toStringConstforSMT());
             }
             builder.add(")"); // closing and of the ValidityExpressions
-            toSMTStreamRules(builder); //if part
+            toSMTStreamRules(builder, numberDecisions); //if part
             mapPreToPostConstants(builder, numberDecisions); //else part
             builder.add(")"); //closing the ite of validityConditions
 
         }else{
-            toSMTStreamRules(builder);
+            toSMTStreamRules(builder,numberDecisions);
         }
     }
 }
