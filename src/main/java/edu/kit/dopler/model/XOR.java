@@ -18,6 +18,7 @@ public class XOR extends BinaryExpression{
     public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
         builder.add("(xor ");
         getLeftExpression().toSMTStream(builder, callingDecisionConst);
+        builder.add(" ");
         getRightExpression().toSMTStream(builder, callingDecisionConst);
         builder.add(")");
     }

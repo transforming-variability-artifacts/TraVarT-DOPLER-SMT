@@ -36,9 +36,40 @@ public class Equals extends BinaryExpression{
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String callingDecision) {
-        builder.add("(= ");
-        getLeftExpression().toSMTStream(builder, callingDecision);
-        getRightExpression().toSMTStream(builder, callingDecision);
-        builder.add(")");
+
+        if(getRightExpression() instanceof DecisionValueCallExpression){
+            builder.add("(and");
+            IDecision<?> decision = ((DecisionValueCallExpression) getRightExpression()).getDecision();
+            builder.add("(= " + decision.toStringConstforSMT() + "_TAKEN_POST" + " " + "true" + ")"); // checks that the decision also needs to be taken because of the encoding
+            builder.add("(= ");
+            getLeftExpression().toSMTStream(builder, callingDecision);
+            getRightExpression().toSMTStream(builder, callingDecision);
+            builder.add(")");
+            builder.add(")"); // closing and
+        }
+        if(getLeftExpression() instanceof DecisionValueCallExpression){
+            builder.add("(and");
+            IDecision<?> decision = ((DecisionValueCallExpression) getLeftExpression()).getDecision();
+            builder.add("(= " + decision.toStringConstforSMT() + "_TAKEN_POST" + " " + "true" + ")"); // checks that the decision also needs to be taken because of the encoding
+            builder.add("(= ");
+            getLeftExpression().toSMTStream(builder, callingDecision);
+            getRightExpression().toSMTStream(builder, callingDecision);
+            builder.add(")");
+            builder.add(")"); // closing and
+        }else{
+            builder.add("(= ");
+            getLeftExpression().toSMTStream(builder, callingDecision);
+            getRightExpression().toSMTStream(builder, callingDecision);
+            builder.add(")");
+        }
+
+
+
+
+
+
+
+
+
     }
 }

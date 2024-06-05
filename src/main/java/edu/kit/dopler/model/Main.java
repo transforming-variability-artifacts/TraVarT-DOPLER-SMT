@@ -106,13 +106,14 @@ public class Main {
 
 
 
-      dopler.toSMTStream().build().forEach(System.out::println);
+
+        dopler.toSMTStream().build().forEach(System.out::println);
 
         try {
             Stream.Builder<String> builder = dopler.toSMTStream();
             builder.add("(check-sat)");
             //builder.add("(get-model)");
-            builder.add("(get-value (END_DECISION_0 DECISION_0_TAKEN_POST END_DECISION_1 DECISION_1_TAKEN_POST END_DECISION_2 DECISION_2_TAKEN_POST END_DECISION_3 DECISION_3_TAKEN_POST END_DECISION_4 DECISION_4_TAKEN_POST END_DECISION_5 DECISION_5_TAKEN_POST ))");
+            builder.add("(get-value (END_DECISION_0 DECISION_0_TAKEN_POST END_DECISION_1 DECISION_1_TAKEN_POST END_DECISION_2 DECISION_2_TAKEN_POST END_DECISION_3 DECISION_3_TAKEN_POST END_DECISION_4 DECISION_4_TAKEN_POST  END_DECISION_5 DECISION_5_TAKEN_POST ))");
             builder.add("(exit)");
             Stream<String> stream = builder.build();
             Scanner scanner = satSolver(stream);
@@ -126,6 +127,13 @@ public class Main {
         } catch (Exception e) {
            System.out.println(e);
         }
+
+
+
+
+
+
+
 
 
     }

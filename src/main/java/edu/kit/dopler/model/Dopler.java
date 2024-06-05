@@ -115,7 +115,7 @@ public class Dopler {
                     builder.add("(assert");
                     builder.add("(xor ");
                     for (EnumerationLiteral enumerationLiteral : enumerationDecision.getEnumeration().enumerationLiterals) {
-                        builder.add( "(= " + decision.toStringConstforSMT() + "_" + enumerationDecision.toStringConstforSMT() + "_PRE"  + enumerationLiteral.getSMTValue() + ")");
+                        builder.add( "(= " + decision.toStringConstforSMT() + "_" + enumerationDecision.toStringConstforSMT() + "_PRE "  + enumerationLiteral.getSMTValue() + ")");
                     }
                     builder.add(")"); //end xor
                     builder.add(")"); //end assert
