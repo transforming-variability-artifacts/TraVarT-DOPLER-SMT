@@ -36,7 +36,7 @@ public class SATEncoderTest extends TestCase {
         }});
 
         IExpression expression = new Equals(new DecisionValueCallExpression(decision3),new BooleanLiteralExpression(true));
-        EnumerationDecision decision4 = new EnumerationDecision("Required camera resolution?","", expression, new HashSet<>(),enumerationDecision4,1,3);
+        EnumerationDecision decision4 = new EnumerationDecision("Required camera resolution?","", expression, new HashSet<>(),enumerationDecision4,1,1);
         dopler.addDecision(decision4);
 
 
@@ -68,7 +68,7 @@ public class SATEncoderTest extends TestCase {
             add(new EnumerationLiteral("DebitCard"));
             add(new EnumerationLiteral("CreditCard"));
         }});
-        EnumerationDecision decision2 = new EnumerationDecision("Which payment methods should be supported??","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision2,1,2);
+        EnumerationDecision decision2 = new EnumerationDecision("Which payment methods should be supported??","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision2,1,1);
         dopler.addDecision(decision2);
 
         BooleanDecision decision3 = new BooleanDecision("Should a search function be suppoted?","",new BooleanLiteralExpression(true), new HashSet<>());
@@ -119,7 +119,7 @@ public class SATEncoderTest extends TestCase {
 
         decision6.addRule(
                 new Rule(
-                        new NOT(new Equals(new DecisionValueCallExpression(decision6),new StringLiteralExpression("Security"))),
+                        new NOT(new Equals(new DecisionValueCallExpression(decision6),new EnumeratorLiteralExpression(new EnumerationLiteral("Security")))),
                         new HashSet<>(){{
                             add(new Allows(decision6, new StringValue("Payments")));
                         }}
@@ -128,7 +128,7 @@ public class SATEncoderTest extends TestCase {
 
         decision6.addRule(
                 new Rule(
-                        new Equals(new DecisionValueCallExpression(decision6),new StringLiteralExpression("Security")),
+                        new Equals(new DecisionValueCallExpression(decision6),new EnumeratorLiteralExpression(new EnumerationLiteral("Security"))),
                         new HashSet<>(){{
                             add(new DisAllows(decision6, new StringValue("Payments")));
                         }}
@@ -137,7 +137,7 @@ public class SATEncoderTest extends TestCase {
 
         decision6.addRule(
                 new Rule(
-                        new NOT(new Equals(new DecisionValueCallExpression(decision6),new StringLiteralExpression("Payments"))),
+                        new NOT(new Equals(new DecisionValueCallExpression(decision6),new EnumeratorLiteralExpression(new EnumerationLiteral("Payments")))),
                         new HashSet<>(){{
                             add(new Allows(decision6, new StringValue("Security")));
                         }}
@@ -146,7 +146,7 @@ public class SATEncoderTest extends TestCase {
 
         decision6.addRule(
                 new Rule(
-                        new Equals(new DecisionValueCallExpression(decision6),new StringLiteralExpression("Payments")),
+                        new Equals(new DecisionValueCallExpression(decision6),new EnumeratorLiteralExpression(new EnumerationLiteral("Payments"))),
                         new HashSet<>(){{
                             add(new DisAllows(decision6, new StringValue("Security")));
                         }}
@@ -160,5 +160,115 @@ public class SATEncoderTest extends TestCase {
         assertTrue(checkSat(dopler));
 
     }
+
+
+    public void testDoplerModelPizzas() throws Exception {
+        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>());
+
+
+
+        Enumeration enumerationDecision2 = new Enumeration(new HashSet<>(){{
+            add(new EnumerationLiteral("Salami"));
+            add(new EnumerationLiteral("Ham"));
+            add(new EnumerationLiteral("Mozzarella"));
+        }});
+        EnumerationDecision decision2 = new EnumerationDecision("Which Topping do you want on your pizza?","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision2,1,3);
+        dopler.addDecision(decision2);
+
+
+        Enumeration enumerationDecision3 = new Enumeration(new HashSet<>(){{
+            add(new EnumerationLiteral("Normal"));
+            add(new EnumerationLiteral("Big"));
+        }});
+        EnumerationDecision decision3 = new EnumerationDecision("Which Size should the pizza have?","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision3,1,1);
+        dopler.addDecision(decision3);
+
+
+        Enumeration enumerationDecision4 = new Enumeration(new HashSet<>(){{
+            add(new EnumerationLiteral("Neapolitan"));
+            add(new EnumerationLiteral("Sicilian"));
+        }});
+        EnumerationDecision decision4 = new EnumerationDecision("Which Dough do you prefer??","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision4,1,1);
+        dopler.addDecision(decision4);
+
+
+        BooleanDecision decision1 = new BooleanDecision("Should the pizza have a cheesy crust?","",new BooleanLiteralExpression(true), new HashSet<>());
+        dopler.addDecision(decision1);
+
+        IExpression expressionDecision1 = new Equals(new DecisionValueCallExpression(decision1),new BooleanLiteralExpression(true));
+
+        Rule ruleDecision1 = new Rule(expressionDecision1,new HashSet<>(){{
+            add(new EnumEnforce(decision3, new StringValue("Big")));
+        }});
+        decision1.addRule(ruleDecision1);
+
+        dopler.toSMTStream().build().forEach(System.out::println);
+        assertTrue(checkSat(dopler));
+
+    }
+
+
+    public void testDoplerModelPizzas2() throws Exception {
+        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>());
+
+
+
+        Enumeration enumerationDecision2 = new Enumeration(new HashSet<>(){{
+            add(new EnumerationLiteral("Salami"));
+            add(new EnumerationLiteral("Ham"));
+            add(new EnumerationLiteral("Mozzarella"));
+        }});
+        EnumerationDecision decision2 = new EnumerationDecision("Which Topping do you want on your pizza?","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision2,1,3);
+        dopler.addDecision(decision2);
+
+
+        Enumeration enumerationDecision3 = new Enumeration(new HashSet<>(){{
+            add(new EnumerationLiteral("Normal"));
+            add(new EnumerationLiteral("Big"));
+        }});
+        EnumerationDecision decision3 = new EnumerationDecision("Which Size should the pizza have?","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision3,1,1);
+        dopler.addDecision(decision3);
+
+
+        Enumeration enumerationDecision4 = new Enumeration(new HashSet<>(){{
+            add(new EnumerationLiteral("Neapolitan"));
+            add(new EnumerationLiteral("Sicilian"));
+        }});
+        EnumerationDecision decision4 = new EnumerationDecision("Which Dough do you prefer??","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision4,1,1);
+        dopler.addDecision(decision4);
+
+
+        BooleanDecision decision1 = new BooleanDecision("Should the pizza have a cheesy crust?","",new BooleanLiteralExpression(true), new HashSet<>());
+        dopler.addDecision(decision1);
+
+        IExpression expressionDecision3 = new Equals(new DecisionValueCallExpression(decision3),new EnumeratorLiteralExpression(new EnumerationLiteral("Big")));
+
+        Rule ruleDecision3 = new Rule(expressionDecision3,new HashSet<>(){{
+            add(new EnumEnforce(decision4, new StringValue("Neapolitan")));
+        }});
+        decision3.addRule(ruleDecision3);
+
+        IExpression expressionDecision4 = new Equals(new DecisionValueCallExpression(decision4),new EnumeratorLiteralExpression(new EnumerationLiteral("Sicilian")));
+
+        Rule ruleDecision4 = new Rule(expressionDecision4,new HashSet<>(){{
+            add(new BooleanEnforce(decision1, BooleanValue.getTrue()));
+        }});
+        decision4.addRule(ruleDecision4);
+
+
+
+        IExpression expressionDecision1 = new Equals(new DecisionValueCallExpression(decision1),new BooleanLiteralExpression(true));
+
+        Rule ruleDecision1 = new Rule(expressionDecision1,new HashSet<>(){{
+            add(new EnumEnforce(decision3, new StringValue("Big")));
+        }});
+        decision1.addRule(ruleDecision1);
+
+        dopler.toSMTStream().build().forEach(System.out::println);
+        assertTrue(checkSat(dopler));
+
+    }
+
+
 
 }
