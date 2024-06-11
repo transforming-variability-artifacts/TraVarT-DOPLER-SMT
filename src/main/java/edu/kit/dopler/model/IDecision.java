@@ -32,7 +32,8 @@ public interface IDecision<T> {
     void setVisibilityCondition(IExpression visibilityCondition);
 
     boolean isVisible() throws EvaluationException;
-    void toSMTStream(Stream.Builder<String> builder, int amountOfDecisions);
+
+    void toSMTStream(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions);
 
     boolean isTaken();
     void setTaken(boolean taken);

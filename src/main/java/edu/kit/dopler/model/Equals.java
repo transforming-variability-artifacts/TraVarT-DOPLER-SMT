@@ -34,6 +34,21 @@ public class Equals extends BinaryExpression{
 
     }
 
+    public void toSMTStreamEquals(Stream.Builder<String> builder, String callingDecision, IDecision<?> decision, IExpression expression){
+        if(decision.getDecisionType() == Decision.DecisionType.ENUM){
+            EnumeratorLiteralExpression enumeratorLiteralExpression = (EnumeratorLiteralExpression) expression;
+            builder.add("(= ");
+            builder.add(" " + callingDecision + "_" + decision.toStringConstforSMT() + "_" + enumeratorLiteralExpression.getEnumerationLiteral().getValue() + "_PRE");
+            builder.add("true");
+            builder.add(")");
+        }else {
+            builder.add("(= ");
+            getLeftExpression().toSMTStream(builder, callingDecision);
+            getRightExpression().toSMTStream(builder, callingDecision);
+            builder.add(")");
+        }
+    }
+
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String callingDecision) {
 
@@ -41,20 +56,14 @@ public class Equals extends BinaryExpression{
             builder.add("(and");
             IDecision<?> decision = ((DecisionValueCallExpression) getRightExpression()).getDecision();
             builder.add("(= " + decision.toStringConstforSMT() + "_TAKEN_POST" + " " + "true" + ")"); // checks that the decision also needs to be taken because of the encoding
-            builder.add("(= ");
-            getLeftExpression().toSMTStream(builder, callingDecision);
-            getRightExpression().toSMTStream(builder, callingDecision);
-            builder.add(")");
+            toSMTStreamEquals(builder,callingDecision,decision, getLeftExpression());
             builder.add(")"); // closing and
         }
-        if(getLeftExpression() instanceof DecisionValueCallExpression){
+        else if(getLeftExpression() instanceof DecisionValueCallExpression){
             builder.add("(and");
             IDecision<?> decision = ((DecisionValueCallExpression) getLeftExpression()).getDecision();
             builder.add("(= " + decision.toStringConstforSMT() + "_TAKEN_POST" + " " + "true" + ")"); // checks that the decision also needs to be taken because of the encoding
-            builder.add("(= ");
-            getLeftExpression().toSMTStream(builder, callingDecision);
-            getRightExpression().toSMTStream(builder, callingDecision);
-            builder.add(")");
+            toSMTStreamEquals(builder,callingDecision,decision, getRightExpression());
             builder.add(")"); // closing and
         }else{
             builder.add("(= ");

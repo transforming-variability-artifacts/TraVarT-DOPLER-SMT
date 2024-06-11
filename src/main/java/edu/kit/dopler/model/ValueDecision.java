@@ -37,7 +37,7 @@ public abstract class ValueDecision<T> extends Decision<T> {
 
 
     @Override
-    void toSMTStreamValidityConditions(Stream.Builder<String> builder, int numberDecisions) {
+    void toSMTStreamValidityConditions(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions) {
         if(!getValidityConditions().isEmpty()) {
             builder.add("(ite ");
             builder.add("(and");
@@ -45,12 +45,12 @@ public abstract class ValueDecision<T> extends Decision<T> {
                 expression.toSMTStream(builder, toStringConstforSMT());
             }
             builder.add(")"); // closing and of the ValidityExpressions
-            toSMTStreamRules(builder, numberDecisions); //if part
-            mapPreToPostConstants(builder, numberDecisions); //else part
+            toSMTStreamRules(builder, decisions); //if part
+            mapPreToPostConstants(builder, decisions); //else part
             builder.add(")"); //closing the ite of validityConditions
 
         }else{
-            toSMTStreamRules(builder,numberDecisions);
+            toSMTStreamRules(builder,decisions);
         }
     }
 }

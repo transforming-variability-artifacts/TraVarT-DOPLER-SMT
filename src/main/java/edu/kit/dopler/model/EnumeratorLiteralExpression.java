@@ -1,12 +1,17 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.InvalidTypeInLiteralExpressionCheckException;
+
+import java.util.Objects;
 import java.util.stream.Stream;
 
-public class EnumeratorLiteralExpression extends DecisionCallExpression{
+public class EnumeratorLiteralExpression extends LiteralExpression{
+
+    private EnumerationLiteral enumerationLiteral;
 
 
-    public EnumeratorLiteralExpression(IDecision decision) {
-        super(decision);
+    public EnumeratorLiteralExpression(EnumerationLiteral literal) {
+        this.enumerationLiteral = literal;
     }
 
     @Override
@@ -16,6 +21,19 @@ public class EnumeratorLiteralExpression extends DecisionCallExpression{
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
-        builder.add(" " + getDecision().getValue().getValue().toString() + " ");
+        builder.add(" " + enumerationLiteral.getValue() + " ");
+    }
+
+    @Override
+    boolean equalsForLiteralExpressions(IValue<?> value) throws InvalidTypeInLiteralExpressionCheckException {
+        if(value instanceof EnumerationLiteral){
+            return Objects.equals(enumerationLiteral.getValue(), ((EnumerationLiteral) value).getValue());
+        }else {
+            throw new InvalidTypeInLiteralExpressionCheckException("Parameter was not of Type StringValue in Equals");
+        }
+    }
+
+    public EnumerationLiteral getEnumerationLiteral() {
+        return enumerationLiteral;
     }
 }

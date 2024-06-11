@@ -62,11 +62,19 @@ public class EnumerationDecision extends Decision<String> {
     public void removeDissallowed(EnumerationLiteral literal){disAllowed.remove(literal);}
 
     @Override
-    void toSMTStreamValidityConditions(Stream.Builder<String> builder, int numberDecisions) {
+    void toSMTStreamValidityConditions(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions) {
 
     }
 
     public Enumeration getEnumeration() {
         return enumeration;
+    }
+
+    public int getMaxCardinality() {
+        return maxCardinality;
+    }
+
+    public int getMinCardinality() {
+        return minCardinality;
     }
 }

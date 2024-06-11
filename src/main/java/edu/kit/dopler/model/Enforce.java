@@ -18,10 +18,18 @@ public abstract class Enforce extends ValueRestrictionAction{
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String selectedDecisionString) {
         builder.add("(and");
-        //builder.add("(= " + selectedDecisionString + "_" + getDecision().toStringConstforSMT() +  "_PRE" +  value.getSMTValue().toString() +  ")");
-        builder.add("(= " + selectedDecisionString + "_" + getDecision().toStringConstforSMT() +  "_POST" + " " + value.getSMTValue().toString()  + ")");
+        if(getDecision().getDecisionType() == Decision.DecisionType.ENUM){
+
+            builder.add("(= " + selectedDecisionString + "_" + getDecision().toStringConstforSMT() + "_" + value.getValue() +  "_POST" + " " + "true"  + ")");
+
+        }else{
+            //builder.add("(= " + selectedDecisionString + "_" + getDecision().toStringConstforSMT() +  "_PRE" +  value.getSMTValue().toString() +  ")");
+            builder.add("(= " + selectedDecisionString + "_" + getDecision().toStringConstforSMT() +  "_POST" + " " + value.getSMTValue().toString()  + ")");
+
+        }
         builder.add("(= " + getDecision().toStringConstforSMT() + "_TAKEN_POST" + " " + "true" + ")"); // checks that the decision also needs to be taken because of the encoding
         builder.add(")"); // closing and
+
     }
 
     public IValue<?> getValue() {

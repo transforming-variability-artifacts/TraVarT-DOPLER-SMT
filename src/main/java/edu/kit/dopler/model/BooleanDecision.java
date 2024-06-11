@@ -34,7 +34,7 @@ public class BooleanDecision extends Decision<Boolean> {
 
 
     @Override
-    void toSMTStreamValidityConditions(Stream.Builder<String> builder, int numberDecisions) {
+    void toSMTStreamValidityConditions(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions) {
 
     }
 }
