@@ -181,9 +181,9 @@ if decisionVisibilityCondition == Literalexpression{
 # DecisionVisibility
     if decisionVisibilityCondition == Literalexpression{
         if(decisionVisibilityCondition.evaluate()){
-            builder.add("(= " + "true" +  " " + "true" + ")");
+            (=  true true)
         }else{
-            builder.add("(= " + "true" +  " " + "false" + ")");
+            (= true false)
         }   
     }else{
         decisionVisibility.ToSMTSTREAM()
