@@ -19,12 +19,19 @@ public class DecisionVisibilityCallExpression extends DecisionCallExpression{
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
-        try {
-            builder.add("(= ");
-            builder.add(String.valueOf(getDecision().isVisible()));
-            builder.add(" true");
-            builder.add(")");
-        } catch (EvaluationException ignored) {
+        if(getDecision().getVisibilityCondition() instanceof LiteralExpression){
+            try {
+                if(getDecision().getVisibilityCondition().evaluate()){
+                    builder.add("(= " + "true" +  " " + "true" + ")");
+                }else{
+                    builder.add("(= " + "true" +  " " + "false" + ")");
+                }
+            } catch (EvaluationException e) {
+                throw new RuntimeException(e);
+            }
+        }else {
+
+            getDecision().getVisibilityCondition().toSMTStream(builder,callingDecisionConst);
 
         }
 

@@ -58,25 +58,56 @@ For simplicity, we only explain the encoding in the following with a DOPLER mode
 ### Decisions
 
 ```
+
 # enum, bool decisions
-(assert 
-    (ite (visibilitycondition)  //if
-         rules                  //if-part
-         mapPretoPostConst      //else
-    )
-)    
+if decisionVisibilityCondition == Literalexpression{
+        if(decisionVisibilityCondition.evaluate()){
+             (assert rules)
+        }else{
+             (assert mapPretoPostConst)
+        }   
+    }else{
+        
+        (assert 
+            (ite (visibilitycondition)  //if
+                 rules                  //if-part
+                 mapPretoPostConst      //else
+            )
+        )    
+
+    }
 
 
 # double, string decisions
-(assert 
-    (ite (visibilitycondition)  //if
-         (ite (validityconditions)     //if-part
-                rules                   //if-if-part
-                mapPretoPostConst       //if-else-part
-         )
-         mapPretoPostConst      //else
-    )
-) 
+
+if decisionVisibilityCondition == Literalexpression{
+        if(decisionVisibilityCondition.evaluate()){
+             (assert 
+                    
+                 (ite (validityconditions)     
+                        rules                   //if-part
+                        mapPretoPostConst       //else-part
+                 )
+                         
+             )   
+        }else{
+             (assert mapPretoPostConst)
+        }   
+    }else{
+        
+        (assert 
+            (ite (visibilitycondition)  //if
+                 (ite (validityconditions)     //if-part
+                        rules                   //if-if-part
+                        mapPretoPostConst       //if-else-part
+                 )
+                 mapPretoPostConst      //else
+            )
+        )    
+
+    }
+
+
 ```
 
 ### Mapping between Decisions
@@ -148,7 +179,15 @@ For simplicity, we only explain the encoding in the following with a DOPLER mode
 (= DECISION_0_TAKEN_POST true)
 
 # DecisionVisibility
-?????
+    if decisionVisibilityCondition == Literalexpression{
+        if(decisionVisibilityCondition.evaluate()){
+            builder.add("(= " + "true" +  " " + "true" + ")");
+        }else{
+            builder.add("(= " + "true" +  " " + "false" + ")");
+        }   
+    }else{
+        decisionVisibility.ToSMTSTREAM()
+    }
 
 ```
 
