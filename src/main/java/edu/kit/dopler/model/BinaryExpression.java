@@ -1,3 +1,9 @@
+/**
+ * This is the abstract class to implement the basic features of a binary expression, which extends the basic Expression
+ * A binary expression always has a left and a right expression which are combined by a binary operator like OR, AND, Equals etc.
+ *
+ */
+
 package edu.kit.dopler.model;
 
 import java.util.Objects;

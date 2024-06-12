@@ -1,3 +1,9 @@
+/**
+ * This class extends the abstract class binary expression with a boolean "AND" between the left and the right expression
+ *
+ *
+ */
+
 package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.EvaluationException;
@@ -16,6 +22,12 @@ public class AND extends BinaryExpression{
         return getLeftExpression().evaluate() && getRightExpression().evaluate();
     }
 
+
+    /**
+     * The boolean AND can be encoded to the SMT Encoding by simply adding (and (leftExpression) (rightExpression))
+     *
+     * @param builder the stream builder, where the condition is added
+     */
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
         builder.add("(and ");

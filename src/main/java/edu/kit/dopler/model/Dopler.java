@@ -48,9 +48,15 @@ public class Dopler {
         this.enumSet = enumSet;
     }
 
+
+    /**
+     * Creates a Stream of the DOPLER model in an SMT Encoding
+     *
+     */
     public Stream.Builder<String> toSMTStream(){
         Stream.Builder<String> builder = Stream.builder();
 
+        //creates all the constant needed for the encoding
         createConstants(builder);
         createEndConstants(builder);
 
@@ -70,62 +76,73 @@ public class Dopler {
         for (int i = 0; i < decisions.size(); i++){
             IDecision<?> decision1 = (IDecision<?>) decisionsArray[i];
 
+
+            // build an assert for every decision
             builder.add("(assert");
             decision1.toSMTStream(builder, decisions);
-            builder.add(")");
+            builder.add(")"); // closing assert
 
             int checkLastVariable = i + 1;
+
             if(checkLastVariable < decisions.size()) {
 
                 IDecision<?> decision2 = (IDecision<?>) decisionsArray[i + 1];
-
+                // matches the POST const of the decision to the PRE Const of the next decision
                 builder.add("(assert (and ");
                 for (Object decision : decisions) {
                     IDecision<?> decision3 = (IDecision<?>) decision;
+
+                    // the enum decision needs to be handled different because there exist a bool const for every enum value
                     if(decision3.getDecisionType() == Decision.DecisionType.ENUM){
                         EnumerationDecision enumerationDecision = (EnumerationDecision) decision3;
                         for (EnumerationLiteral enumerationLiteral : enumerationDecision.getEnumeration().enumerationLiterals) {
-                            builder.add("(= " + decision1.toStringConstforSMT() + "_" + enumerationDecision.toStringConstforSMT() + "_" + enumerationLiteral.getValue() + "_POST " + decision2.toStringConstforSMT() + "_" + enumerationDecision.toStringConstforSMT() + "_" + enumerationLiteral.getValue() + "_PRE");
 
-                            builder.add(")");
+                            builder.add("(= " + decision1.toStringConstforSMT() + "_" + enumerationDecision.toStringConstforSMT() + "_" + enumerationLiteral.getValue() + "_POST " + decision2.toStringConstforSMT() + "_" + enumerationDecision.toStringConstforSMT() + "_" + enumerationLiteral.getValue() + "_PRE" + ")");
+
                         }
 
-
                     }else {
-                        builder.add("(= " + decision1.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_POST " + decision2.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_PRE");
 
-                        builder.add(")");
+                        builder.add("(= " + decision1.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_POST " + decision2.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_PRE" + ")");
+
                     }
                 }
-                builder.add("))");
+                builder.add("))"); //closing and,assert
             }else {
+
+                // matches the POST const of the last decision to the end constants
                 builder.add("(assert (and");
                 for (Object decision : decisions) {
                     IDecision<?> decision3 = (IDecision<?>) decision;
+
+
+                    // the enum decision needs to be handled different because there exist a bool const for every enum value
                     if(decision3.getDecisionType() == Decision.DecisionType.ENUM){
                         EnumerationDecision enumerationDecision = (EnumerationDecision) decision3;
                         for (EnumerationLiteral enumerationLiteral : enumerationDecision.getEnumeration().enumerationLiterals) {
-                            builder.add("(= " + decision1.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_" + enumerationLiteral.getValue() + "_POST " + "END" + "_" + decision3.toStringConstforSMT() + "_" + enumerationLiteral.getValue());
 
-                            builder.add(")");
+                            builder.add("(= " + decision1.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_" + enumerationLiteral.getValue() + "_POST " + "END" + "_" + decision3.toStringConstforSMT() + "_" + enumerationLiteral.getValue() + ")");
+
                         }
-
-
                     }else {
 
-                        builder.add("(= " + decision1.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_POST " + "END" + "_" + decision3.toStringConstforSMT());
+                        builder.add("(= " + decision1.toStringConstforSMT() + "_" + decision3.toStringConstforSMT() + "_POST " + "END" + "_" + decision3.toStringConstforSMT() + ")");
 
-                        builder.add(")");
                     }
                 }
-                builder.add("))");
+                builder.add("))"); //closing and,assert
             }
 
         }
+        // create the asserts for the enumeration that there in the range from minCardinality and maxCardinality
         createAssertForEnumDecisions(builder);
        return builder;
     }
 
+    /**
+     * creates asserts in SMT Encoding for the enumeration so the taken enums match the max and min cardinality
+     *  (assert (>= (+ (ite (= enum_const true) 1 0)  (ite (= enum_const2 true) 1 0) ... ) minCardinality) )
+     */
     public void createAssertForEnumDecisions(Stream.Builder<String> builder){
         Optional<IDecision<?>> optional = (Optional<IDecision<?>>) decisions.stream().findFirst();
         if(optional.isPresent()){
@@ -176,6 +193,18 @@ public class Dopler {
 
     }
 
+
+    /**
+     *
+     * Creates the constant needed for the encoding for every decision
+     * Every decision has a bool Taken variable -> (declare-const DECISION_1_TAKEN_POST bool)
+     * and every decision has a pre and post const for every decision
+     * (declare-const DECISION_2_DECISION_1_PRE bool)
+     * (declare-const DECISION_2_DECISION_1_POST bool)
+     * (declare-const DECISION_2_DECISION_2_PRE double)
+     * (declare-const DECISION_2_DECISION_2_POST double)
+     * .....
+     */
     public void createConstants(Stream.Builder<String> builder){
         for (Object decision: decisions){
             IDecision<?> selectedDecisions = (IDecision<?>) decision;
@@ -207,7 +236,13 @@ public class Dopler {
 
     }
 
-
+    /**
+     * EnumDecision need special constants because their enum value is added to the constant name and there are of the type bool
+     * (declare-const DECISION_2_DECISION_0_Salami_PRE bool)
+     * (declare-const DECISION_2_DECISION_0_Salami_POST bool)
+     * (declare-const DECISION_2_DECISION_0_Mozzarella_PRE bool)
+     * (declare-const DECISION_2_DECISION_0_Mozzarella_POST bool)
+     */
     public void createEnumConstants(IDecision<?> selectedDecisions, EnumerationDecision decision, Stream.Builder<String> builder){
 
         for (EnumerationLiteral enumerationLiteral : decision.getEnumeration().enumerationLiterals){
@@ -218,6 +253,13 @@ public class Dopler {
         }
     }
 
+
+    /**
+     * This methode creates the end constants for the decision type enum
+     * This const can be read out of the Solver for a valid config, if the problem is SAT
+     * (declare-const END_DECISION_0_Salami bool)
+     * (declare-const END_DECISION_0_Mozzarella bool)
+     */
     public void createEnumEndConstants(EnumerationDecision decision, Stream.Builder<String> builder){
 
         for (EnumerationLiteral enumerationLiteral : decision.getEnumeration().enumerationLiterals){
@@ -226,7 +268,12 @@ public class Dopler {
         }
     }
 
-
+    /**
+     * This methode creates the end constants for all decision types except enums
+     * This const can be read out of the Solver for a valid config, if the problem is SAT
+     * (declare-const END_DECISION_1 bool)
+     * (declare-const END_DECISION_2 double)
+     */
     public void createEndConstants(Stream.Builder<String> builder){
 
         for(Object decision: decisions){
@@ -251,6 +298,12 @@ public class Dopler {
     }
 
 
+    /**
+     * Adds a get-value phrase to the encoding, which retrieves a valid config of the end and taken const from the solver if the encoding is sat
+     *
+     * (get-value ( DECISION_1_TAKEN_POST END_DECISION_1  DECISION_2_TAKEN_POST END_DECISION_2 ... ))
+     *
+     */
     public void createGetValueOFEndConstants(Stream.Builder<String> builder){
         builder.add("(get-value");
         builder.add("(");

@@ -1,3 +1,12 @@
+/**
+ *
+ * This class implements the Allows Action of the DOPLER decision model
+ * This Action is only possible for enumeration decisions and allows a value again when it was disallowed before
+ *
+ */
+
+
+
 package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.ActionExecutionException;
@@ -17,6 +26,7 @@ public class Allows extends ValueRestrictionAction{
     @Override
     public void execute() throws ActionExecutionException {
         try {
+            // check is needed because this action should only be possible on enumeration decisions
             if(getDecision().getDecisionType() == Decision.DecisionType.ENUM){
 
                 EnumerationDecision enumerationDecision = (EnumerationDecision) getDecision();
@@ -26,7 +36,6 @@ public class Allows extends ValueRestrictionAction{
             }else {
                 throw new ActionExecutionException("Action only possible for DecisionType Enum");
             }
-
 
         }catch(Exception e){
             throw new ActionExecutionException(e);

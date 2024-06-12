@@ -1,3 +1,9 @@
+/**
+ *
+ * The concrete implementation of a boolean decision, which holds a boolean decision variable
+ *
+ */
+
 package edu.kit.dopler.model;
 
 import java.util.Objects;

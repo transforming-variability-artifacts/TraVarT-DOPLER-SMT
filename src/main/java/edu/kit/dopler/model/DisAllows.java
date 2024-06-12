@@ -23,7 +23,7 @@ public class DisAllows extends ValueRestrictionAction{
             if(getDecision().getDecisionType() == Decision.DecisionType.ENUM) {
                 EnumerationDecision decision = (EnumerationDecision) getDecision();
                 decision.addDissallowed(new EnumerationLiteral((String) disAllowValue.getValue()));
-                // if the new dissallowed Value is set, then the decision gets reset to the default value and das not taken
+                // if the new dissallowed Value is set, then the decision gets reset to the default value and as not taken
                 if (decision.getValue().getValue() == disAllowValue.getValue()) {
                     decision.setTaken(false);
                     decision.setValue(new StringValue(decision.getStandardValue()));

@@ -1,3 +1,10 @@
+/**
+ * The generic implementation of the decisions
+ * This class is then specialised into the different type of decisions like STRING, Enumeration, Boolean and Double
+ *
+ *
+ */
+
 package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.ActionExecutionException;
@@ -119,11 +126,15 @@ abstract class Decision<T> implements IDecision<T> {
         return visibilityCondition.evaluate();
     }
 
+
+    /**
+     * This methode adds the SMT Encoding of the decision to the builder
+     * @param builder the Stream Builder for Building the SMT Encoding recursive
+     * @param decisions all decisions of the DOPLER Model, which are needed for the late mapping of the constants
+     */
     @Override
     public void toSMTStream(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions) {
-        //builder.add("(ite ");
-        //builder.add("(= " + toStringConstforSMT() + "_TAKEN_PRE" + " " + "false" + ")");
-        // if part
+        // if the visibility condition is only a LiteralExpression (true, false) then the ite should be left out because (ite true if else) is no valid syntax
         if(getVisibilityCondition() instanceof LiteralExpression){
             try {
                 if(getVisibilityCondition().evaluate()){
@@ -139,34 +150,36 @@ abstract class Decision<T> implements IDecision<T> {
             builder.add("(ite ");
             getVisibilityCondition().toSMTStream(builder, toStringConstforSMT()); //if isVisible condition
             toSMTStreamDecisionSpecific(builder, decisions);   //if part
-
             builder.add("(and "); //else
             mapPreToPostConstants(builder, decisions);      //else
             builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "false" + ")"); //else
             builder.add(")"); //else
             builder.add(")"); //closing the ite of the visibilityDecision
         }
-       // mapPreToPostConstants(builder, numberDecisions);  //else of IsTaken
-        //builder.add(")"); // closing the ite
     }
 
+    /**
+     * this methode encodes the rules of the decision to the SMT Encoding
+     * @param builder the Stream Builder for Building the SMT Encoding recursive
+     * @param decisions all decisions of the DOPLER Model, which are needed for the late mapping of the constants
+     */
     void toSMTStreamRules(Stream.Builder<String> builder,  Set<? super IDecision<?>> decisions){
-
+        // for the smt encoding the decision is considered taken when the rules are applied
+        // this is why in the following the taken const is mapped to true
         if(getRules().isEmpty()){
             builder.add("(and ");
             builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST" + " " + "true" +  ")");
             mapPreToPostConstants(builder, decisions);
-            builder.add(")");
+            builder.add(")"); // closing and
         }else {
             builder.add("(and");
             builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST" + " " + "true" + ")");
             for (Rule rule : getRules()) {
-
+                // if the condition is only a LiteralExpression (true, false) then the ite should be left out because (ite true if else) is no valid syntax
                 if (rule.getCondition() instanceof LiteralExpression) {
 
                     try {
                         if (rule.getCondition().evaluate()) {
-                            System.out.println(getQuestion());
                             toSMTStreamActionsPerRule(builder, rule, decisions);
                         } else {
                             mapPreToPostConstants(builder, decisions);
@@ -178,23 +191,34 @@ abstract class Decision<T> implements IDecision<T> {
 
                     builder.add("(ite ");
                     rule.getCondition().toSMTStream(builder, toStringConstforSMT()); // if condition
-                    toSMTStreamActionsPerRule(builder, rule, decisions);
+                    toSMTStreamActionsPerRule(builder, rule, decisions); // if part
                     mapPreToPostConstants(builder, decisions);// else part
-                    builder.add(")");
+                    builder.add(")"); // closing the ite
                 }
             }
-            builder.add(")");
+            builder.add(")"); // closing and
         }
     }
 
+    /**
+     *
+     * Encodes the actions for the rule
+     * Therefor the smt encoding is (and action1 action2 ...)
+     */
     void toSMTStreamActionsPerRule(Stream.Builder<String> builder,Rule rule, Set<? super IDecision<?>> decisions) {
         builder.add("(and ");
         for (IAction action : rule.getActions()) {
             action.toSMTStream(builder, toStringConstforSMT());
         }
         mapPreToPostConstants(builder, decisions);
-        builder.add(")");
+        builder.add(")"); //closing and
     }
+
+    /**
+     *
+     * this methode is needed because for the number decision the validity condition also need to be added to the encoding
+     * the other decisions leave this methode empty
+     */
     abstract void toSMTStreamValidityConditions(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions);
 
     void toSMTStreamDecisionSpecific(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions){
@@ -210,7 +234,10 @@ abstract class Decision<T> implements IDecision<T> {
 
     }
 
-
+    /**
+     * maps alle the pre constants to the post constants by adding (and (= pre post) (= pre post)....) to the smt encoding
+     *
+     */
     void mapPreToPostConstants(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions){
         builder.add("(and ");
         for (Object decision : decisions) {
@@ -221,18 +248,18 @@ abstract class Decision<T> implements IDecision<T> {
                     builder.add("(= ");
                     builder.add(toStringConstforSMT() + "_" + decision1.toStringConstforSMT() + "_" + enumerationLiteral.getValue() + "_PRE");
                     builder.add(toStringConstforSMT() + "_" + decision1.toStringConstforSMT() + "_" + enumerationLiteral.getValue() + "_POST");
-                    builder.add(")");
+                    builder.add(")"); //closing =
                 }
             }else{
                 builder.add("(= ");
                 builder.add(toStringConstforSMT() + "_" +  decision1.toStringConstforSMT() + "_PRE");
                 builder.add(toStringConstforSMT() + "_" +  decision1.toStringConstforSMT() + "_POST");
-                builder.add(")");
+                builder.add(")"); // closing =
             }
 
         }
 
-        builder.add(")");
+        builder.add(")"); // closing and
 
     }
 

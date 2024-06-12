@@ -1,3 +1,8 @@
+/**
+ * This abstract class implements the basic method's every implementation of IValue should have
+ *
+ *
+ */
 package edu.kit.dopler.model;
 
 import java.util.Objects;

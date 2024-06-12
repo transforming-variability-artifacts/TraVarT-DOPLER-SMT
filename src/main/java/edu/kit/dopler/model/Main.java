@@ -23,6 +23,9 @@ public class Main {
         dopler.addDecision(decision2);
 
 
+        BooleanDecision decision1 = new BooleanDecision("Should the pizza have a cheesy crust?","",new BooleanLiteralExpression(true), new HashSet<>());
+        dopler.addDecision(decision1);
+
         Enumeration enumerationDecision3 = new Enumeration(new HashSet<>(){{
             add(new EnumerationLiteral("Normal"));
             add(new EnumerationLiteral("Big"));
@@ -39,8 +42,7 @@ public class Main {
         dopler.addDecision(decision4);
 
 
-        BooleanDecision decision1 = new BooleanDecision("Should the pizza have a cheesy crust?","",new BooleanLiteralExpression(true), new HashSet<>());
-        dopler.addDecision(decision1);
+
 
         IExpression expressionDecision3 = new Equals(new DecisionValueCallExpression(decision3),new EnumeratorLiteralExpression(new EnumerationLiteral("Big")));
 
@@ -69,7 +71,7 @@ public class Main {
 
         try {
             Stream.Builder<String> builder = dopler.toSMTStream();
-            //builder.add("(assert (= END_DECISION_2_Sicilian true))");
+            builder.add("(assert (= END_DECISION_3_Sicilian true))");
             builder.add("(check-sat)");
             dopler.createGetValueOFEndConstants(builder);
             //builder.add("(get-model)");

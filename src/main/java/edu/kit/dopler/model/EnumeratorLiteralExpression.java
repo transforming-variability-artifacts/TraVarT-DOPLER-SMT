@@ -24,6 +24,13 @@ public class EnumeratorLiteralExpression extends LiteralExpression{
         builder.add(" " + enumerationLiteral.getValue() + " ");
     }
 
+
+    /**
+     * This methode is implemented for every LiteralExpression to check the equality in the EQUALS expression
+     * @param value the value which need to be compared to the literal
+     * @return returns a boolean if the values are equal
+     * @throws InvalidTypeInLiteralExpressionCheckException is thrown when the value is not of type EnumerationLiteral
+     */
     @Override
     boolean equalsForLiteralExpressions(IValue<?> value) throws InvalidTypeInLiteralExpressionCheckException {
         if(value instanceof EnumerationLiteral){

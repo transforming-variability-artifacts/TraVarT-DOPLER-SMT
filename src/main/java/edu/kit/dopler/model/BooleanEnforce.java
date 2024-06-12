@@ -1,3 +1,10 @@
+/**
+ * Because the Enforce Action is possible with every decision type and the decision are generic
+ * we needed to add an abstract enforce class to then specialise them into the different decision type enforces
+ *
+ */
+
+
 package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.ActionExecutionException;
