@@ -153,10 +153,13 @@ if decisionVisibilityCondition == Literalexpression{
 
 ### Expressions
 
-```
-# AND
-(and leftExpression rightExpression)
+#### AND
 
+```
+(and leftExpression rightExpression)
+```
+
+```
 # Xor
 (xor leftExpression rightExpression)
 
