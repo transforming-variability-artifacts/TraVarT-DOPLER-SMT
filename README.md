@@ -79,6 +79,22 @@ For simplicity, we only explain the encoding in the following with a DOPLER mode
 ) 
 ```
 
+### Mapping between Decisions
+```
+(and
+    (= DECISION_0_DECISION_0_Salami_POST DECISION_1_DECISION_0_Salami_PRE)
+    (= DECISION_0_DECISION_1_POST DECISION_1_DECISION_1_PRE  )
+)
+```
+
+### Mapping PRE to POST CONST
+```
+(and
+    (= DECISION_0_DECISION_0_Salami_PRE DECISION_0_DECISION_0_Salami_POST )
+    (= DECISION_0_DECISION_1_PRE DECISION_0_DECISION_1_POST )
+)
+```
+
 ### Rules
 ```
  (ite (expression) actions mapPretoPostConst)
