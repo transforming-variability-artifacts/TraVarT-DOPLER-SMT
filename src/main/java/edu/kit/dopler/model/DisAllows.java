@@ -19,22 +19,16 @@ public class DisAllows extends ValueRestrictionAction{
 
     @Override
     public void execute()  throws ActionExecutionException {
-        try {
-            if(getDecision().getDecisionType() == Decision.DecisionType.ENUM) {
-                EnumerationDecision decision = (EnumerationDecision) getDecision();
-                decision.addDissallowed(new EnumerationLiteral((String) disAllowValue.getValue()));
-                // if the new dissallowed Value is set, then the decision gets reset to the default value and as not taken
-                if (decision.getValue().getValue() == disAllowValue.getValue()) {
-                    decision.setTaken(false);
-                    decision.setValue(new StringValue(decision.getStandardValue()));
-                }
-            }else {
-                throw new ActionExecutionException("Action only possible for EnumDecisions");
-            }
 
-        } catch (ValidityConditionException e) {
-            throw new RuntimeException(e);
+        if(getDecision().getDecisionType() == Decision.DecisionType.ENUM) {
+            EnumerationDecision decision = (EnumerationDecision) getDecision();
+            decision.addDissallowed(new EnumerationLiteral((String) disAllowValue.getValue()));
+
+        }else {
+            throw new ActionExecutionException("Action only possible for EnumDecisions");
         }
+
+
     }
 
     @Override
