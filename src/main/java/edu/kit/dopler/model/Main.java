@@ -100,9 +100,17 @@ public class Main {
 
     }
 
+
+    /**
+     * Gets the smt stream of the dopler model and adds the comment (check-sat) and then calls the satSolver with the stream
+     * @param dopler DOPLER MODEL which should be fed into the solver
+     * @return True if the encoding is sat or false if the encoding is unsat
+     * @throws Exception
+     */
     static boolean checkSat(Dopler dopler) throws Exception {
         Stream.Builder<String> builder = dopler.toSMTStream();
 
+        // needs to be added to retrieve sat/unsat from the solver
         builder.add("(check-sat)");
         //builder.add("(get-model)");
         builder.add("(exit)");
@@ -123,7 +131,11 @@ public class Main {
     }
 
 
-
+    /**
+     * Starts a Process of the local Z3 Solver and feeds him the SMT Encoding Stream
+     * @param stream SMT Encoding
+     * @return Output of the Solver
+     */
     static Scanner satSolver(Stream<String> stream){
 
         String[] command = { "/Documents/z3/z3/build/z3","-in", "-smt2"};
