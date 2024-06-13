@@ -55,67 +55,78 @@ For simplicity, we only explain the encoding in the following with a DOPLER mode
 
 ### Decisions
 
+#### Basic ENUM and Bool Decisions
 ```
  (assert 
-            (ite (visibilitycondition)  //if
-                 rules                  //if-part
-                 mapPretoPostConst      //else
-            )
-        ) 
+    (ite 
+        (visibilitycondition)  //if
+        rules                  //if-part
+        mapPretoPostConst      //else
+    )
+ ) 
+```
+#### ENUM and Bool Decisions, if VisibilityCondition is LiteralExpression
+```
+# if LiteralExpression is True
+
+    (assert rules)
+ 
+# if LiteralExpression is False
+
+    (assert mapPretoPostConst)
+
+```
+#### Basic String and Double Decisions
+
+```
+(assert 
+    (ite (visibilitycondition)  //if
+         (ite (validityconditions)     //if-part
+                rules                   //if-if-part
+                mapPretoPostConst       //if-else-part
+         )
+         mapPretoPostConst      //else
+    )
+) 
+```
+#### String and Double Decisions, if VisibilityCondition is LiteralExpression
+
+```
+# if LiteralExpression is True
+    (assert           
+         (ite 
+            (validityconditions)    // if
+            rules                   //if-part
+            mapPretoPostConst       //else-part
+         )                   
+    )  
+
+# if LiteralExpression is False
+
+    (assert mapPretoPostConst)
 
 ```
 
+#### String and Double Decisions, if ValidityExpression is LiteralExpression
 ```
-# enum, bool decisions
-if decisionVisibilityCondition == Literalexpression{
-        if(decisionVisibilityCondition.evaluate()){
-             (assert rules)
-        }else{
-             (assert mapPretoPostConst)
-        }   
-    }else{
-        
-        (assert 
-            (ite (visibilitycondition)  //if
-                 rules                  //if-part
-                 mapPretoPostConst      //else
-            )
-        )    
+# if LiteralExpression is True
+(assert 
+    (ite (visibilitycondition)  //if
+         rules                  // if Part
+         mapPretoPostConst      //else
+    )
+) 
 
-    }
+# if LiteralExpression is False
 
-
-# double, string decisions
-
-if decisionVisibilityCondition == Literalexpression{
-        if(decisionVisibilityCondition.evaluate()){
-             (assert 
-                    
-                 (ite (validityconditions)     
-                        rules                   //if-part
-                        mapPretoPostConst       //else-part
-                 )
-                         
-             )   
-        }else{
-             (assert mapPretoPostConst)
-        }   
-    }else{
-        
-        (assert 
-            (ite (visibilitycondition)  //if
-                 (ite (validityconditions)     //if-part
-                        rules                   //if-if-part
-                        mapPretoPostConst       //if-else-part
-                 )
-                 mapPretoPostConst      //else
-            )
-        )    
-
-    }
-
-
+(assert 
+    (ite (visibilitycondition)  //if
+         mapPretoPostConst      // if Part
+         mapPretoPostConst      //else
+    )
+) 
 ```
+
 
 ### Mapping between Decisions
 ```
@@ -142,22 +153,24 @@ if decisionVisibilityCondition == Literalexpression{
 ### Actions
 
 
-
+#### Allows -> only for ENUM Decision
 ```
-# Allows -> only for ENUM Decision
-    // should not change anything in the SMT stream
-    // solver already checks the whole range of the value
-    
-# Dissallows -> only for ENUM Decision
+should not change anything in the SMT stream
+solver already checks the whole range of the value
+```
+#### Dissallows -> only for ENUM Decision
+```    
     (distinct DECISION_0_DECISION_0_DISALLOWEDVALUE_POST false) 
-    
-# ENFORCE    
-    bool, String, double
-    (= DECISION_1_DECISION_1_POST enforcedValue)
-    
-    enum
-    (= DECISION_1_DECISION_1_ENFORCEDVALUE_POST true)
+```
 
+#### ENFORCE for Boolean, String, Double Decisions
+```
+    (= DECISION_1_DECISION_1_POST enforcedValue)
+```
+
+### ENFORCE for Enum Decision 
+```
+    (= DECISION_1_DECISION_1_ENFORCEDVALUE_POST true)
 ```
 
 
@@ -169,38 +182,54 @@ if decisionVisibilityCondition == Literalexpression{
 (and leftExpression rightExpression)
 ```
 
+
+#### XOR
+
 ```
-# Xor
 (xor leftExpression rightExpression)
-
-# or
-(or leftExpression rightExpression)
-
-# GreatherThan
-(> leftExpression rightExpression)
-
-# LessThan
-(< leftExpression rightExpression)
-
-# NOT
-(not expression)
-
-# EQUALS
-(= leftExpression rightExpression)
-
-# IsTAKEN
-(= DECISION_0_TAKEN_POST true)
-
-# DecisionVisibility
-    if decisionVisibilityCondition == Literalexpression{
-        if(decisionVisibilityCondition.evaluate()){
-            (=  true true)
-        }else{
-            (= true false)
-        }   
-    }else{
-        decisionVisibility.ToSMTSTREAM()
-    }
-
 ```
 
+
+#### OR
+```
+(or leftExpression rightExpression)
+```
+
+#### GreatherThan
+```
+(> leftExpression rightExpression)
+```
+#### LessThan
+
+```
+(< leftExpression rightExpression)
+```
+
+
+#### NOT
+```
+(not expression)
+```
+
+#### EQUALS
+```
+(= leftExpression rightExpression)
+```
+
+#### IsTAKEN
+
+```
+(= DECISION_0_TAKEN_POST true)
+```
+#### DecisionVisibility
+```
+decisionVisibility.ToSMTSTREAM()
+```
+#### DecisionVisibility if its only a LiteralExpression
+```
+# IF LiteralExpression TRUE
+(=  true true)
+
+# IF LiteralExpression False
+(= true false)
+```
