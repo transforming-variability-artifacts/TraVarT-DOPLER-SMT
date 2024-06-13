@@ -3,6 +3,7 @@ package edu.kit.dopler.model;
 import junit.framework.TestCase;
 
 import java.util.HashSet;
+import java.util.stream.Stream;
 
 import static edu.kit.dopler.model.Main.checkSat;
 
@@ -53,7 +54,7 @@ public class SATEncoderTest extends TestCase {
         dopler.addDecision(decision5);
 
         dopler.toSMTStream().build().forEach(System.out::println);
-        assertTrue(checkSat(dopler));
+        assertTrue(checkSat(dopler.toSMTStream()));
 
     }
 
@@ -157,7 +158,7 @@ public class SATEncoderTest extends TestCase {
 
 
         dopler.toSMTStream().build().forEach(System.out::println);
-        assertTrue(checkSat(dopler));
+        assertTrue(checkSat(dopler.toSMTStream()));
 
     }
 
@@ -203,7 +204,7 @@ public class SATEncoderTest extends TestCase {
         decision1.addRule(ruleDecision1);
 
         dopler.toSMTStream().build().forEach(System.out::println);
-        assertTrue(checkSat(dopler));
+        assertTrue(checkSat(dopler.toSMTStream()));
 
     }
 
@@ -265,10 +266,71 @@ public class SATEncoderTest extends TestCase {
         decision1.addRule(ruleDecision1);
 
         dopler.toSMTStream().build().forEach(System.out::println);
-        assertTrue(checkSat(dopler));
+        assertTrue(checkSat(dopler.toSMTStream()));
 
     }
 
+    public void testDoplerModelPizzas2withUnsatAssert() throws Exception {
+        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>());
 
+
+
+        Enumeration enumerationDecision2 = new Enumeration(new HashSet<>(){{
+            add(new EnumerationLiteral("Salami"));
+            add(new EnumerationLiteral("Ham"));
+            add(new EnumerationLiteral("Mozzarella"));
+        }});
+        EnumerationDecision decision2 = new EnumerationDecision("Which Topping do you want on your pizza?","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision2,1,3);
+        dopler.addDecision(decision2);
+
+
+        Enumeration enumerationDecision3 = new Enumeration(new HashSet<>(){{
+            add(new EnumerationLiteral("Normal"));
+            add(new EnumerationLiteral("Big"));
+        }});
+        EnumerationDecision decision3 = new EnumerationDecision("Which Size should the pizza have?","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision3,1,1);
+        dopler.addDecision(decision3);
+
+
+        Enumeration enumerationDecision4 = new Enumeration(new HashSet<>(){{
+            add(new EnumerationLiteral("Neapolitan"));
+            add(new EnumerationLiteral("Sicilian"));
+        }});
+        EnumerationDecision decision4 = new EnumerationDecision("Which Dough do you prefer??","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision4,1,1);
+        dopler.addDecision(decision4);
+
+
+        BooleanDecision decision1 = new BooleanDecision("Should the pizza have a cheesy crust?","",new BooleanLiteralExpression(true), new HashSet<>());
+        dopler.addDecision(decision1);
+
+        IExpression expressionDecision3 = new Equals(new DecisionValueCallExpression(decision3),new EnumeratorLiteralExpression(new EnumerationLiteral("Big")));
+
+        Rule ruleDecision3 = new Rule(expressionDecision3,new HashSet<>(){{
+            add(new EnumEnforce(decision4, new StringValue("Neapolitan")));
+        }});
+        decision3.addRule(ruleDecision3);
+
+        IExpression expressionDecision4 = new Equals(new DecisionValueCallExpression(decision4),new EnumeratorLiteralExpression(new EnumerationLiteral("Sicilian")));
+
+        Rule ruleDecision4 = new Rule(expressionDecision4,new HashSet<>(){{
+            add(new BooleanEnforce(decision1, BooleanValue.getTrue()));
+        }});
+        decision4.addRule(ruleDecision4);
+
+
+
+        IExpression expressionDecision1 = new Equals(new DecisionValueCallExpression(decision1),new BooleanLiteralExpression(true));
+
+        Rule ruleDecision1 = new Rule(expressionDecision1,new HashSet<>(){{
+            add(new EnumEnforce(decision3, new StringValue("Big")));
+        }});
+        decision1.addRule(ruleDecision1);
+
+        dopler.toSMTStream().build().forEach(System.out::println);
+        Stream.Builder<String> builder = dopler.toSMTStream();
+        builder.add("(assert (= END_DECISION_2_Sicilian true))");
+        assertFalse(checkSat(builder));
+
+    }
 
 }

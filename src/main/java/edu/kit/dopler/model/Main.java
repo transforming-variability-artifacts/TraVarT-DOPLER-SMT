@@ -103,12 +103,11 @@ public class Main {
 
     /**
      * Gets the smt stream of the dopler model and adds the comment (check-sat) and then calls the satSolver with the stream
-     * @param dopler DOPLER MODEL which should be fed into the solver
+     * @param builder Stream Builder of the DOPLER MODEL which should be fed into the solver
      * @return True if the encoding is sat or false if the encoding is unsat
      * @throws Exception
      */
-    static boolean checkSat(Dopler dopler) throws Exception {
-        Stream.Builder<String> builder = dopler.toSMTStream();
+    static boolean checkSat(Stream.Builder<String> builder) throws Exception {
 
         // needs to be added to retrieve sat/unsat from the solver
         builder.add("(check-sat)");
