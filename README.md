@@ -27,7 +27,16 @@ So in the DOPLER class there exist a methode toSMTStream, which put the whole de
 For simplicity, we only explain the encoding in the following with a DOPLER model containing two decisions, but it can be expanded to many more.
 
 
-The basic idea for the encoding with constant mapping comes from the [master thesis](https://epub.jku.at/obvulihs/content/pageview/9482354)  by Florian Alexander Piminger 
+The basic idea for the encoding with constant mapping comes from the [master thesis](https://epub.jku.at/obvulihs/content/pageview/9482354)  by Florian Alexander Piminger
+
+
+
+For the SMT Solver to check possible configuration several constants for every decision are needed.
+Especially enum decision need one constant for every enum value the enumeration can have.
+This is because the cardinality needs to be checked for the enumeration decision, because the dopler model allows the enumeration decision to have more then one value based on the given min and max cardinality.
+
+Also there have to be all constants for every decision, because every constant can only be assigned once.
+The constants are mapped then between the assert of the decision seen late in the ReadMe.
 ### Constants 
 
 ```
@@ -55,6 +64,10 @@ The basic idea for the encoding with constant mapping comes from the [master the
 (declare-const END_DECISION_1 double)
 ```
 
+
+
+For the dopler model every decision gets asserted and between the asserts of the decisions there are asserts to map the post constants from the decision to the pre constants of the next decision.
+The encoding of the decisions and the mappings get explained in the following.
 ### DOPLER
 
 ```
