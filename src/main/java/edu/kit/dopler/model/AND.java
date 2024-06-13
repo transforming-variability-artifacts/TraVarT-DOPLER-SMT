@@ -19,9 +19,26 @@ public class AND extends BinaryExpression{
 
     @Override
     public boolean evaluate() throws EvaluationException {
-        return getLeftExpression().evaluate() && getRightExpression().evaluate();
-    }
+        if(getLeftExpression() instanceof BooleanLiteralExpression && getRightExpression() instanceof DecisionValueCallExpression){
+            boolean left = ((BooleanLiteralExpression) getLeftExpression()).getLiteral();
+            boolean right = (boolean) ((DecisionValueCallExpression) getRightExpression()).getValue().getValue();
+            return left && right;
+        }
+        else if(getLeftExpression() instanceof DecisionValueCallExpression && getRightExpression() instanceof BooleanLiteralExpression){
+            boolean left = (boolean) ((DecisionValueCallExpression) getLeftExpression()).getValue().getValue();
+            boolean right = ((BooleanLiteralExpression) getRightExpression()).getLiteral();
+            return left && right;
+        }
+        else if (getLeftExpression() instanceof  BooleanLiteralExpression && getRightExpression() instanceof  BooleanLiteralExpression){
+            boolean right = ((BooleanLiteralExpression) getRightExpression()).getLiteral();
+            boolean left = ((BooleanLiteralExpression) getLeftExpression()).getLiteral();
+            return left && right;
+        }else {
+            throw new EvaluationException("Only Boolean Values Supported");
+        }
 
+
+    }
 
     /**
      * The boolean AND can be encoded to the SMT Encoding by simply adding (and (leftExpression) (rightExpression))
@@ -29,11 +46,14 @@ public class AND extends BinaryExpression{
      * @param builder the stream builder, where the condition is added
      */
     @Override
-    public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
-        builder.add("(and ");
-        getLeftExpression().toSMTStream(builder, callingDecisionConst);
-        getRightExpression().toSMTStream(builder, callingDecisionConst);
-        builder.add(")");
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecision) {
+        if(getLeftExpression() instanceof BooleanLiteralExpression || getLeftExpression() instanceof DecisionValueCallExpression || getRightExpression() instanceof DecisionValueCallExpression || getRightExpression() instanceof BooleanLiteralExpression){
+            builder.add("(and ");
+            getLeftExpression().toSMTStream(builder, callingDecision);
+            getRightExpression().toSMTStream(builder, callingDecision);
+            builder.add(")");
+        }
+
     }
 
 
