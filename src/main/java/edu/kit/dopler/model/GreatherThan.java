@@ -50,7 +50,7 @@ public class GreatherThan extends BinaryExpression{
     /**
      * lexicographically ordering is not supported for String in the SMT Encoding at the moment
      * in z3 it is possible -> see https://microsoft.github.io/z3guide/docs/theories/Strings/ and https://link.springer.com/chapter/10.1007/978-3-030-90870-6_21
-     * but we wanted to keep the Encoding open for all Solvers that support SMT Encoding
+     * but we wanted to keep the Encoding open for all solvers that support SMT Encoding
      */
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {

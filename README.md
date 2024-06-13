@@ -12,7 +12,7 @@ Post condition which has to be fulfilled after a user takes a decision and befor
 #### Visibility Condition
 Defines when a decision, becomes relevant and can be answered during product derivation.
 If there is a visibility condition associated with a decision, the user has to first take the decisions appearing in the visibility condition
-![Dopler Metamodel](/images/DOPLER-METAMODEL.png)
+![Dopler Metamodel](/images/dOPLER.svg)
 
 
 
