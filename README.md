@@ -140,6 +140,9 @@ if decisionVisibilityCondition == Literalexpression{
 
 
 ### Actions
+
+
+
 ```
 # Allows -> only for ENUM Decision
     // should not change anything in the SMT stream
