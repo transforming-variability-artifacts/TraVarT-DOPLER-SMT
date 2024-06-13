@@ -53,7 +53,20 @@ For simplicity, we only explain the encoding in the following with a DOPLER mode
 (declare-const END_DECISION_1 double)
 ```
 
+### DOPLER
+
+```
+
+(assert decision0)
+(assert (Mapping between Decision0 and Decision1))
+(assert decision1)
+(assert (Mapping between Decision1 and EndConstants))
+
+```
+
+
 ### Decisions
+
 
 #### Basic ENUM and Bool Decisions
 ```
