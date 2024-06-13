@@ -26,6 +26,8 @@ Therefore, we developed an SMT encoding for the DOPLER Model mentioned before an
 So in the DOPLER class there exist a methode toSMTStream, which put the whole decision model into a smt encoded stream.
 For simplicity, we only explain the encoding in the following with a DOPLER model containing two decisions, but it can be expanded to many more.
 
+
+The basic idea for the encoding with constant mapping comes from the [master thesis](https://epub.jku.at/obvulihs/content/pageview/9482354)  by Florian Alexander Piminger 
 ### Constants 
 
 ```
