@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class StringValue extends AbstractValue<String>{
 
-    protected StringValue(String value) {
+    public StringValue(String value) {
         super(Objects.requireNonNull(value));
     }
 

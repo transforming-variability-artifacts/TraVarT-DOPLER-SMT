@@ -1,14 +1,13 @@
 package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.ActionExecutionException;
-import edu.kit.dopler.exceptions.ValidityConditionException;
-
-import java.util.Set;
 import java.util.stream.Stream;
 
 public class DisAllows extends ValueRestrictionAction{
 
-    IValue<?> disAllowValue;
+    public static final String FUNCTION_NAME = "disallow";
+    
+	IValue<?> disAllowValue;
 
     public DisAllows(IDecision<?> decisionType, IValue<?> disAllowValue) {
         super(decisionType);

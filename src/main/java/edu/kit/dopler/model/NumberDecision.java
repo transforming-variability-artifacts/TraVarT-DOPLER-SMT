@@ -11,13 +11,10 @@ public class NumberDecision extends ValueDecision<Double>{
     private final AbstractValue<Double> value;
     private final double standardValue = -1.0;
 
-    public NumberDecision(String question, String description, IExpression visibilityCondition, Set<Rule> rules, Set<IExpression> validityConditions) {
-        super(question, description, visibilityCondition, rules, validityConditions, DecisionType.NUMBER);
+    public NumberDecision(String displayId, String question, String description, IExpression visibilityCondition, Set<Rule> rules, Set<IExpression> validityConditions) {
+        super(displayId, question, description, visibilityCondition, rules, validityConditions, DecisionType.NUMBER);
         value = new DoubleValue(standardValue);
     }
-
-
-
 
     @Override
     public Double getStandardValue() {

@@ -1,0 +1,233 @@
+/*******************************************************************************
+ * TODO: explanation what the class does
+ *  
+ *  @author Kevin Feichtinger
+ *  
+ * Copyright 2023 Johannes Kepler University Linz
+ * LIT Cyber-Physical Systems Lab
+ * All rights reserved
+ *******************************************************************************/
+package edu.kit.dopler.io.parser;
+
+import java.util.Arrays;
+import java.util.Objects;
+
+import edu.kit.dopler.common.DoplerUtils;
+import edu.kit.dopler.exceptions.ParserException;
+import edu.kit.dopler.model.BooleanLiteralExpression;
+import edu.kit.dopler.model.Dopler;
+import edu.kit.dopler.model.DoubleLiteralExpression;
+import edu.kit.dopler.model.Enforce;
+import edu.kit.dopler.model.Equals;
+import edu.kit.dopler.model.GreatherThan;
+import edu.kit.dopler.model.IDecision;
+import edu.kit.dopler.model.IExpression;
+import edu.kit.dopler.model.IsTaken;
+import edu.kit.dopler.model.LessThan;
+import edu.kit.dopler.model.OR;
+import edu.kit.dopler.model.StringLiteralExpression;
+import edu.kit.dopler.model.AND;
+import edu.kit.dopler.model.NOT;
+
+@SuppressWarnings("rawtypes")
+public class ConditionParser {
+
+	private static final String REGEX = "(?<=\\.)|(?=\\.)|((?<=\\=)|(?=\\=)|(?<=\\<)|(?=\\<)|(?<=\\>)|(?=\\>))|((?<=\\|\\|)|(?=\\|\\|))|((?<=&&)|(?=&&))|((?<=!)|(?=!))|((?<=\\()|(?=\\())|((?<=\\))|(?=\\)))";
+
+	private static final String EOF = "EOF";
+
+	private static final String NOT = "!";
+	private static final String OR = "||";
+	private static final String AND = "&&";
+	private static final String GREATER = ">";
+	private static final String LESS = "<";
+	private static final String EQUAL = "=";
+	private static final String OPENING_PARENTHESE = "(";
+	private static final Object CLOSING_PARENTHESE = ")";
+	private static final String CLOSING_CURRLY_PARENTHESE = "}";
+	private static final String DECISION_VALUE_DELIMITER = ".";
+
+	private static final String TRUE = "true";
+	private static final String FALSE = "false";
+
+	private String[] input;
+	private int index = 0;
+	private String symbol;
+
+	private boolean isTaken = false;
+	private boolean isSelected = false;
+
+	private final Dopler dm;
+
+	public ConditionParser(final Dopler dm) {
+		this.dm = Objects.requireNonNull(dm);
+	}
+
+	public IExpression parse(final String str) throws ParserException {
+		Objects.requireNonNull(str);
+		index = 0;
+		input = Arrays.stream(str.split(REGEX)).map(String::trim).filter(s -> !s.isEmpty() && !s.isBlank())
+				.toArray(String[]::new);
+		if (input.length > 0) {
+			return parseCondition();
+		}
+		return new BooleanLiteralExpression(true);
+	}
+
+	private IExpression parseCondition() throws ParserException {
+		IExpression v = term();
+		while (symbol.equals(OR)) {
+			IExpression r = term();
+			v = new OR(v, r);
+		}
+		return v;
+	}
+
+	private IExpression term() throws ParserException {
+		IExpression v = comperator();
+		while (symbol.equals(AND)) {
+			IExpression r = comperator();
+			v = new AND(v, r);
+		}
+		return v;
+	}
+
+	private IExpression comperator() throws ParserException {
+		IExpression v = factor();
+		while (symbol.equals(EQUAL) || symbol.equals(GREATER) || symbol.equals(LESS)) {
+			String first = symbol;
+			nextSymbol();
+			String second = symbol;
+			if (first.equals(EQUAL) && second.equals(EQUAL)) {
+				IExpression r =  getValueLiteral(v);
+				v = new Equals(v, r);
+			} else if (first.equals(GREATER) && second.equals(EQUAL)) {
+				IExpression r =  getValueLiteral(v);
+				v = new AND(new GreatherThan(v, r), new Equals(v, r));
+			} else if (first.equals(LESS) && second.equals(EQUAL)) {
+				nextSymbol();
+				IExpression r =  getValueLiteral(v);
+				v = new AND(new LessThan(v, r), new Equals(v, r));
+			} else if (first.equals(GREATER)) {
+				// second is operand
+				IExpression value = null;
+				if (RulesParser.isDoubleRangeValue(symbol)) {
+					value = new DoubleLiteralExpression(Double.parseDouble(symbol));
+				} else if (RulesParser.isStringRangeValue(dm, symbol)) {
+					value = new StringLiteralExpression(symbol);
+				} else {
+					throw new ParserException(
+							"The value of comparison \"" + v + " > " + symbol + "\" could not be parsed.");
+				}
+				v = new GreatherThan(v, value);
+			} else if (first.equals(LESS)) {
+				// second is operand
+				IExpression value = null;
+				if (RulesParser.isDoubleRangeValue(symbol)) {
+					value = new DoubleLiteralExpression(Double.parseDouble(symbol));
+				} else if (RulesParser.isStringRangeValue(dm, symbol)) {
+					value = new StringLiteralExpression(symbol);
+				} else {
+					throw new ParserException(
+							"The value of comparison \"" + v + " < " + symbol + "\" could not be parsed.");
+				}
+				v = new LessThan(v, value);
+			}
+		}
+		return v;
+	}
+
+	private IExpression getValueLiteral(IExpression v) throws ParserException {
+		if (symbol.toLowerCase().equals(TRUE)) {
+			v = new BooleanLiteralExpression(true);
+		} else if (symbol.toLowerCase().equals(FALSE)) {
+			v = new BooleanLiteralExpression(false);
+		} else if (RulesParser.isDoubleRangeValue(symbol)) {
+			v = new DoubleLiteralExpression(Double.parseDouble(symbol));
+			nextSymbol();
+		} else if (RulesParser.isStringRangeValue(dm, symbol)) {
+			v = new StringLiteralExpression(symbol);
+			nextSymbol();
+		} else {
+			throw new ParserException("Unkown value type!");
+		}
+		return v;
+	}
+
+	private IExpression factor() throws ParserException {
+		nextSymbol();
+		IExpression v = null;
+		if (symbol.equals(CLOSING_CURRLY_PARENTHESE)) {
+			nextSymbol();
+		}
+		if (symbol.equals(EOF)) {
+			v = new BooleanLiteralExpression(true);
+		} else if (symbol.equals(NOT)) {
+			IExpression f = factor();
+			v = new NOT(f);
+		} else if (symbol.equals(OPENING_PARENTHESE)) {
+			v = parseCondition();
+			nextSymbol(); // we don't care about )
+		} else if (symbol.equals(IsTaken.FUNCTION_NAME)) {
+			nextSymbol();
+			isTaken = true;
+			if (symbol.equals(OPENING_PARENTHESE)) {
+				v = parseCondition();
+				nextSymbol(); // we don't care about )
+			}
+//		} else if (symbol.equals(IsSelectedFunction.FUNCTION_NAME)) {
+//			nextSymbol();
+//			isSelected = true;
+//			if (symbol.equals(OPENING_PARENTHESE)) {
+//				v = parseCondition();
+//				nextSymbol(); // we don't care about )
+//			}
+//		} else if (symbol.equals(GetValueFunction.FUNCTION_NAME)) {
+//			nextSymbol();
+//			if (symbol.equals(OPENING_PARENTHESE)) {
+//				IExpression cond = parseCondition();
+//				if (cond instanceof AFunction) {
+//					v = new GetValueFunction((IDecision) ((AFunction) cond).getParameters().get(0));
+//				}
+//				nextSymbol(); // we don't care about )
+//			}
+		} else if (symbol.equals(Enforce.FUNCTION_NAME)) {
+			throw new ParserException("We need to deal with the different types of enforces here");
+		} else if (symbol.toLowerCase().equals(TRUE)) {
+			v = new BooleanLiteralExpression(true);
+		} else if (symbol.toLowerCase().equals(FALSE)) {
+			v = new BooleanLiteralExpression(false);
+		} else if (RulesParser.isDoubleRangeValue(symbol)) {
+			v = new DoubleLiteralExpression(Double.parseDouble(symbol));
+			nextSymbol();
+		} else if (RulesParser.isStringRangeValue(dm, symbol)) {
+			v = new StringLiteralExpression(symbol);
+			nextSymbol();
+		} else { // decision
+			IDecision d = DoplerUtils.getDecision(dm, symbol);
+			nextSymbol();
+			if (symbol.equals(DECISION_VALUE_DELIMITER)) {
+				nextSymbol();
+				v =  getValueLiteral(v);
+			} else 
+			if (isTaken) {
+				v = new IsTaken(d);
+//			} else if (isSelected || symbol.equals(CLOSING_PARENTHESE)) {
+//				v = new IsSelected(d);
+//			} else if (d != null) {
+//				v = new IsSelectedFunction(d);
+			} else {
+				throw new ParserException("unknown function/decision for symbol " + symbol);
+			}
+		}
+		return v;
+	}
+
+	private void nextSymbol() {
+		if (index == input.length) {
+			symbol = EOF;
+		} else {
+			symbol = input[index++];
+		}
+	}
+}

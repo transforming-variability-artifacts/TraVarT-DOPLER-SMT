@@ -15,7 +15,7 @@ public class BooleanDecisionTest {
     public void setValueTest(){
         IValue<Boolean> value = BooleanValue.getTrue();
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test","test", expression, Collections.emptySet());
+        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, Collections.emptySet());
         decision.setValue(value);
         assertTrue(decision.isTaken());
         assertSame(decision.getValue().getValue(), value.getValue());
@@ -25,7 +25,7 @@ public class BooleanDecisionTest {
     public void testDecisionType(){
 
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test","test", expression, Collections.emptySet());
+        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, Collections.emptySet());
         assertSame(decision.getDecisionType(), Decision.DecisionType.BOOLEAN);
 
     }
@@ -34,14 +34,14 @@ public class BooleanDecisionTest {
     @Test
     public void testStandardValue(){
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test","test", expression, Collections.emptySet());
+        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, Collections.emptySet());
         assertSame(decision.getStandardValue(),BooleanValue.getFalse().getValue());
     }
 
     @Test
     public void testSetTaken(){
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test","test", expression, Collections.emptySet());
+        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, Collections.emptySet());
         decision.setTaken(true);
 
         assertTrue(decision.isTaken());
@@ -50,14 +50,14 @@ public class BooleanDecisionTest {
     @Test
     public void checkVisibilityWithTrueVisibilityCond() throws EvaluationException {
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test","test", expression, Collections.emptySet());
+        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, Collections.emptySet());
         assertTrue(decision.isVisible());
     }
 
     @Test
     public void checkVisibilityWithFalseVisibilityCond() throws EvaluationException {
         IExpression expression = new BooleanLiteralExpression(false);
-        BooleanDecision decision = new BooleanDecision("test","test", expression, Collections.emptySet());
+        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, Collections.emptySet());
         assertFalse(decision.isVisible());
     }
 
@@ -66,8 +66,8 @@ public class BooleanDecisionTest {
     public void BooleanEnforceActionTest(){
         IValue<Boolean> value = BooleanValue.getTrue();
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test","test", expression, new HashSet<>());
-        BooleanDecision decision2 = new BooleanDecision("test","test", expression, new HashSet<>());
+        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, new HashSet<>());
+        BooleanDecision decision2 = new BooleanDecision("test", "test","test", expression, new HashSet<>());
 
         assertFalse(decision2.isTaken());
         assertFalse(decision2.getValue().getValue());

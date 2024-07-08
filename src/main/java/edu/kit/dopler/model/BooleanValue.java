@@ -2,7 +2,7 @@ package edu.kit.dopler.model;
 
 public final class BooleanValue extends AbstractValue<Boolean> {
 
-    private BooleanValue(Boolean value) {
+    public BooleanValue(Boolean value) {
         super(value);
     }
 

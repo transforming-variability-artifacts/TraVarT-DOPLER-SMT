@@ -19,18 +19,18 @@ public class Main {
             add(new EnumerationLiteral("Ham"));
             add(new EnumerationLiteral("Mozzarella"));
         }});
-        EnumerationDecision decision2 = new EnumerationDecision("Which Topping do you want on your pizza?","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision2,1,3);
+        EnumerationDecision decision2 = new EnumerationDecision("decision2", "Which Topping do you want on your pizza?","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision2,1,3);
         dopler.addDecision(decision2);
 
 
-        BooleanDecision decision1 = new BooleanDecision("Should the pizza have a cheesy crust?","",new BooleanLiteralExpression(true), new HashSet<>());
+        BooleanDecision decision1 = new BooleanDecision("decision1","Should the pizza have a cheesy crust?","",new BooleanLiteralExpression(true), new HashSet<>());
         dopler.addDecision(decision1);
 
         Enumeration enumerationDecision3 = new Enumeration(new HashSet<>(){{
             add(new EnumerationLiteral("Normal"));
             add(new EnumerationLiteral("Big"));
         }});
-        EnumerationDecision decision3 = new EnumerationDecision("Which Size should the pizza have?","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision3,1,1);
+        EnumerationDecision decision3 = new EnumerationDecision("decision3","Which Size should the pizza have?","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision3,1,1);
         dopler.addDecision(decision3);
 
 
@@ -38,7 +38,7 @@ public class Main {
             add(new EnumerationLiteral("Neapolitan"));
             add(new EnumerationLiteral("Sicilian"));
         }});
-        EnumerationDecision decision4 = new EnumerationDecision("Which Dough do you prefer??","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision4,1,1);
+        EnumerationDecision decision4 = new EnumerationDecision("decision4","Which Dough do you prefer??","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision4,1,1);
         dopler.addDecision(decision4);
 
 

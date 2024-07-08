@@ -6,7 +6,9 @@ public class IsTaken extends DecisionCallExpression{
 
 
 
-    public IsTaken(IDecision decision) {
+    public static final String FUNCTION_NAME = "isTaken";
+
+	public IsTaken(IDecision decision) {
         super(decision);
     }
 

@@ -20,7 +20,7 @@ public class EnumerationDecisionTest extends TestCase {
         enumerationLiterals.add((new EnumerationLiteral("test2")));
         Enumeration enumeration = new edu.kit.dopler.model.Enumeration(enumerationLiterals);
         Expression expression = new BooleanLiteralExpression(true);
-        enumerationDecision = new EnumerationDecision("test","test",expression, new HashSet<>(),enumeration,0,2);
+        enumerationDecision = new EnumerationDecision("test", "test","test",expression, new HashSet<>(),enumeration,0,2);
     }
 
     public void testSetValueWithOutOfRangeValue(){

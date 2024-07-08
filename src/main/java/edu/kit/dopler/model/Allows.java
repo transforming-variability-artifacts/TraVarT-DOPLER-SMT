@@ -16,7 +16,9 @@ import java.util.stream.Stream;
 public class Allows extends ValueRestrictionAction{
 
 
-    private final IValue<?> allowedValue;
+    public static final String FUNCTION_NAME = "allow";
+    
+	private final IValue<?> allowedValue;
 
     public Allows(IDecision<?> decision, IValue<?> allowedValue) {
         super(decision);

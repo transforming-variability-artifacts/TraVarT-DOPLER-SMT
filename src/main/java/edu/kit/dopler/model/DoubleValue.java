@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class DoubleValue extends AbstractValue<Double>{
 
-    protected DoubleValue(final double value) {
-        super(value);
+    public DoubleValue(final double value) {
+        super(Objects.requireNonNull(value));
     }
 
 

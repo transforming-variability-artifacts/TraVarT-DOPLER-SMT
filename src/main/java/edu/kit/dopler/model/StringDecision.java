@@ -11,8 +11,8 @@ public class StringDecision extends ValueDecision<String>{
     private AbstractValue<String> value;
     private String standardValue = "null";
 
-    public StringDecision(String question, String description, IExpression visibilityCondition, Set<Rule> rules, Set<IExpression> validityConditions) {
-        super(question, description, visibilityCondition, rules, validityConditions, DecisionType.STRING);
+    public StringDecision(String displayId, String question, String description, IExpression visibilityCondition, Set<Rule> rules, Set<IExpression> validityConditions) {
+        super(displayId, question, description, visibilityCondition, rules, validityConditions, DecisionType.STRING);
         value = new StringValue("");
     }
 

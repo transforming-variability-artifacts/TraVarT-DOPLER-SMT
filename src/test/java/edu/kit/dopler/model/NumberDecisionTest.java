@@ -18,7 +18,7 @@ public class NumberDecisionTest extends TestCase {
         super.setUp();
 
         Expression expression = new BooleanLiteralExpression(true);
-        numberDecision = new NumberDecision("test","test",expression, new HashSet<>(),new HashSet<>());
+        numberDecision = new NumberDecision("test", "test","test",expression, new HashSet<>(),new HashSet<>());
     }
 
 

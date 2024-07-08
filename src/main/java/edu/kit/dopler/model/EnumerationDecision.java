@@ -16,8 +16,8 @@ public class EnumerationDecision extends Decision<String> {
     private final Set<EnumerationLiteral> disAllowed;
 
 
-    public EnumerationDecision(String question, String description, IExpression visibilityCondition, Set<Rule> rules, Enumeration enumeration, int minCardinality, int maxCardinality) {
-        super(question, description, visibilityCondition, rules, DecisionType.ENUM);
+    public EnumerationDecision(String displayId, String question, String description, IExpression visibilityCondition, Set<Rule> rules, Enumeration enumeration, int minCardinality, int maxCardinality) {
+        super(displayId, question, description, visibilityCondition, rules, DecisionType.ENUM);
         this.enumeration = enumeration;
         this.minCardinality = minCardinality;
         this.maxCardinality = maxCardinality;

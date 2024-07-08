@@ -1,20 +1,15 @@
 package edu.kit.dopler.model;
 
-import java.util.stream.Stream;
+public abstract class ValueRestrictionAction extends Action {
 
-public abstract class ValueRestrictionAction extends Action{
+	private final IDecision<?> decision;
 
-    private final IDecision<?> decision;
+	public ValueRestrictionAction(IDecision<?> decision) {
+		this.decision = decision;
+	}
 
-
-    public ValueRestrictionAction(IDecision<?> decision) {
-        this.decision = decision;
-    }
-
-
-    public IDecision<?> getDecision() {
-        return decision;
-    }
-
+	public IDecision<?> getDecision() {
+		return decision;
+	}
 
 }

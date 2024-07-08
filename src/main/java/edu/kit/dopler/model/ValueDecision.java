@@ -12,8 +12,8 @@ public abstract class ValueDecision<T> extends Decision<T> {
 
     private Set<IExpression> validityConditions = Collections.emptySet();
 
-    public ValueDecision(String question, String description, IExpression visibilityCondition, Set<Rule> rules, Set<IExpression> validityConditions, DecisionType decisionType) {
-        super(question, description, visibilityCondition, rules,decisionType);
+    public ValueDecision(String displayId, String question, String description, IExpression visibilityCondition, Set<Rule> rules, Set<IExpression> validityConditions, DecisionType decisionType) {
+        super(displayId, question, description, visibilityCondition, rules,decisionType);
         this.validityConditions = validityConditions;
     }
 
