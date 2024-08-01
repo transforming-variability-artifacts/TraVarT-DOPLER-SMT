@@ -14,12 +14,12 @@ import static edu.kit.dopler.model.Main.checkSat;
 public class SATEncoderTest extends TestCase {
 
 
-    public void testGetModelsFromCsv() throws NotSupportedVariabilityTypeException, IOException {
+    public void testGetModelsFromCsv() throws Exception {
 
         DecisionModelReader decisionModelReader = new DecisionModelReader();
 
         Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelCSVs/dm_VaMoS.csv"));
-
+        assertTrue(checkSat(dopler.toSMTStream()));
     }
 
 

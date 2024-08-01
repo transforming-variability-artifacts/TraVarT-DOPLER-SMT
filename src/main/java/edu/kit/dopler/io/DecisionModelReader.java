@@ -55,25 +55,25 @@ public class DecisionModelReader {
 				switch (typeString) {
 				case "Boolean":
 					decision = new BooleanDecision(id, questionString, descriptionString,
-							new BooleanLiteralExpression(true), Collections.emptySet());
+							new BooleanLiteralExpression(true), new HashSet<>());
 					break;
 				case "Enumeration":
 					decision = deriveEnumerationDecision(record, id, descriptionString, questionString, decision);
 					break;
 				case "Double":
 					String rangeString = record.get(CSVHeader.RANGE.toString());
-					Set<IExpression> validityConditions = Collections.emptySet();
+					Set<IExpression> validityConditions = new HashSet<>();
 					if (!rangeString.isBlank()) {
 						validityConditions = deriveNumberValidityConditions(rangeString);
 					} 
-					decision = new NumberDecision(id, questionString, descriptionString, new BooleanLiteralExpression(true), Collections.emptySet(), validityConditions);
+					decision = new NumberDecision(id, questionString, descriptionString, new BooleanLiteralExpression(true), new HashSet<>(), validityConditions);
 					
 					break;
 				case "String":
 					rangeString = record.get(CSVHeader.RANGE.toString());
-					validityConditions = Collections.emptySet();
+					validityConditions = new HashSet<>();
 					decision = new StringDecision(id, questionString, descriptionString, new BooleanLiteralExpression(true),
-							Collections.emptySet(), validityConditions);
+							new HashSet<>(), validityConditions);
 					break;
 				default:
 					throw new NotSupportedVariabilityTypeException(typeString);
@@ -92,16 +92,14 @@ public class DecisionModelReader {
 				
 				IDecision decision = DoplerUtils.getDecision(dm,id);
 				assert decision != null;
-
 				String csvRules = record.get(CSVHeader.RULES.toString());
-				System.out.println(csvRules);
 				if (!csvRules.isEmpty()) {
 					// TODO: Find better way to spit the string of rules (decision names may have
 					// "if" as part of their names)
 					String[] CSVruleSplit = Arrays.stream(csvRules.split("if")).map(String::trim)
 							.filter(s -> !s.isEmpty() && !s.isBlank()).toArray(String[]::new);
 					Set<Rule> rules = rParser.parse(decision, CSVruleSplit);
-					rules.forEach(rule -> decision.addRule(rule));
+					rules.forEach(decision::addRule);
 				}
 
 				String visiblity = record.get(CSVHeader.VISIBLITY.toString());

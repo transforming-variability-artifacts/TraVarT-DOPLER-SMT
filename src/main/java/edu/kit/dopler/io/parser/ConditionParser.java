@@ -30,7 +30,7 @@ public class ConditionParser {
 	private static final String LESS = "<";
 	private static final String EQUAL = "=";
 	private static final String OPENING_PARENTHESE = "(";
-	private static final Object CLOSING_PARENTHESE = ")";
+	private static final String CLOSING_PARENTHESE = ")";
 	private static final String CLOSING_CURRLY_PARENTHESE = "}";
 	private static final String DECISION_VALUE_DELIMITER = ".";
 
@@ -56,7 +56,7 @@ public class ConditionParser {
 		index = 0;
 		input = Arrays.stream(str.split(REGEX)).map(String::trim).filter(s -> !s.isEmpty() && !s.isBlank())
 				.toArray(String[]::new);
-		System.out.println(input);
+		System.out.println(Arrays.toString(input));
 		if (input.length > 0) {
 			return parseCondition();
 		}
@@ -147,7 +147,7 @@ public class ConditionParser {
 	private IExpression factor() throws ParserException {
 
 		nextSymbol();
-		System.out.println(symbol);
+		//System.out.println(symbol);
 		IExpression v = null;
 		if (symbol.equals(CLOSING_CURRLY_PARENTHESE)) {
 			nextSymbol();
@@ -201,34 +201,56 @@ public class ConditionParser {
 			nextSymbol();
 			if (symbol.equals(DECISION_VALUE_DELIMITER)) {
 				nextSymbol();
-				v =  getValueLiteral(v);
+				v = getValueLiteral(v);
 			} else if (isTaken) {
 				v = new IsTaken(d);
 //			} else if (isSelected || symbol.equals(CLOSING_PARENTHESE)) {
 //				v = new IsSelected(d);
 //			} else if (d != null) {
 //				v = new IsSelectedFunction(d);
-			/**} else if (symbol.equals(EQUAL)) {
+			} else if (symbol.equals(EQUAL)) {
 				nextSymbol();
-				if(symbol.equals(EQUAL)){
+				if (symbol.equals(EQUAL)) {
 					nextSymbol();
-					System.out.println(symbol);
-					LiteralExpression literalExpression;
-					switch (d.getDecisionType()) {
-						case DecisionType:
-							boolean literal = Boolean.parseBoolean(symbol);
-							literalExpression = new BooleanLiteralExpression(literal);
-					}
-					v = new Equals(new DecisionValueCallExpression(d),new BooleanLiteralExpression(true));
+					LiteralExpression literalExpression = getLiteralExpression(d, symbol);
+					v = new Equals(new DecisionValueCallExpression(d), literalExpression);
 				}
+			} else if (symbol.equals(CLOSING_PARENTHESE)) {
 
-			**/
+				v = new Equals(new DecisionValueCallExpression(d),new BooleanLiteralExpression(true));
 
 			} else {
-					throw new ParserException("unknown function/decision for symbol " + symbol);
-				}
+				throw new ParserException("unknown function/decision for symbol " + symbol);
 			}
+
+		}
 		return v;
+	}
+
+	private static LiteralExpression getLiteralExpression(IDecision d, String symbol) {
+		LiteralExpression literalExpression;
+		switch (d.getDecisionType().toString()) {
+			case "Boolean":
+				boolean Boolliteral = Boolean.parseBoolean(symbol);
+				literalExpression = new BooleanLiteralExpression(Boolliteral);
+				break;
+			case "Double":
+				double doubleLiteral = Double.parseDouble(symbol);
+				literalExpression = new DoubleLiteralExpression(doubleLiteral);
+				break;
+			case "Enum":
+				EnumerationLiteral literal = new EnumerationLiteral(symbol);
+				literalExpression = new EnumeratorLiteralExpression(literal);
+				// TODO get the real Enumeration Literal instead of creating it here
+				break;
+			case "String":
+				String stringliteral = symbol;
+				literalExpression = new StringLiteralExpression(stringliteral);
+				break;
+			default:
+				literalExpression = new BooleanLiteralExpression(true);
+		}
+		return literalExpression;
 	}
 
 	private void nextSymbol() {
