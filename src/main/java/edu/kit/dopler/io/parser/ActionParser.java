@@ -17,21 +17,7 @@ import java.util.Queue;
 import edu.kit.dopler.common.DoplerUtils;
 import edu.kit.dopler.exceptions.InvalidActionException;
 import edu.kit.dopler.exceptions.ParserException;
-import edu.kit.dopler.model.AbstractValue;
-import edu.kit.dopler.model.Allows;
-import edu.kit.dopler.model.BooleanDecision;
-import edu.kit.dopler.model.BooleanEnforce;
-import edu.kit.dopler.model.BooleanLiteralExpression;
-import edu.kit.dopler.model.BooleanValue;
-import edu.kit.dopler.model.DisAllows;
-import edu.kit.dopler.model.Dopler;
-import edu.kit.dopler.model.DoubleValue;
-import edu.kit.dopler.model.Enforce;
-import edu.kit.dopler.model.IAction;
-import edu.kit.dopler.model.IDecision;
-import edu.kit.dopler.model.IExpression;
-import edu.kit.dopler.model.NumberEnforce;
-import edu.kit.dopler.model.StringValue;
+import edu.kit.dopler.model.*;
 
 public class ActionParser {
 
@@ -84,9 +70,9 @@ public class ActionParser {
 				continue;
 			}
 			if (symbol.equals(TRUE)) {
-				actionElements.add(new BooleanLiteralExpression(true));
+				actionElements.add(new BooleanValue(true));
 			} else if (symbol.equals(FALSE)) {
-				actionElements.add(new BooleanLiteralExpression(false));
+				actionElements.add(new BooleanValue(false));
 			} else if (symbol.equals(ASSIGN)) {
 				isAssign = true;
 				Object left = actionElements.remove();
@@ -109,6 +95,7 @@ public class ActionParser {
 				actionElements.add(new StringValue(symbol));
 			} else { // decision
 				IDecision d = DoplerUtils.getDecision(dm, symbol);
+				System.out.println(d);
 				actionElements.add(d);
 			}
 			if (actionElements.size() == NECESSARY_ELEMENTS_FOR_ACTION) {
@@ -118,13 +105,14 @@ public class ActionParser {
 					if (!(left instanceof IDecision)) {
 						throw new InvalidActionException("Lefthand operand is not a valid decision.");
 					}
-					if (right == new BooleanLiteralExpression(true)) {
-						action = new BooleanEnforce((BooleanDecision) left, new BooleanValue(true));
-					} else if (right == new BooleanLiteralExpression(false)) {
-						action = new BooleanEnforce((BooleanDecision) left, new BooleanValue(false));
-					} else if (right instanceof DoubleValue) {
-						action = new NumberEnforce((IDecision<?>) left, (DoubleValue) right);
-					}
+                    action = switch (((IDecision<?>) left).getDecisionType().toString()) {
+                        case "Boolean" -> new BooleanEnforce((BooleanDecision) left, (IValue<Boolean>) right);
+                        case "Double" -> new NumberEnforce((IDecision<?>) left, (IValue<?>) right);
+                        case "Enumeration" -> new EnumEnforce((IDecision<?>) left, (IValue<?>) right);
+                        // TODO get the real Enumeration Literal instead of creating it here
+                        case "String" -> new StringEnforce((IDecision<?>) left, (IValue<?>) right);
+                        default -> action;
+                    };
 				} else if (isAllowFunction) {
 					Object left = actionElements.remove();
 					Object right = actionElements.remove();

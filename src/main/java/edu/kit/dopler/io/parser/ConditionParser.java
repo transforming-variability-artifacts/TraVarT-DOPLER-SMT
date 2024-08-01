@@ -56,7 +56,6 @@ public class ConditionParser {
 		index = 0;
 		input = Arrays.stream(str.split(REGEX)).map(String::trim).filter(s -> !s.isEmpty() && !s.isBlank())
 				.toArray(String[]::new);
-		System.out.println(Arrays.toString(input));
 		if (input.length > 0) {
 			return parseCondition();
 		}
@@ -238,7 +237,7 @@ public class ConditionParser {
 				double doubleLiteral = Double.parseDouble(symbol);
 				literalExpression = new DoubleLiteralExpression(doubleLiteral);
 				break;
-			case "Enum":
+			case "Enumeration":
 				EnumerationLiteral literal = new EnumerationLiteral(symbol);
 				literalExpression = new EnumeratorLiteralExpression(literal);
 				// TODO get the real Enumeration Literal instead of creating it here
