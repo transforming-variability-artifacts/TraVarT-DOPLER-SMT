@@ -95,7 +95,6 @@ public class ActionParser {
 				actionElements.add(new StringValue(symbol));
 			} else { // decision
 				IDecision d = DoplerUtils.getDecision(dm, symbol);
-				System.out.println(d);
 				actionElements.add(d);
 			}
 			if (actionElements.size() == NECESSARY_ELEMENTS_FOR_ACTION) {

@@ -142,7 +142,7 @@ public class DecisionModelReader {
 		int min = Integer.parseInt(values[0]);
 		int max = Integer.parseInt(values[1]);
 		decision = new EnumerationDecision(id, questionString, descriptionString, new BooleanLiteralExpression(true),
-				Collections.emptySet(), enumeration, min, max);
+				new HashSet<>(), enumeration, min, max);
 		return decision;
 	}
 }

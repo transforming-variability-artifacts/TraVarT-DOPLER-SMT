@@ -146,7 +146,6 @@ public class ConditionParser {
 	private IExpression factor() throws ParserException {
 
 		nextSymbol();
-		//System.out.println(symbol);
 		IExpression v = null;
 		if (symbol.equals(CLOSING_CURRLY_PARENTHESE)) {
 			nextSymbol();
@@ -201,6 +200,8 @@ public class ConditionParser {
 			if (symbol.equals(DECISION_VALUE_DELIMITER)) {
 				nextSymbol();
 				v = getValueLiteral(v);
+			} else if (symbol.equals(EOF)) {
+				v = new Equals(new DecisionValueCallExpression(d),new BooleanLiteralExpression(true));
 			} else if (isTaken) {
 				v = new IsTaken(d);
 //			} else if (isSelected || symbol.equals(CLOSING_PARENTHESE)) {
