@@ -5,18 +5,24 @@ import java.util.stream.Stream;
 
 public class Dopler {
 
-    Set<? super IDecision<?>> decisions;
+    Set<IDecision<?>> decisions;
     Set<Assets> assets;
     Set<Enum> enumSet;
-    
-    public Dopler() {
-    	this(Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
+    String name;
+
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Dopler(Set<IDecision<?>> decisions, Set<Assets> assets, Set<Enum> enumSet) {
+    public Dopler() {
+    	this(new HashSet<>(), new HashSet<>(), new HashSet<>(), "");
+    }
+
+    public Dopler(Set<IDecision<?>> decisions, Set<Assets> assets, Set<Enum> enumSet, String name) {
         this.decisions = decisions;
         this.assets = assets;
         this.enumSet = enumSet;
+        this.name = name;
     }
 
     public void addDecision(IDecision<?> decisionType){

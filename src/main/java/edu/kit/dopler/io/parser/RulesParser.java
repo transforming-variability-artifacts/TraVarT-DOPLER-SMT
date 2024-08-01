@@ -60,6 +60,7 @@ public class RulesParser {
 	public Set<Rule> parse(final IDecision decision, final String[] csvRuleSplit) throws ParserException {
 		Objects.requireNonNull(decision);
 		Objects.requireNonNull(csvRuleSplit);
+		//System.out.println(csvRuleSplit);
 		Set<Rule> rules = new HashSet<>();
 		assert csvRuleSplit != null && csvRuleSplit.length > 0;
 		for (String csvRule : csvRuleSplit) {

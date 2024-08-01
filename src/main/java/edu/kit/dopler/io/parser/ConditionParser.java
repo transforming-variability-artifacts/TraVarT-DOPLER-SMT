@@ -14,20 +14,7 @@ import java.util.Objects;
 
 import edu.kit.dopler.common.DoplerUtils;
 import edu.kit.dopler.exceptions.ParserException;
-import edu.kit.dopler.model.BooleanLiteralExpression;
-import edu.kit.dopler.model.Dopler;
-import edu.kit.dopler.model.DoubleLiteralExpression;
-import edu.kit.dopler.model.Enforce;
-import edu.kit.dopler.model.Equals;
-import edu.kit.dopler.model.GreatherThan;
-import edu.kit.dopler.model.IDecision;
-import edu.kit.dopler.model.IExpression;
-import edu.kit.dopler.model.IsTaken;
-import edu.kit.dopler.model.LessThan;
-import edu.kit.dopler.model.OR;
-import edu.kit.dopler.model.StringLiteralExpression;
-import edu.kit.dopler.model.AND;
-import edu.kit.dopler.model.NOT;
+import edu.kit.dopler.model.*;
 
 @SuppressWarnings("rawtypes")
 public class ConditionParser {
@@ -65,9 +52,11 @@ public class ConditionParser {
 
 	public IExpression parse(final String str) throws ParserException {
 		Objects.requireNonNull(str);
+		//System.out.println(str);
 		index = 0;
 		input = Arrays.stream(str.split(REGEX)).map(String::trim).filter(s -> !s.isEmpty() && !s.isBlank())
 				.toArray(String[]::new);
+		System.out.println(input);
 		if (input.length > 0) {
 			return parseCondition();
 		}
@@ -94,6 +83,7 @@ public class ConditionParser {
 
 	private IExpression comperator() throws ParserException {
 		IExpression v = factor();
+
 		while (symbol.equals(EQUAL) || symbol.equals(GREATER) || symbol.equals(LESS)) {
 			String first = symbol;
 			nextSymbol();
@@ -155,7 +145,9 @@ public class ConditionParser {
 	}
 
 	private IExpression factor() throws ParserException {
+
 		nextSymbol();
+		System.out.println(symbol);
 		IExpression v = null;
 		if (symbol.equals(CLOSING_CURRLY_PARENTHESE)) {
 			nextSymbol();
@@ -205,21 +197,37 @@ public class ConditionParser {
 			nextSymbol();
 		} else { // decision
 			IDecision d = DoplerUtils.getDecision(dm, symbol);
+
 			nextSymbol();
 			if (symbol.equals(DECISION_VALUE_DELIMITER)) {
 				nextSymbol();
 				v =  getValueLiteral(v);
-			} else 
-			if (isTaken) {
+			} else if (isTaken) {
 				v = new IsTaken(d);
 //			} else if (isSelected || symbol.equals(CLOSING_PARENTHESE)) {
 //				v = new IsSelected(d);
 //			} else if (d != null) {
 //				v = new IsSelectedFunction(d);
+			/**} else if (symbol.equals(EQUAL)) {
+				nextSymbol();
+				if(symbol.equals(EQUAL)){
+					nextSymbol();
+					System.out.println(symbol);
+					LiteralExpression literalExpression;
+					switch (d.getDecisionType()) {
+						case DecisionType:
+							boolean literal = Boolean.parseBoolean(symbol);
+							literalExpression = new BooleanLiteralExpression(literal);
+					}
+					v = new Equals(new DecisionValueCallExpression(d),new BooleanLiteralExpression(true));
+				}
+
+			**/
+
 			} else {
-				throw new ParserException("unknown function/decision for symbol " + symbol);
+					throw new ParserException("unknown function/decision for symbol " + symbol);
+				}
 			}
-		}
 		return v;
 	}
 

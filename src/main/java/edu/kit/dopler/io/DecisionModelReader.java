@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -39,7 +36,7 @@ public class DecisionModelReader {
 	public Dopler read(final Path path) throws IOException, NotSupportedVariabilityTypeException {
 		Objects.requireNonNull(path);
 		Dopler dm = new Dopler();
-//		dm.setName(path.getFileName().toString());
+		dm.setName(path.getFileName().toString());
 //		dm.setSourceFile(path.toAbsolutePath().toString());
 		CSVFormat dmFormat = CSVUtils.createCSVFormat();
 
@@ -49,12 +46,12 @@ public class DecisionModelReader {
 				String descriptionString = "";
 				String id = record.get(CSVHeader.ID).trim();
 				assert !id.isBlank();
-				String typeString = record.get(CSVHeader.TYPE).trim();
+				String typeString = record.get(CSVHeader.TYPE.toString()).trim();
 				assert !typeString.isBlank();
-				String questionString = record.get(CSVHeader.QUESTION).trim();
+				String questionString = record.get(CSVHeader.QUESTION.toString()).trim();
 				assert !questionString.isBlank();
 
-				IDecision decision = null;
+				IDecision<?> decision = null;
 				switch (typeString) {
 				case "Boolean":
 					decision = new BooleanDecision(id, questionString, descriptionString,
@@ -64,7 +61,7 @@ public class DecisionModelReader {
 					decision = deriveEnumerationDecision(record, id, descriptionString, questionString, decision);
 					break;
 				case "Double":
-					String rangeString = record.get(CSVHeader.RANGE);
+					String rangeString = record.get(CSVHeader.RANGE.toString());
 					Set<IExpression> validityConditions = Collections.emptySet();
 					if (!rangeString.isBlank()) {
 						validityConditions = deriveNumberValidityConditions(rangeString);
@@ -73,7 +70,7 @@ public class DecisionModelReader {
 					
 					break;
 				case "String":
-					rangeString = record.get(CSVHeader.RANGE);
+					rangeString = record.get(CSVHeader.RANGE.toString());
 					validityConditions = Collections.emptySet();
 					decision = new StringDecision(id, questionString, descriptionString, new BooleanLiteralExpression(true),
 							Collections.emptySet(), validityConditions);
@@ -96,7 +93,8 @@ public class DecisionModelReader {
 				IDecision decision = DoplerUtils.getDecision(dm,id);
 				assert decision != null;
 
-				String csvRules = record.get(CSVHeader.RULES);
+				String csvRules = record.get(CSVHeader.RULES.toString());
+				System.out.println(csvRules);
 				if (!csvRules.isEmpty()) {
 					// TODO: Find better way to spit the string of rules (decision names may have
 					// "if" as part of their names)
@@ -106,7 +104,7 @@ public class DecisionModelReader {
 					rules.forEach(rule -> decision.addRule(rule));
 				}
 
-				String visiblity = record.get(CSVHeader.VISIBLITY);
+				String visiblity = record.get(CSVHeader.VISIBLITY.toString());
 				IExpression v = vParser.parse(visiblity);
 				decision.setVisibilityCondition(v);
 			}
@@ -127,15 +125,15 @@ public class DecisionModelReader {
 
 	private IDecision deriveEnumerationDecision(CSVRecord record, String id, String descriptionString, String questionString,
 			IDecision decision) throws NotSupportedVariabilityTypeException {
-		String rangeString = record.get(CSVHeader.RANGE).trim();
+		String rangeString = record.get(CSVHeader.RANGE.toString()).trim();
 		String[] options = Arrays.stream(rangeString.split("\\|")).map(String::trim)
 				.filter(s -> !s.isEmpty() && !s.isBlank()).toArray(String[]::new);
 		assert options.length > 0;
-		Enumeration enumeration = new Enumeration(Collections.emptySet());
+		Enumeration enumeration = new Enumeration(new HashSet<>());
 		for (String o : options) {
 			enumeration.addEnumLiteral(new EnumerationLiteral(o));
 		}
-		String cardinality = record.get(CSVHeader.CARDINALITY).trim();
+		String cardinality = record.get(CSVHeader.CARDINALITY.toString()).trim();
 		assert !cardinality.isBlank();
 		String[] values = Arrays.stream(cardinality.split(":")).map(String::trim)
 				.filter(s -> !s.isEmpty() && !s.isBlank()).toArray(String[]::new);

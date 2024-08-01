@@ -1,7 +1,11 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
+import edu.kit.dopler.io.DecisionModelReader;
 import junit.framework.TestCase;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.stream.Stream;
 
@@ -10,11 +14,19 @@ import static edu.kit.dopler.model.Main.checkSat;
 public class SATEncoderTest extends TestCase {
 
 
+    public void testGetModelsFromCsv() throws NotSupportedVariabilityTypeException, IOException {
+
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelCSVs/dm_VaMoS.csv"));
+
+    }
+
 
 
     public void testDoplerModelVaMoS() throws Exception {
 
-        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>());
+        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>(),"");
         BooleanDecision decision1 = new BooleanDecision("test", "Support GSM 1900 protocol?","",new BooleanLiteralExpression(true), new HashSet<>());
         dopler.addDecision(decision1);
 
@@ -60,7 +72,7 @@ public class SATEncoderTest extends TestCase {
 
     public void testDoplerModelEShop() throws Exception {
 
-        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>());
+        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>(),"");
         BooleanDecision decision1 = new BooleanDecision("test", "Do you want to create an Onlineshop?","",new BooleanLiteralExpression(true), new HashSet<>());
         dopler.addDecision(decision1);
 
@@ -164,7 +176,7 @@ public class SATEncoderTest extends TestCase {
 
 
     public void testDoplerModelPizzas() throws Exception {
-        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>());
+        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>(),"");
 
 
 
@@ -210,7 +222,7 @@ public class SATEncoderTest extends TestCase {
 
 
     public void testDoplerModelPizzas2() throws Exception {
-        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>());
+        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>(),"");
 
 
 
@@ -271,7 +283,7 @@ public class SATEncoderTest extends TestCase {
     }
 
     public void testDoplerModelPizzas2withUnsatAssert() throws Exception {
-        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>());
+        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>(),"");
 
 
 
