@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 
+import edu.kit.dopler.model.*;
+import edu.kit.dopler.model.Enumeration;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
@@ -15,17 +17,6 @@ import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
 import edu.kit.dopler.exceptions.ParserException;
 import edu.kit.dopler.io.parser.ConditionParser;
 import edu.kit.dopler.io.parser.RulesParser;
-import edu.kit.dopler.model.BooleanDecision;
-import edu.kit.dopler.model.BooleanLiteralExpression;
-import edu.kit.dopler.model.Dopler;
-import edu.kit.dopler.model.Enumeration;
-import edu.kit.dopler.model.EnumerationDecision;
-import edu.kit.dopler.model.EnumerationLiteral;
-import edu.kit.dopler.model.IDecision;
-import edu.kit.dopler.model.IExpression;
-import edu.kit.dopler.model.NumberDecision;
-import edu.kit.dopler.model.Rule;
-import edu.kit.dopler.model.StringDecision;
 
 public class DecisionModelReader {
 
@@ -63,11 +54,12 @@ public class DecisionModelReader {
 				case "Double":
 					String rangeString = record.get(CSVHeader.RANGE.toString());
 					Set<IExpression> validityConditions = new HashSet<>();
-					if (!rangeString.isBlank()) {
-						validityConditions = deriveNumberValidityConditions(rangeString);
-					} 
 					decision = new NumberDecision(id, questionString, descriptionString, new BooleanLiteralExpression(true), new HashSet<>(), validityConditions);
-					
+					if (!rangeString.isBlank()) {
+						validityConditions = deriveNumberValidityConditions(rangeString, decision);
+						NumberDecision numberDecision = (NumberDecision) decision;
+						numberDecision.setValidityConditions(validityConditions);
+					}
 					break;
 				case "String":
 					rangeString = record.get(CSVHeader.RANGE.toString());
@@ -114,12 +106,15 @@ public class DecisionModelReader {
 		return dm;
 	}
 
-	private Set<IExpression> deriveNumberValidityConditions(String rangeString) {
+	private Set<IExpression> deriveNumberValidityConditions(String rangeString, IDecision decision) {
 		String[] options = Arrays.stream(rangeString.split("-")).map(String::trim)
 		.filter(s -> !s.isEmpty() && !s.isBlank()).toArray(String[]::new);
 		assert options.length == 2;
-		
-		return null;
+		Set<IExpression> validityconditions = new HashSet<>();
+		validityconditions.add(new GreatherThan(new DoubleLiteralExpression(Double.parseDouble(options[0])),new DecisionValueCallExpression(decision)));
+		validityconditions.add(new LessThan(new DoubleLiteralExpression(Double.parseDouble(options[1])),new DecisionValueCallExpression(decision)));
+		return validityconditions;
+
 	}
 
 	private IDecision deriveEnumerationDecision(CSVRecord record, String id, String descriptionString, String questionString,
