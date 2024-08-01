@@ -52,10 +52,11 @@ public class ConditionParser {
 
 	public IExpression parse(final String str) throws ParserException {
 		Objects.requireNonNull(str);
-		//System.out.println(str);
+		isTaken = false;
 		index = 0;
 		input = Arrays.stream(str.split(REGEX)).map(String::trim).filter(s -> !s.isEmpty() && !s.isBlank())
 				.toArray(String[]::new);
+		//System.out.println(Arrays.toString(input));
 		if (input.length > 0) {
 			return parseCondition();
 		}
@@ -144,7 +145,6 @@ public class ConditionParser {
 	}
 
 	private IExpression factor() throws ParserException {
-
 		nextSymbol();
 		IExpression v = null;
 		if (symbol.equals(CLOSING_CURRLY_PARENTHESE)) {
@@ -163,8 +163,12 @@ public class ConditionParser {
 			isTaken = true;
 			if (symbol.equals(OPENING_PARENTHESE)) {
 				v = parseCondition();
-				nextSymbol(); // we don't care about )
+
+
 			}
+
+		} else if (symbol.equals(CLOSING_PARENTHESE)) {
+
 //		} else if (symbol.equals(IsSelectedFunction.FUNCTION_NAME)) {
 //			nextSymbol();
 //			isSelected = true;
@@ -203,6 +207,7 @@ public class ConditionParser {
 			} else if (symbol.equals(EOF)) {
 				v = new Equals(new DecisionValueCallExpression(d),new BooleanLiteralExpression(true));
 			} else if (isTaken) {
+
 				v = new IsTaken(d);
 //			} else if (isSelected || symbol.equals(CLOSING_PARENTHESE)) {
 //				v = new IsSelected(d);
