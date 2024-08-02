@@ -3,16 +3,26 @@ package edu.kit.dopler.common;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import edu.kit.dopler.model.Decision;
+import edu.kit.dopler.model.*;
 import edu.kit.dopler.model.Decision.DecisionType;
-import edu.kit.dopler.model.Dopler;
-import edu.kit.dopler.model.IDecision;
-import edu.kit.dopler.model.EnumerationDecision;
 
 public final class DoplerUtils {
 
 	private DoplerUtils() {
 
+	}
+
+	public static EnumerationLiteral getEnumerationliteral(final Dopler dm, final IValue enumString){
+		for(Object o : dm.getEnumSet()){
+			Enumeration enumeration = (Enumeration) o;
+			for(EnumerationLiteral enumerationLiteral: enumeration.getEnumerationLiterals()){
+
+				if(enumerationLiteral.getValue().equals(enumString.getValue())){
+					return enumerationLiteral;
+				}
+			}
+		}
+		return null;
 	}
 
 	public static IDecision getDecision(final Dopler dm, final String displayId) {

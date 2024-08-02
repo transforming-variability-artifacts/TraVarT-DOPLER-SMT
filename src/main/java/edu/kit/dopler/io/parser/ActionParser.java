@@ -51,6 +51,7 @@ public class ActionParser {
 		index = 0;
 		input = Arrays.stream(str.split(REGEX)).map(String::trim).filter(s -> !s.isEmpty() && !s.isBlank())
 				.toArray(String[]::new);
+		//System.out.println(Arrays.toString(input));
 		if (input.length > 0) {
 			return parseAction();
 		}
@@ -98,6 +99,7 @@ public class ActionParser {
 				actionElements.add(d);
 			}
 			if (actionElements.size() == NECESSARY_ELEMENTS_FOR_ACTION) {
+
 				if (isAssign) {
 					Object left = actionElements.remove();
 					Object right = actionElements.remove();
@@ -107,11 +109,12 @@ public class ActionParser {
                     action = switch (((IDecision<?>) left).getDecisionType().toString()) {
                         case "Boolean" -> new BooleanEnforce((BooleanDecision) left, (IValue<Boolean>) right);
                         case "Double" -> new NumberEnforce((IDecision<?>) left, (IValue<?>) right);
-                        case "Enumeration" -> new EnumEnforce((IDecision<?>) left, (IValue<?>) right);
+                        case "Enumeration" -> new EnumEnforce((IDecision<?>) left, (IValue<?>) new StringValue(DoplerUtils.getEnumerationliteral(dm, (IValue) right).getValue()));
                         // TODO get the real Enumeration Literal instead of creating it here
                         case "String" -> new StringEnforce((IDecision<?>) left, (IValue<?>) right);
                         default -> action;
                     };
+					System.out.println();
 				} else if (isAllowFunction) {
 					Object left = actionElements.remove();
 					Object right = actionElements.remove();

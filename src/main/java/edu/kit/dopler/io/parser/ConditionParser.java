@@ -203,7 +203,7 @@ public class ConditionParser {
 			nextSymbol();
 			if (symbol.equals(DECISION_VALUE_DELIMITER)) {
 				nextSymbol();
-				v = getValueLiteral(v);
+				v = new Equals(new DecisionValueCallExpression(d), new EnumeratorLiteralExpression(DoplerUtils.getEnumerationliteral(dm,new StringValue(symbol)))) ;
 			} else if (symbol.equals(EOF)) {
 				v = new Equals(new DecisionValueCallExpression(d),new BooleanLiteralExpression(true));
 			} else if (isTaken) {

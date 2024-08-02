@@ -49,7 +49,7 @@ public class DecisionModelReader {
 							new BooleanLiteralExpression(true), new HashSet<>());
 					break;
 				case "Enumeration":
-					decision = deriveEnumerationDecision(record, id, descriptionString, questionString, decision);
+					decision = deriveEnumerationDecision(dm, record, id, descriptionString, questionString, decision);
 					break;
 				case "Double":
 					String rangeString = record.get(CSVHeader.RANGE.toString());
@@ -117,7 +117,7 @@ public class DecisionModelReader {
 
 	}
 
-	private IDecision deriveEnumerationDecision(CSVRecord record, String id, String descriptionString, String questionString,
+	private IDecision deriveEnumerationDecision(Dopler dm, CSVRecord record, String id, String descriptionString, String questionString,
 			IDecision decision) throws NotSupportedVariabilityTypeException {
 		String rangeString = record.get(CSVHeader.RANGE.toString()).trim();
 		String[] options = Arrays.stream(rangeString.split("\\|")).map(String::trim)
@@ -139,6 +139,7 @@ public class DecisionModelReader {
 		int max = Integer.parseInt(values[1]);
 		decision = new EnumerationDecision(id, questionString, descriptionString, new BooleanLiteralExpression(true),
 				new HashSet<>(), enumeration, min, max);
+		dm.addEnum(enumeration);
 		return decision;
 	}
 }

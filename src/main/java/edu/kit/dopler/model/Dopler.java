@@ -7,7 +7,7 @@ public class Dopler {
 
     Set<IDecision<?>> decisions;
     Set<Assets> assets;
-    Set<Enum> enumSet;
+    Set<Enumeration> enumSet;
     String name;
 
     public void setName(String name) {
@@ -18,7 +18,7 @@ public class Dopler {
     	this(new HashSet<>(), new HashSet<>(), new HashSet<>(), "");
     }
 
-    public Dopler(Set<IDecision<?>> decisions, Set<Assets> assets, Set<Enum> enumSet, String name) {
+    public Dopler(Set<IDecision<?>> decisions, Set<Assets> assets, Set<Enumeration> enumSet, String name) {
         this.decisions = decisions;
         this.assets = assets;
         this.enumSet = enumSet;
@@ -49,14 +49,17 @@ public class Dopler {
         this.assets = assets;
     }
 
-    public Set<Enum> getEnumSet() {
+    public Set<Enumeration> getEnumSet() {
         return enumSet;
     }
 
-    public void setEnumSet(Set<Enum> enumSet) {
+    public void setEnumSet(Set<Enumeration> enumSet) {
         this.enumSet = enumSet;
     }
 
+    public void addEnum(Enumeration e){
+        this.enumSet.add(e);
+    }
 
     /**
      * Creates a Stream of the DOPLER model in an SMT Encoding
