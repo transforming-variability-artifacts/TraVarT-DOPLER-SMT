@@ -33,7 +33,9 @@ public class AND extends BinaryExpression{
             boolean right = ((BooleanLiteralExpression) getRightExpression()).getLiteral();
             boolean left = ((BooleanLiteralExpression) getLeftExpression()).getLiteral();
             return left && right;
-        }else {
+        } else if (getLeftExpression() instanceof  BinaryExpression && getRightExpression() instanceof BinaryExpression) {
+            return getLeftExpression().evaluate() && getRightExpression().evaluate();
+        } else {
             throw new EvaluationException("Only Boolean Values Supported");
         }
 
@@ -47,12 +49,11 @@ public class AND extends BinaryExpression{
      */
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String callingDecision) {
-        if(getLeftExpression() instanceof BooleanLiteralExpression || getLeftExpression() instanceof DecisionValueCallExpression || getRightExpression() instanceof DecisionValueCallExpression || getRightExpression() instanceof BooleanLiteralExpression){
-            builder.add("(and ");
-            getLeftExpression().toSMTStream(builder, callingDecision);
-            getRightExpression().toSMTStream(builder, callingDecision);
-            builder.add(")");
-        }
+        builder.add("(and ");
+        getLeftExpression().toSMTStream(builder, callingDecision);
+        getRightExpression().toSMTStream(builder, callingDecision);
+        builder.add(")");
+
 
     }
 

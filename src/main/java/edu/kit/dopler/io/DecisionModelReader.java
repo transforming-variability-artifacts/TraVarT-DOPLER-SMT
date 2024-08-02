@@ -96,7 +96,6 @@ public class DecisionModelReader {
 
 				String visiblity = record.get(CSVHeader.VISIBLITY.toString());
 				IExpression v = vParser.parse(visiblity);
-
 				decision.setVisibilityCondition(v);
 			}
 		} catch (ParserException e) {

@@ -66,9 +66,11 @@ public class ConditionParser {
 	private IExpression parseCondition() throws ParserException {
 		IExpression v = term();
 		while (symbol.equals(OR)) {
+
 			IExpression r = term();
 			v = new OR(v, r);
 		}
+
 		return v;
 	}
 
@@ -163,8 +165,6 @@ public class ConditionParser {
 			isTaken = true;
 			if (symbol.equals(OPENING_PARENTHESE)) {
 				v = parseCondition();
-
-
 			}
 
 		} else if (symbol.equals(CLOSING_PARENTHESE)) {
@@ -209,6 +209,8 @@ public class ConditionParser {
 			} else if (isTaken) {
 
 				v = new IsTaken(d);
+				isTaken = false;
+				nextSymbol();
 //			} else if (isSelected || symbol.equals(CLOSING_PARENTHESE)) {
 //				v = new IsSelected(d);
 //			} else if (d != null) {
