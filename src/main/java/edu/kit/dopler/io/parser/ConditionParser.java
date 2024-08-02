@@ -224,6 +224,8 @@ public class ConditionParser {
 
 				v = new Equals(new DecisionValueCallExpression(d),new BooleanLiteralExpression(true));
 
+			} else if (symbol.equals(OR)) {
+				v = new OR(new DecisionValueCallExpression(d),parseCondition());
 			} else {
 				throw new ParserException("unknown function/decision for symbol " + symbol);
 			}
