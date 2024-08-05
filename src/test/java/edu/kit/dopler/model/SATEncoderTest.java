@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static edu.kit.dopler.model.Main.checkSat;
@@ -18,8 +19,52 @@ public class SATEncoderTest extends TestCase {
 
         DecisionModelReader decisionModelReader = new DecisionModelReader();
 
-        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelCSVs/dm_VaMoS.csv"));
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelCSVs/dm_DOPLERTools.csv"));
+        dopler.toSMTStream().build().forEach(System.out::println);
         assertTrue(checkSat(dopler.toSMTStream()));
+        /**
+         Stream.Builder<String> builder = dopler.toSMTStream();
+        builder.add("(assert (= END_DECISION_2_Sicilian true))");
+        assertTrue(checkSat(builder));
+         **/
+    }
+
+    public void testEShopModelwithUnsatAsserts() throws Exception {
+
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelCSVs/dm_eShop_DM.csv"));
+        Stream.Builder<String> builder = dopler.toSMTStream();
+        builder.add("(assert (= END_DECISION_5_Payments true))");
+        builder.add("(assert (= END_DECISION_5_Security true))");
+        assertFalse(checkSat(builder));
+
+    }
+
+
+    /**
+     * Asserts that a decision is not Taken but another isTaken with the visibility condition (if the first isTaken) -> so it should be unsat
+     * @throws Exception
+     */
+    public void testDissModelwithUnsatAssert() throws Exception {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelCSVs/dm_DissModel.csv"));
+        Stream.Builder<String> builder = dopler.toSMTStream();
+        builder.add("(assert (= DECISION_0_TAKEN_POST false))");
+        builder.add("(assert (= DECISION_2_TAKEN_POST true))");
+        assertFalse(checkSat(builder));
+    }
+
+    public void testEShopModelwithUnsatAssertsForInvalidCardinality() throws Exception {
+
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelCSVs/dm_eShop_DM.csv"));
+        Stream.Builder<String> builder = dopler.toSMTStream();
+        builder.add("(assert (= END_DECISION_5_Payments false))");
+        builder.add("(assert (= END_DECISION_5_Security false))");
+        builder.add("(assert (= END_DECISION_5_Orders false))");
+        builder.add("(assert (= END_DECISION_5_Wishlist false))");
+        assertFalse(checkSat(builder));
+
     }
 
 

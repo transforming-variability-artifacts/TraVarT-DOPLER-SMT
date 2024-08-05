@@ -43,6 +43,7 @@ public class ConditionParser {
 
 	private boolean isTaken = false;
 	private boolean isSelected = false;
+	private boolean isEquals = false;
 
 	private final Dopler dm;
 
@@ -54,6 +55,7 @@ public class ConditionParser {
 		Objects.requireNonNull(str);
 		isTaken = false;
 		index = 0;
+		isEquals = false;
 		input = Arrays.stream(str.split(REGEX)).map(String::trim).filter(s -> !s.isEmpty() && !s.isBlank())
 				.toArray(String[]::new);
 		//System.out.println(Arrays.toString(input));
@@ -149,6 +151,7 @@ public class ConditionParser {
 	private IExpression factor() throws ParserException {
 		nextSymbol();
 		IExpression v = null;
+
 		if (symbol.equals(CLOSING_CURRLY_PARENTHESE)) {
 			nextSymbol();
 		}
@@ -203,7 +206,12 @@ public class ConditionParser {
 			nextSymbol();
 			if (symbol.equals(DECISION_VALUE_DELIMITER)) {
 				nextSymbol();
-				v = new Equals(new DecisionValueCallExpression(d),new EnumeratorLiteralExpression(DoplerUtils.getEnumerationliteral(dm,new StringValue(symbol))));
+				if (isEquals){
+					v = new EnumeratorLiteralExpression(DoplerUtils.getEnumerationliteral(dm,new StringValue(symbol)));
+				}else {
+					v = new Equals(new DecisionValueCallExpression(d),new EnumeratorLiteralExpression(DoplerUtils.getEnumerationliteral(dm,new StringValue(symbol))));
+
+				}
 
 			} else if (symbol.equals(EOF)) {
 				v = new Equals(new DecisionValueCallExpression(d),new BooleanLiteralExpression(true));
@@ -219,8 +227,9 @@ public class ConditionParser {
 			} else if (symbol.equals(EQUAL)) {
 				nextSymbol();
 				if (symbol.equals(EQUAL)) {
-
+					isEquals = true;
 					v = new Equals(new DecisionValueCallExpression(d), factor());
+
 				}
 			} else if (symbol.equals(CLOSING_PARENTHESE)) {
 

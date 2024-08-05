@@ -51,7 +51,6 @@ public class Equals extends BinaryExpression{
 
     @Override
     public void toSMTStream(Stream.Builder<String> builder, String callingDecision) {
-
         if(getRightExpression() instanceof DecisionValueCallExpression){
             builder.add("(and");
             IDecision<?> decision = ((DecisionValueCallExpression) getRightExpression()).getDecision();
