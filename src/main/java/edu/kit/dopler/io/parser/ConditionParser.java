@@ -203,7 +203,8 @@ public class ConditionParser {
 			nextSymbol();
 			if (symbol.equals(DECISION_VALUE_DELIMITER)) {
 				nextSymbol();
-				v = new Equals(new DecisionValueCallExpression(d), new EnumeratorLiteralExpression(DoplerUtils.getEnumerationliteral(dm,new StringValue(symbol)))) ;
+				v = new Equals(new DecisionValueCallExpression(d),new EnumeratorLiteralExpression(DoplerUtils.getEnumerationliteral(dm,new StringValue(symbol))));
+
 			} else if (symbol.equals(EOF)) {
 				v = new Equals(new DecisionValueCallExpression(d),new BooleanLiteralExpression(true));
 			} else if (isTaken) {
@@ -218,9 +219,8 @@ public class ConditionParser {
 			} else if (symbol.equals(EQUAL)) {
 				nextSymbol();
 				if (symbol.equals(EQUAL)) {
-					nextSymbol();
-					LiteralExpression literalExpression = getLiteralExpression(d, symbol);
-					v = new Equals(new DecisionValueCallExpression(d), literalExpression);
+
+					v = new Equals(new DecisionValueCallExpression(d), factor());
 				}
 			} else if (symbol.equals(CLOSING_PARENTHESE)) {
 

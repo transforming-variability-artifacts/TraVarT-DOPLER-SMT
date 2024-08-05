@@ -110,14 +110,14 @@ public class ActionParser {
                         case "Boolean" -> new BooleanEnforce((BooleanDecision) left, (IValue<Boolean>) right);
                         case "Double" -> new NumberEnforce((IDecision<?>) left, (IValue<?>) right);
                         case "Enumeration" -> new EnumEnforce((IDecision<?>) left, (IValue<?>) new StringValue(DoplerUtils.getEnumerationliteral(dm, (IValue) right).getValue()));
-                        // TODO get the real Enumeration Literal instead of creating it here
                         case "String" -> new StringEnforce((IDecision<?>) left, (IValue<?>) right);
                         default -> action;
                     };
-					System.out.println();
+
 				} else if (isAllowFunction) {
 					Object left = actionElements.remove();
 					Object right = actionElements.remove();
+
 					if (left instanceof IDecision && right instanceof AbstractValue) {
 						action = new Allows((IDecision) left, (AbstractValue) right);
 					}

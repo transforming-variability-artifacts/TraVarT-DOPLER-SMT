@@ -233,7 +233,7 @@ public class Dopler {
                 }else{
                     switch (decision3.getDecisionType()){
                         case BOOLEAN -> type = "bool";
-                        case NUMBER -> type = "double";
+                        case NUMBER -> type = "Int";
                         case STRING -> type = "String";
                     }
 
@@ -300,7 +300,7 @@ public class Dopler {
 
                 switch (decision3.getDecisionType()) {
                     case BOOLEAN -> type = "bool";
-                    case NUMBER -> type = "double";
+                    case NUMBER -> type = "Int";
                     case STRING -> type = "String";
                 }
 
