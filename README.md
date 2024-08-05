@@ -188,7 +188,7 @@ solver already checks the whole range of the value
 ```
 #### Dissallows -> only for ENUM Decision
 ```    
-    (distinct DECISION_0_DECISION_0_DISALLOWEDVALUE_POST false) 
+    (distinct DECISION_0_DECISION_0_DISALLOWEDVALUE_POST true) 
 ```
 
 #### ENFORCE for Boolean, String, Double Decisions
