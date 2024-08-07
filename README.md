@@ -89,7 +89,11 @@ The encoding of the decisions and the mappings get explained in the following.
     (ite 
         (visibilitycondition)  //if
         rules                  //if-part
-        mapPretoPostConst      //else
+        (ite                //else-part
+            decisionIsTaken     // else-if
+            rules                   // else-if-part
+            mapPretoPostConst       //else-else-part
+        )
     )
  ) 
 ```
@@ -101,7 +105,13 @@ The encoding of the decisions and the mappings get explained in the following.
  
 # if LiteralExpression is False
 
-    (assert mapPretoPostConst)
+    (assert 
+        (ite                
+            decisionIsTaken     
+            rules                
+            mapPretoPostConst       
+        )
+    )
 
 ```
 #### Basic String and Double Decisions
@@ -130,9 +140,13 @@ The encoding of the decisions and the mappings get explained in the following.
     )  
 
 # if LiteralExpression is False
-
-    (assert mapPretoPostConst)
-
+    (assert
+        (ite                
+            decisionIsTaken     
+            rules                   
+            mapPretoPostConst       
+        )
+    )
 ```
 
 #### String and Double Decisions, if ValidityExpression is LiteralExpression
