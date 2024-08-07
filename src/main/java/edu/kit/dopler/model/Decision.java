@@ -151,7 +151,15 @@ public abstract class Decision<T> implements IDecision<T> {
 					toSMTStreamDecisionSpecific(builder, decisions);
 
 				} else {
-					builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST" + " " + "false" + ")");
+					builder.add("(ite"); //else
+					builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "true )"); // if condition
+					toSMTStreamDecisionSpecific(builder, decisions); // if part
+					// ite DECISION_1_TAKEN_POST  toSMTStreamDecisionSpecific(builder, decisions) else
+					builder.add("(and "); // else
+					mapPreToPostConstants(builder, decisions); // else
+					builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "false" + ")"); // else
+					builder.add(")"); // else
+					builder.add(")");
 				}
 			} catch (EvaluationException e) {
 				throw new RuntimeException(e);
@@ -160,10 +168,15 @@ public abstract class Decision<T> implements IDecision<T> {
 			builder.add("(ite ");
 			getVisibilityCondition().toSMTStream(builder, toStringConstforSMT()); // if isVisible condition
 			toSMTStreamDecisionSpecific(builder, decisions); // if part
-			builder.add("(and "); // else
-			mapPreToPostConstants(builder, decisions); // else
-			builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "false" + ")"); // else
-			builder.add(")"); // else
+				builder.add("(ite"); //else
+				builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "true )"); // if condition
+				toSMTStreamDecisionSpecific(builder, decisions); // if part
+				// ite DECISION_1_TAKEN_POST  toSMTStreamDecisionSpecific(builder, decisions) else
+				builder.add("(and "); // else
+				mapPreToPostConstants(builder, decisions); // else
+				builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "false" + ")"); // else
+				builder.add(")"); // else
+				builder.add(")");
 			builder.add(")"); // closing the ite of the visibilityDecision
 		}
 	}

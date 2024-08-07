@@ -35,7 +35,7 @@ public class SATEncoderTest extends TestCase {
         Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelCSVs/dm_eShop_DM.csv"));
         Stream.Builder<String> builder = dopler.toSMTStream();
         builder.add("(assert (= END_DECISION_5_Payments true))");
-        builder.add("(assert (= END_DECISION_5_Security true))");
+        builder.add("(assert (= END_DECISION_4 false))");
         assertFalse(checkSat(builder));
 
     }
