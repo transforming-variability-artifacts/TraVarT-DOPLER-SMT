@@ -46,8 +46,8 @@ The constants are mapped then between the assert of the decision seen late in th
 (declare-const DECISION_0_DECISION_0_Salami_POST bool)
 (declare-const DECISION_0_DECISION_0_Mozzarella_PRE bool)
 (declare-const DECISION_0_DECISION_0_Mozzarella_POST bool)
-(declare-const DECISION_0_DECISION_1_PRE double)
-(declare-const DECISION_0_DECISION_1_POST double)
+(declare-const DECISION_0_DECISION_1_PRE Real)
+(declare-const DECISION_0_DECISION_1_POST Real)
 
 # Constants for Decision 1
 (declare-const DECISION_1_TAKEN_POST bool)
@@ -55,13 +55,13 @@ The constants are mapped then between the assert of the decision seen late in th
 (declare-const DECISION_1_DECISION_0_Salami_POST bool)
 (declare-const DECISION_1_DECISION_0_Mozzarella_PRE bool)
 (declare-const DECISION_1_DECISION_0_Mozzarella_POST bool)
-(declare-const DECISION_1_DECISION_1_PRE double)
-(declare-const DECISION_1_DECISION_1_POST double)
+(declare-const DECISION_1_DECISION_1_PRE Real)
+(declare-const DECISION_1_DECISION_1_POST Real)
 
 # EndConstants
 (declare-const END_DECISION_0_Salami bool)
 (declare-const END_DECISION_0_Mozzarella bool)
-(declare-const END_DECISION_1 double)
+(declare-const END_DECISION_1 Real)
 ```
 
 
