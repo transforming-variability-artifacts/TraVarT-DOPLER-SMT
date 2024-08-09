@@ -1,77 +1,31 @@
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
+import edu.kit.dopler.io.DecisionModelReader;
+
 import java.io.*;
-import java.util.HashSet;
+import java.nio.file.Path;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 public class Main {
 
-    public static void main(String[] args) {
-
-        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>(),"");
+    public static void main(String[] args) throws NotSupportedVariabilityTypeException, IOException {
 
 
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelCSVs/dm_DOPLERTools.csv"));
+        Set<? super IDecision<?>> decisions = dopler.getDecisions();
 
-        Enumeration enumerationDecision2 = new Enumeration(new HashSet<>(){{
-            add(new EnumerationLiteral("Salami"));
-            add(new EnumerationLiteral("Ham"));
-            add(new EnumerationLiteral("Mozzarella"));
-        }});
-        EnumerationDecision decision2 = new EnumerationDecision("decision2", "Which Topping do you want on your pizza?","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision2,1,3);
-        dopler.addDecision(decision2);
-
-
-        BooleanDecision decision1 = new BooleanDecision("decision1","Should the pizza have a cheesy crust?","",new BooleanLiteralExpression(true), new HashSet<>());
-        dopler.addDecision(decision1);
-
-        Enumeration enumerationDecision3 = new Enumeration(new HashSet<>(){{
-            add(new EnumerationLiteral("Normal"));
-            add(new EnumerationLiteral("Big"));
-        }});
-        EnumerationDecision decision3 = new EnumerationDecision("decision3","Which Size should the pizza have?","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision3,1,1);
-        dopler.addDecision(decision3);
-
-
-        Enumeration enumerationDecision4 = new Enumeration(new HashSet<>(){{
-            add(new EnumerationLiteral("Neapolitan"));
-            add(new EnumerationLiteral("Sicilian"));
-        }});
-        EnumerationDecision decision4 = new EnumerationDecision("decision4","Which Dough do you prefer??","", new BooleanLiteralExpression(true), new HashSet<>(),enumerationDecision4,1,1);
-        dopler.addDecision(decision4);
-
-
-
-
-        IExpression expressionDecision3 = new Equals(new DecisionValueCallExpression(decision3),new EnumeratorLiteralExpression(new EnumerationLiteral("Big")));
-
-        Rule ruleDecision3 = new Rule(expressionDecision3,new HashSet<>(){{
-            add(new EnumEnforce(decision4, new StringValue("Neapolitan")));
-        }});
-        decision3.addRule(ruleDecision3);
-
-        IExpression expressionDecision4 = new Equals(new DecisionValueCallExpression(decision4),new EnumeratorLiteralExpression(new EnumerationLiteral("Sicilian")));
-
-        Rule ruleDecision4 = new Rule(expressionDecision4,new HashSet<>(){{
-            add(new BooleanEnforce(decision1, BooleanValue.getTrue()));
-        }});
-        decision4.addRule(ruleDecision4);
-
-
-
-        IExpression expressionDecision1 = new Equals(new DecisionValueCallExpression(decision1),new BooleanLiteralExpression(true));
-
-        Rule ruleDecision1 = new Rule(expressionDecision1,new HashSet<>(){{
-            add(new EnumEnforce(decision3, new StringValue("Big")));
-        }});
-        decision1.addRule(ruleDecision1);
-
-        dopler.toSMTStream().build().forEach(System.out::println);
-
+        //dopler.toSMTStream().build().forEach(System.out::println);
         try {
             Stream.Builder<String> builder = dopler.toSMTStream();
-            builder.add("(assert (= END_DECISION_3_Sicilian true))");
+            System.out.println(getAmountOfConfigs(dopler));
+            //builder.add("(assert (= END_DECISION_0 true))");
+
+            //builder.add("(assert (= DECISION_1_TAKEN_POST true))");
             builder.add("(check-sat)");
             dopler.createGetValueOFEndConstants(builder);
             //builder.add("(get-model)");
@@ -129,6 +83,47 @@ public class Main {
         throw new Exception();
     }
 
+
+    static int getAmountOfConfigs(Dopler dopler) {
+
+
+        int amount = 0;
+        boolean isSAT = true;
+        String asserts = "";
+        Stream.Builder<String> builder = dopler.toSMTStream();
+        do{
+            builder.add(asserts);
+            builder.add("(check-sat)");
+            dopler.createGetValueOFEndConstants(builder);
+            Stream<String> stream = builder.build();
+            Scanner scanner = satSolver(stream);
+            builder = dopler.toSMTStream();
+
+            while (scanner.hasNextLine()){
+                String line = scanner.nextLine();
+                if (line.equals("unsat")){
+                    return amount;
+                }else if (line.equals("sat")){
+
+                    asserts += "(assert (not (and";
+                    amount++;
+
+                } else if (line.equals(" ")) {
+
+                }else{
+
+                    String [] result = line.split("[\\(\\)]");
+                    if(result.length == 3){
+                        asserts +="(= " +  result[2] + ")";
+                    }else {
+                        asserts += "(= " +  result[1] + ")";
+                    }
+                }
+            }
+            asserts += ")))";
+        }while(true);
+
+    }
 
     /**
      * Starts a Process of the local Z3 Solver and feeds him the SMT Encoding Stream
