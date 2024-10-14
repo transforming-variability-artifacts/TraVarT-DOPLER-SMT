@@ -157,6 +157,7 @@ public abstract class Decision<T> implements IDecision<T> {
 					// ite DECISION_1_TAKEN_POST  toSMTStreamDecisionSpecific(builder, decisions) else
 					builder.add("(and "); // else
 					mapPreToPostConstants(builder, decisions); // else
+					setDefaultValueInSMT(builder);
 					builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "false" + ")"); // else
 					builder.add(")"); // else
 					builder.add(")");
@@ -174,6 +175,7 @@ public abstract class Decision<T> implements IDecision<T> {
 				// ite DECISION_1_TAKEN_POST  toSMTStreamDecisionSpecific(builder, decisions) else
 				builder.add("(and "); // else
 				mapPreToPostConstants(builder, decisions); // else
+				setDefaultValueInSMT(builder);
 				builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "false" + ")"); // else
 				builder.add(")"); // else
 				builder.add(")");

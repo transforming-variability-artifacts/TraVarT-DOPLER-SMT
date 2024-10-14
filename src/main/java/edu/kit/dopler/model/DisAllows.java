@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 public class DisAllows extends ValueRestrictionAction{
 
-    public static final String FUNCTION_NAME = "disallow";
+    public static final String FUNCTION_NAME = "disAllow";
     
 	IValue<?> disAllowValue;
 

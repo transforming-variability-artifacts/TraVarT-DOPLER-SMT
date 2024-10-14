@@ -5,6 +5,7 @@ import edu.kit.dopler.io.DecisionModelReader;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -16,14 +17,15 @@ public class Main {
 
 
         DecisionModelReader decisionModelReader = new DecisionModelReader();
-        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelCSVs/dm_DOPLERTools.csv"));
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/product_chesspiece.csv"));
         Set<? super IDecision<?>> decisions = dopler.getDecisions();
 
-        //dopler.toSMTStream().build().forEach(System.out::println);
+        dopler.toSMTStream().build().forEach(System.out::println);
         try {
             Stream.Builder<String> builder = dopler.toSMTStream();
+
             System.out.println(getAmountOfConfigs(dopler));
-            //builder.add("(assert (= END_DECISION_0 true))");
+
 
             //builder.add("(assert (= DECISION_1_TAKEN_POST true))");
             builder.add("(check-sat)");
@@ -37,7 +39,7 @@ public class Main {
                 throw new Exception();
             }
             while(scanner.hasNextLine()) {
-                System.out.println(scanner.nextLine());
+               // System.out.println(scanner.nextLine());
             }
 
         } catch (Exception e) {
@@ -91,6 +93,9 @@ public class Main {
         boolean isSAT = true;
         String asserts = "";
         Stream.Builder<String> builder = dopler.toSMTStream();
+       // builder.add("(assert (= DECISION_2_TAKEN_POST true))");
+       // builder.add("(assert (= DECISION_0_TAKEN_POST true))");
+      //  builder.add("(assert (= DECISION_1_TAKEN_POST true))");
         do{
             builder.add(asserts);
             builder.add("(check-sat)");
@@ -111,16 +116,27 @@ public class Main {
                 } else if (line.equals(" ")) {
 
                 }else{
-
+                    System.out.println(line);
                     String [] result = line.split("[\\(\\)]");
-                    if(result.length == 3){
-                        asserts +="(= " +  result[2] + ")";
+
+                    if(result.length == 3) {
+
+                        if (!result[2].contains("DECISION")) {
+                            asserts += "(= " + result[1] + " (" + result[2] + "))";
+                        } else {
+                            asserts += "(= " + result[2] + ")";
+                        }
+
+                    }else if (result.length == 4){
+                        asserts += "(= " + result[1] + " (" + result[2]  + "("  + result[3] + ")))";
                     }else {
                         asserts += "(= " +  result[1] + ")";
                     }
                 }
             }
             asserts += ")))";
+
+            System.out.println(amount);
         }while(true);
 
     }

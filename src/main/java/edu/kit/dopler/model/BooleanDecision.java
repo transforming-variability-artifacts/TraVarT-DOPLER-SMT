@@ -38,6 +38,11 @@ public class BooleanDecision extends Decision<Boolean> {
         setSelected(value.getValue());
     }
 
+    @Override
+    public void setDefaultValueInSMT(Stream.Builder<String> builder) {
+        builder.add("(= " + toStringConstforSMT() + "_" + toStringConstforSMT() + "_POST" + " " + getStandardValue() + ")");
+    }
+
 
     @Override
     void toSMTStreamValidityConditions(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions) {

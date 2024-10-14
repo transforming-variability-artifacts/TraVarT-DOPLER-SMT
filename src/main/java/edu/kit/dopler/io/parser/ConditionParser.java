@@ -33,6 +33,7 @@ public class ConditionParser {
 	private static final String CLOSING_PARENTHESE = ")";
 	private static final String CLOSING_CURRLY_PARENTHESE = "}";
 	private static final String DECISION_VALUE_DELIMITER = ".";
+	private static final String GET_VALUE_Function = "getValue";
 
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
@@ -179,15 +180,15 @@ public class ConditionParser {
 //				v = parseCondition();
 //				nextSymbol(); // we don't care about )
 //			}
-//		} else if (symbol.equals(GetValueFunction.FUNCTION_NAME)) {
+//		} else if (symbol.equals(GET_VALUE_Function)) {
 //			nextSymbol();
 //			if (symbol.equals(OPENING_PARENTHESE)) {
-//				IExpression cond = parseCondition();
-//				if (cond instanceof AFunction) {
-//					v = new GetValueFunction((IDecision) ((AFunction) cond).getParameters().get(0));
+//				nextSymbol();
+//				IDecision d = DoplerUtils.getDecision(dm, symbol);
+//				v = new DecisionValueCallExpression(d);
+//
 //				}
-//				nextSymbol(); // we don't care about )
-//			}
+
 		} else if (symbol.equals(Enforce.FUNCTION_NAME)) {
 			throw new ParserException("We need to deal with the different types of enforces here");
 		} else if (symbol.toLowerCase().equals(TRUE)) {
@@ -198,7 +199,8 @@ public class ConditionParser {
 			v = new DoubleLiteralExpression(Double.parseDouble(symbol));
 			nextSymbol();
 		} else if (RulesParser.isStringRangeValue(dm, symbol)) {
-			v = new StringLiteralExpression(symbol);
+
+			v = new EnumeratorLiteralExpression(DoplerUtils.getEnumerationliteral(dm,new StringValue(symbol)));
 			nextSymbol();
 		} else { // decision
 			IDecision d = DoplerUtils.getDecision(dm, symbol);
@@ -229,7 +231,6 @@ public class ConditionParser {
 				if (symbol.equals(EQUAL)) {
 					isEquals = true;
 					v = new Equals(new DecisionValueCallExpression(d), factor());
-
 				}
 			} else if (symbol.equals(CLOSING_PARENTHESE)) {
 
@@ -237,7 +238,19 @@ public class ConditionParser {
 
 			} else if (symbol.equals(OR)) {
 				v = new OR(new DecisionValueCallExpression(d),parseCondition());
-			} else {
+			} else if (symbol.equals(LESS)) {
+
+				v = new LessThan(new DecisionValueCallExpression(d), factor());
+
+
+			} else if (symbol.equals(GREATER)) {
+
+				v = new GreatherThan(new DecisionValueCallExpression(d), factor());
+
+
+
+		} else {
+
 				throw new ParserException("unknown function/decision for symbol " + symbol);
 			}
 

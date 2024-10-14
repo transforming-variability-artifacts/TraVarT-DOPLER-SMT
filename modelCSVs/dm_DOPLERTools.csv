@@ -58,8 +58,8 @@ if CW_resolution.1024x768 {
 CW_resolution_height = 768.0;
 }
 ";CW
-CW_resolution_height;nothing;Double;;;;false
-CW_resolution_width;nothing;Double;;;;false
+CW_resolution_height;nothing;Double;1-10;;;false
+CW_resolution_width;nothing;Double;1-10;;;false
 DK;Do you want variability modelling (DecisionKing)?;Boolean;false | true;;;"!ALL"
 DK_builder;Include consistency checking for variability modelling?;Boolean;false | true;;;DK
 DK_merger;Do you want support for fragmented modelling with model merging?;Boolean;false | true;;;DK

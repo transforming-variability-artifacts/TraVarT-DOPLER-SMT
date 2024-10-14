@@ -47,6 +47,15 @@ public class EnumerationDecision extends Decision<String> {
         }
     }
 
+    @Override
+    public void setDefaultValueInSMT(Stream.Builder<String> builder) {
+        builder.add("(and");
+        for (EnumerationLiteral enumerationLiteral : enumeration.getEnumerationLiterals()){
+            builder.add("(= " + toStringConstforSMT() + "_" + toStringConstforSMT() + "_"+ enumerationLiteral.getValue() + "_POST" + " " + "false" + ")");
+        }
+        builder.add(")");
+    }
+
     private boolean inRange(String value){
         return enumeration.enumerationLiterals.stream().anyMatch(enumerationLiteral -> enumerationLiteral.getValue().equals(value));
     }

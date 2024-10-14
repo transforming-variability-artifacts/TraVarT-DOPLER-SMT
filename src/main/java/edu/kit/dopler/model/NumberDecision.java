@@ -5,11 +5,12 @@ import edu.kit.dopler.exceptions.ValidityConditionException;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class NumberDecision extends ValueDecision<Double>{
 
     private final AbstractValue<Double> value;
-    private final double standardValue = -1.0;
+    private final double standardValue = 0.0;
 
     public NumberDecision(String displayId, String question, String description, IExpression visibilityCondition, Set<Rule> rules, Set<IExpression> validityConditions) {
         super(displayId, question, description, visibilityCondition, rules, validityConditions, DecisionType.NUMBER);
@@ -45,7 +46,10 @@ public class NumberDecision extends ValueDecision<Double>{
 
     }
 
-
+    @Override
+    public void setDefaultValueInSMT(Stream.Builder<String> builder) {
+        builder.add("(= " + toStringConstforSMT() + "_" + toStringConstforSMT() + "_POST" + " " + getStandardValue() + ")");
+    }
 
 
 }

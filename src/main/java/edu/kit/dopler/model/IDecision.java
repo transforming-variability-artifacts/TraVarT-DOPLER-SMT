@@ -43,5 +43,7 @@ public interface IDecision<T> {
 
     String toStringConstforSMT();
 
+    void setDefaultValueInSMT(Stream.Builder<String> builder);
+
     Decision.DecisionType getDecisionType();
 }
