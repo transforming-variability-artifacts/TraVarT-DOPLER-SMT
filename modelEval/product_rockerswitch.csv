@@ -1,0 +1,24 @@
+ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
+Neutral;Neutral?;Boolean;true | false;;;TRUE
+Neutral1_1;Neutral1_1?;Boolean;true | false;;;Neutral
+Neutral1_2;Neutral1_2?;Boolean;true | false;;;Neutral
+Rocker;Rocker?;Boolean;true | false;;if (Rocker) { Pole = true };TRUE
+Rocker1_1;Rocker1_1?;Boolean;true | false;;if (Rocker1_1) { Pole1_1 = true };Rocker
+Rocker1_2;Rocker1_2?;Boolean;true | false;;if (Rocker1_2) { Pole2_1 = true };Rocker
+Rocker2_1;Rocker2_1?;Boolean;true | false;;if (Rocker2_1) { Pole2_1 = true };Rocker
+Rocker2_2;Rocker2_2?;Boolean;true | false;;if (Rocker2_2) { Pole2_2 = true };Rocker
+Off;Off?;Boolean;true | false;;if (Off) { Rocker = true };TRUE
+Off1_1;Off1_1?;Boolean;true | false;;if (Off1_1) { Rocker1_1 = true };Off
+Off1_2;Off1_2?;Boolean;true | false;;if (Off1_2) { Rocker1_2 = true };Off
+Off1_3;Off1_3?;Boolean;true | false;;;Off
+Off1_4;Off1_4?;Boolean;true | false;;;Off
+Changeover;Changeover?;Boolean;true | false;;;TRUE
+Changeover1;Changeover1?;Boolean;true | false;;if (Changeover1) { Rocker1_1 = true };Changeover
+Changeover2;Changeover2?;Boolean;true | false;;if (Changeover2) { Rocker1_1 = true } if (Changeover2) { Rocker1_2 = true };Changeover
+Pole;Pole?;Boolean;true | false;;;TRUE
+Pole1_1;Pole1_1?;Boolean;true | false;;;Pole
+Pole1_2;Pole1_2?;Boolean;true | false;;;Pole
+Pole2_1;Pole2_1?;Boolean;true | false;;;Pole
+Pole2_2;Pole2_2?;Boolean;true | false;;;Pole
+Series;Series?;Boolean;true | false;;;TRUE
+Crossover;Crossover?;Boolean;true | false;;;TRUE
