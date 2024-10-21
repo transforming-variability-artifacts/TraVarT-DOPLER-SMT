@@ -31,5 +31,5 @@ CW_sharepoint;Include CW Sharepoint?;Boolean;false | true;;;CW
 CW_wordgenerator;Include MS Word Generator for ConfigurationWizard?;Boolean;false | true;;;CW
 CW_wordgenerator_wordAddIn;Do you want editing support in MS Word to create variable MS Word documents?;Boolean;false | true;;;CW_wordgenerator
 CW_guidance;How should guidance on decisions in ConfigurationWizard be displayed?;Enumeration;After-first-selection | Always;1:1;;CW
-CW_resolution_height;;Double;;;;false
-CW_resolution_width;;Double;;;;false
+CW_resolution_height;????;Boolean;;;;false
+CW_resolution_width;????;Boolean;;;;false

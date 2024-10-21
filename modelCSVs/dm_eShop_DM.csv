@@ -14,15 +14,15 @@ Search = true;
 }
 ";}
 UserManagement;Which user management enhancements should be supported?;Enumeration;Orders | Security | Payments | Wishlist;1:4;"if !UserManagement.Security {
-allow(UserManagement.Payments);
+Allow(UserManagement.Payments);
 }
 if UserManagement.Security {
-disallow(UserManagement.Payments);
+disAllow(UserManagement.Payments);
 }
 if !UserManagement.Payments {
-allow(UserManagement.Security);
+Allow(UserManagement.Security);
 }
 if UserManagement.Payments {
-disallow(UserManagement.Security);
+disAllow(UserManagement.Security);
 }
 ";true

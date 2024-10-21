@@ -5,7 +5,7 @@ Gen_Plan_Analysis;Show Details of Plan Analysis in HMI?;Boolean;false | true;;;i
 Gen_Plan_Product;Show Details of Product Quality in HMI?;Boolean;false | true;;;Gen_Planning2 == Gen_Planning2.Lot
 Gen_Watchdogs;Shall Watchdogs also be shown?;Boolean;false | true;;;TRUE
 Mat_Tracking;MaterialTracking Subsystem included?;Boolean;false | true;;;TRUE
-Mat_Lines;Number of Casting Lines?;Double;1-100;;;TRUE
+Mat_Lines;How many Lines?;Boolean;false | true;;;TRUE
 Cooling_L2;Cooling L2 included?;Boolean;false | true;;;TRUE
 Cooling_Segment;Segment Cooling included?;Boolean;false | true;;;Cooling_L2
 QA_A;Quality Management A included?;Boolean;false | true;;;QA_C
