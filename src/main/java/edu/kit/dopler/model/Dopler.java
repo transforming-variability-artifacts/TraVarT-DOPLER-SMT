@@ -164,6 +164,8 @@ public class Dopler {
                 if (decision2.getDecisionType() == Decision.DecisionType.ENUM){
                     EnumerationDecision enumerationDecision = (EnumerationDecision) decision2;
                     builder.add("(assert");
+                    builder.add("(ite ");
+                    builder.add("(= " +  enumerationDecision.toStringConstforSMT() + "_TAKEN_POST" + " true)");
                     builder.add("(and");
                     builder.add("(>= ");
                     builder.add("(+");
@@ -193,6 +195,8 @@ public class Dopler {
                     builder.add(")"); //end >=
 
                     builder.add(")"); //end and
+                    builder.add("(= true true)"); //else of ite
+                    builder.add(")"); // end ite
                     builder.add(")"); //end assert
 
 

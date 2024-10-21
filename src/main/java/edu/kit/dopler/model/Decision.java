@@ -149,10 +149,9 @@ public abstract class Decision<T> implements IDecision<T> {
 			try {
 				if (getVisibilityCondition().evaluate()) {
 					toSMTStreamDecisionSpecific(builder, decisions);
-
 				} else {
 					builder.add("(ite"); //else
-					builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "true )"); // if condition
+					builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "true)"); // if condition
 					toSMTStreamDecisionSpecific(builder, decisions); // if part
 					// ite DECISION_1_TAKEN_POST  toSMTStreamDecisionSpecific(builder, decisions) else
 					builder.add("(and "); // else
@@ -169,16 +168,21 @@ public abstract class Decision<T> implements IDecision<T> {
 			builder.add("(ite ");
 			getVisibilityCondition().toSMTStream(builder, toStringConstforSMT()); // if isVisible condition
 			toSMTStreamDecisionSpecific(builder, decisions); // if part
-				builder.add("(ite"); //else
-				builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "true )"); // if condition
-				toSMTStreamDecisionSpecific(builder, decisions); // if part
-				// ite DECISION_1_TAKEN_POST  toSMTStreamDecisionSpecific(builder, decisions) else
 				builder.add("(and "); // else
 				mapPreToPostConstants(builder, decisions); // else
 				setDefaultValueInSMT(builder);
 				builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "false" + ")"); // else
 				builder.add(")"); // else
-				builder.add(")");
+//				builder.add("(ite"); //else
+//				builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "true)"); // if condition
+//				toSMTStreamDecisionSpecific(builder, decisions); // if part
+//				// ite DECISION_1_TAKEN_POST  toSMTStreamDecisionSpecific(builder, decisions) else
+//				builder.add("(and "); // else
+//				mapPreToPostConstants(builder, decisions); // else
+//				setDefaultValueInSMT(builder);
+//				builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "false" + ")"); // else
+//				builder.add(")"); // else
+//				builder.add(")");
 			builder.add(")"); // closing the ite of the visibilityDecision
 		}
 	}
@@ -190,7 +194,7 @@ public abstract class Decision<T> implements IDecision<T> {
 	 * @param decisions all decisions of the DOPLER Model, which are needed for the
 	 *                  late mapping of the constants
 	 */
-	void toSMTStreamRules(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions) {
+	public void toSMTStreamRules(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions) {
 		// for the smt encoding the decision is considered taken when the rules are
 		// applied
 		// this is why in the following the taken const is mapped to true
@@ -203,6 +207,7 @@ public abstract class Decision<T> implements IDecision<T> {
 			builder.add("(and");
 			builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST" + " " + "true" + ")");
 			for (Rule rule : getRules()) {
+
 				// if the condition is only a LiteralExpression (true, false) then the ite
 				// should be left out because (ite true if else) is no valid syntax
 				if (rule.getCondition() instanceof LiteralExpression) {
@@ -217,6 +222,7 @@ public abstract class Decision<T> implements IDecision<T> {
 						throw new RuntimeException(e);
 					}
 				} else {
+
 
 					builder.add("(ite ");
 					rule.getCondition().toSMTStream(builder, toStringConstforSMT()); // if condition
