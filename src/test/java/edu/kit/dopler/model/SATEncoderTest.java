@@ -11,10 +11,117 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static edu.kit.dopler.model.Main.checkSat;
+import static edu.kit.dopler.model.Main.getAmountOfConfigs;
 
 public class SATEncoderTest extends TestCase {
 
 
+    public void testVariantsWaterfilter() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/product_waterfilter.csv"));
+        assertEquals(10,getAmountOfConfigs(dopler,""));
+    }
+
+    public void testVariantsHICSSDM() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/HICSSDM.csv"));
+        assertEquals(4185,getAmountOfConfigs(dopler,"(assert (= END_DECISION_0_Particular_Packages true)) (assert (= END_DECISION_3_Document_Management true)) (assert (= END_DECISION_3_Customer_Management true)) (assert (= END_DECISION_3_Claims_Management true))"));
+
+    }
+
+    public void testVariantsHICSSDMOnlySolution() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/HICSSDM.csv"));
+        assertEquals(2,getAmountOfConfigs(dopler,"(assert (= END_DECISION_0_Solution true))"));
+
+    }
+
+    public void testVariantsVaMoS() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/dm_VaMoS.csv"));
+        assertEquals(30,getAmountOfConfigs(dopler,"(assert (= END_DECISION_2 true))"));
+
+    }
+
+    public void testVariantsDoplerTools() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/dm_DOPLERTools2.csv"));
+        String asserts = " (assert (= END_DECISION_12 true)) (assert (= END_DECISION_13 true)) (assert (= END_DECISION_16_Table-based true)) (assert (= END_DECISION_21_After-first-selection true)) (assert (= END_DECISION_17 true)) (assert (= END_DECISION_20 true)) (assert (= END_DECISION_5 true)) (assert (= END_DECISION_8 true)) (assert (= END_DECISION_10 true)) (assert (= END_DECISION_3 true))";
+        assertEquals(2048,getAmountOfConfigs(dopler,asserts));
+
+    }
+
+    public void testVariantsrockerswitch() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/product_rockerswitch.csv"));
+        String asserts = " (assert (= END_DECISION_0 true))(assert (= END_DECISION_8 true)) (assert (= END_DECISION_13 true)) (assert (= END_DECISION_15 true)) (assert (= END_DECISION_21 true)) (assert (= END_DECISION_22 true))";
+        assertEquals(1536,getAmountOfConfigs(dopler,asserts));
+
+    }
+
+    public void testVariantseShop() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/dm_eShop_DM.csv"));
+
+        assertEquals(76,getAmountOfConfigs(dopler,""));
+
+    }
+
+    public void testVariantsASEJ1() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/dm_ASEJ1.csv"));
+
+        assertEquals(212,getAmountOfConfigs(dopler,""));
+
+    }
+
+    public void testVariantsDissModel() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/dm_DissModel.csv"));
+
+        assertEquals(864,getAmountOfConfigs(dopler,""));
+
+    }
+
+    public void testVariantsPizzas() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/Pizzas.csv"));
+
+        assertEquals(42,getAmountOfConfigs(dopler,""));
+
+    }
+
+    public void testVariantsPizzas2() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/Pizzas2.csv"));
+
+        assertEquals(21,getAmountOfConfigs(dopler,""));
+
+    }
+
+    public void testVariantsShiftfork() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/product_shiftfork.csv"));
+
+        assertEquals(4,getAmountOfConfigs(dopler,""));
+
+    }
+
+    public void testVariantsTruck() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/product_truck.csv"));
+
+        assertEquals(4,getAmountOfConfigs(dopler,""));
+
+    }
+
+    public void testVariantsChesspiece() throws NotSupportedVariabilityTypeException, IOException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/product_chesspiece.csv"));
+
+        assertEquals(6,getAmountOfConfigs(dopler,""));
+
+    }
     public void testGetModelsFromCsv() throws Exception {
 
         DecisionModelReader decisionModelReader = new DecisionModelReader();
