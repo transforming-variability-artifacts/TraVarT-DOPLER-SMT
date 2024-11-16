@@ -45,5 +45,7 @@ public interface IDecision<T> {
 
     void setDefaultValueInSMT(Stream.Builder<String> builder);
 
+    void toSMTStreamRules(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions);
+
     Decision.DecisionType getDecisionType();
 }
