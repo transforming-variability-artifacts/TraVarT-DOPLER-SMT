@@ -66,15 +66,15 @@ The constants are mapped then between the assert of the decision seen late in th
 
 
 
-For the dopler model every decision gets asserted and between the asserts of the decisions there are asserts to map the post constants from the decision to the pre constants of the next decision.
+For the DOPLER model every decision gets asserted and between the asserts of the decisions there are asserts to map the post constants from the decision to the pre constants of the next decision.
 The encoding of the decisions and the mappings get explained in the following.
 ### DOPLER
 
 ```
 
-(assert decision0)
+(assert Decision0)
 (assert (Mapping between Decision0 and Decision1))
-(assert decision1)
+(assert Decision1)
 (assert (Mapping between Decision1 and EndConstants))
 
 ```
@@ -88,11 +88,11 @@ The encoding of the decisions and the mappings get explained in the following.
  (assert 
     (ite 
         (visibilitycondition)  //if
-        rules                  //if-part
-        (ite                //else-part
-            decisionIsTaken     // else-if
-            rules                   // else-if-part
-            mapPretoPostConst       //else-else-part
+        (and setTaken(true) rules)                  //if-part
+        (and                //else-part
+            setTaken(false)
+            setDefaultValue                   
+            mapPretoPostConst       
         )
     )
  ) 
@@ -101,14 +101,14 @@ The encoding of the decisions and the mappings get explained in the following.
 ```
 # if LiteralExpression is True
 
-    (assert rules)
+    (assert  (and setTaken(true) rules))
  
 # if LiteralExpression is False
 
     (assert 
-        (ite                
-            decisionIsTaken     
-            rules                
+       (and                
+            setTaken(false)
+            setDefaultValue                   
             mapPretoPostConst       
         )
     )
@@ -120,10 +120,18 @@ The encoding of the decisions and the mappings get explained in the following.
 (assert 
     (ite (visibilitycondition)  //if
          (ite (validityconditions)     //if-part
-                rules                   //if-if-part
-                mapPretoPostConst       //if-else-part
+                (and setTaken(true) rules)              //if-if-part
+                (and                //if-else-part
+                    setTaken(false)
+                    setDefaultValue                   
+                    mapPretoPostConst       
+                )      
          )
-         mapPretoPostConst      //else
+        (and                //else-part
+            setTaken(false)
+            setDefaultValue                   
+            mapPretoPostConst       
+        )  
     )
 ) 
 ```
@@ -133,18 +141,22 @@ The encoding of the decisions and the mappings get explained in the following.
 # if LiteralExpression is True
     (assert           
          (ite 
-            (validityconditions)    // if
-            rules                   //if-part
-            mapPretoPostConst       //else-part
+            (validityconditions)    // condition
+            (and setTaken(true) rules)            //if part
+            (and                //else-part
+                setTaken(false)
+                setDefaultValue                   
+                mapPretoPostConst       
+            )
          )                   
     )  
 
 # if LiteralExpression is False
     (assert
-        (ite                
-            decisionIsTaken     
-            rules                   
-            mapPretoPostConst       
+        (and                
+                setTaken(false)
+                setDefaultValue                   
+                mapPretoPostConst       
         )
     )
 ```
@@ -154,17 +166,22 @@ The encoding of the decisions and the mappings get explained in the following.
 # if LiteralExpression is True
 (assert 
     (ite (visibilitycondition)  //if
-         rules                  // if Part
-         mapPretoPostConst      //else
+        (and setTaken(true) rules)            //if part
+        (and                //else-part
+            setTaken(false)
+            setDefaultValue                   
+            mapPretoPostConst       
+        )
     )
 ) 
 
 # if LiteralExpression is False
 
 (assert 
-    (ite (visibilitycondition)  //if
-         mapPretoPostConst      // if Part
-         mapPretoPostConst      //else
+    (and                
+            setTaken(false)
+            setDefaultValue                   
+            mapPretoPostConst       
     )
 ) 
 ```
@@ -183,6 +200,34 @@ The encoding of the decisions and the mappings get explained in the following.
 (and
     (= DECISION_0_DECISION_0_Salami_PRE DECISION_0_DECISION_0_Salami_POST )
     (= DECISION_0_DECISION_1_PRE DECISION_0_DECISION_1_POST )
+)
+```
+
+### setTaken(Decision_i, true/false)
+```
+(= DECISION_i_TAKEN true/false)
+```
+
+
+### setDefaultValue
+```
+```
+
+### Cardinality Constraints
+```
+(assert
+    (ite
+        (= DECISION_i_TAKEN true)
+        (and
+            (>=
+                (+ (ite Enumerationliteral_i_j 1 0) · · · (ite Enumerationliteral_i_J 1 0))
+            n)
+            (<=
+                (+ (ite Enumerationliteral_i_j 1 0) · · · (ite Enumerationliteral_i_J 1 0))
+            m)
+        )
+        (= true true)
+    )
 )
 ```
 
