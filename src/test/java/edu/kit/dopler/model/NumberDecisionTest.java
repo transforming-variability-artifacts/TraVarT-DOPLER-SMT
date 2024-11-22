@@ -1,3 +1,17 @@
+/*******************************************************************************
+ * This Source Code Form is subject to the terms of the Mozilla
+ * Public License, v. 2.0. If a copy of the MPL was not distributed
+ * with this file, You can obtain one at
+ * https://mozilla.org/MPL/2.0/.
+ *
+ * Contributors: 
+ * 	@author Fabian Eger
+ * 	@author Kevin Feichtinger
+ *
+ * Copyright 2024 Karlsruhe Institute of Technology (KIT)
+ * KASTEL - Dependability of Software-intensive Systems
+ * All rights reserved
+ *******************************************************************************/
 package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.EvaluationException;
@@ -11,48 +25,43 @@ import static org.junit.Assert.assertThrows;
 
 public class NumberDecisionTest extends TestCase {
 
-    private NumberDecision numberDecision;
+	private NumberDecision numberDecision;
 
+	public void setUp() throws Exception {
+		super.setUp();
 
-    public void setUp() throws Exception {
-        super.setUp();
+		Expression expression = new BooleanLiteralExpression(true);
+		numberDecision = new NumberDecision("test", "test", "test", expression, new HashSet<>(), new HashSet<>());
+	}
 
-        Expression expression = new BooleanLiteralExpression(true);
-        numberDecision = new NumberDecision("test", "test","test",expression, new HashSet<>(),new HashSet<>());
-    }
+	public void testSetValueWhichDontFullFillsValidityCondition() {
+		DoubleLiteralExpression doubleLiteralExpression = new DoubleLiteralExpression(2.0);
+		DecisionValueCallExpression decisionValueCallExpression = new DecisionValueCallExpression(numberDecision);
+		GreatherThan greatherThan = new GreatherThan(decisionValueCallExpression, doubleLiteralExpression);
+		Set<IExpression> expressions = new HashSet<>();
+		expressions.add(greatherThan);
+		numberDecision.setValidityConditions(expressions);
+		assertThrows(ValidityConditionException.class, () -> numberDecision.setValue(new DoubleValue(1.0)));
+		assertEquals(new DoubleValue(-1.0).getValue(), numberDecision.getValue().getValue());
+	}
 
+	public void testSetValueWhichFullFillsValidityCondition() throws ValidityConditionException, EvaluationException {
+		DoubleLiteralExpression doubleLiteralExpression = new DoubleLiteralExpression(2.0);
+		DecisionValueCallExpression decisionValueCallExpression = new DecisionValueCallExpression(numberDecision);
+		LessThan lessThan = new LessThan(decisionValueCallExpression, doubleLiteralExpression);
+		Set<IExpression> expressions = new HashSet<>();
+		expressions.add(lessThan);
+		numberDecision.setValidityConditions(expressions);
+		DoubleValue doubleValue = new DoubleValue(1.0);
+		numberDecision.setValue(doubleValue);
+		assertEquals(doubleValue.getValue(), numberDecision.getValue().getValue());
+		assertTrue(numberDecision.isTaken());
+		assertTrue(numberDecision.checkValidity());
 
+	}
 
-
-    public void testSetValueWhichDontFullFillsValidityCondition(){
-        DoubleLiteralExpression doubleLiteralExpression = new DoubleLiteralExpression(2.0);
-        DecisionValueCallExpression decisionValueCallExpression = new DecisionValueCallExpression(numberDecision);
-        GreatherThan greatherThan = new GreatherThan(decisionValueCallExpression,doubleLiteralExpression);
-        Set<IExpression> expressions = new HashSet<>();
-        expressions.add(greatherThan);
-        numberDecision.setValidityConditions(expressions);
-        assertThrows(ValidityConditionException.class,() -> numberDecision.setValue(new DoubleValue(1.0)));
-        assertEquals(new DoubleValue(-1.0).getValue(), numberDecision.getValue().getValue());
-    }
-
-
-    public void testSetValueWhichFullFillsValidityCondition() throws ValidityConditionException, EvaluationException {
-        DoubleLiteralExpression doubleLiteralExpression = new DoubleLiteralExpression(2.0);
-        DecisionValueCallExpression decisionValueCallExpression = new DecisionValueCallExpression(numberDecision);
-        LessThan lessThan = new LessThan(decisionValueCallExpression,doubleLiteralExpression);
-        Set<IExpression> expressions = new HashSet<>();
-        expressions.add(lessThan);
-        numberDecision.setValidityConditions(expressions);
-        DoubleValue doubleValue  = new DoubleValue(1.0);
-        numberDecision.setValue(doubleValue);
-        assertEquals(doubleValue.getValue(),numberDecision.getValue().getValue());
-        assertTrue(numberDecision.isTaken());
-        assertTrue(numberDecision.checkValidity());
-
-    }
-
-    public void testStandardValue(){
-        assertEquals(-1.0,numberDecision.getStandardValue());
-    }
+	public void testStandardValue() {
+		assertEquals(-1.0, numberDecision.getStandardValue());
+	}
 
 }

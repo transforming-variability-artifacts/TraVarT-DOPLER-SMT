@@ -1,10 +1,17 @@
-/**
- * The generic implementation of the decisions
- * This class is then specialised into the different type of decisions like STRING, Enumeration, Boolean and Double
+/*******************************************************************************
+ * This Source Code Form is subject to the terms of the Mozilla
+ * Public License, v. 2.0. If a copy of the MPL was not distributed
+ * with this file, You can obtain one at
+ * https://mozilla.org/MPL/2.0/.
  *
+ * Contributors: 
+ * 	@author Fabian Eger
+ * 	@author Kevin Feichtinger
  *
- */
-
+ * Copyright 2024 Karlsruhe Institute of Technology (KIT)
+ * KASTEL - Dependability of Software-intensive Systems
+ * All rights reserved
+ *******************************************************************************/
 package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.ActionExecutionException;
@@ -45,8 +52,8 @@ public abstract class Decision<T> implements IDecision<T> {
 	private boolean select;
 	private DecisionType decisionType;
 
-	public Decision(String displayId, String question, String description, IExpression visibilityCondition, Set<Rule> rules,
-			DecisionType decisionType) {
+	public Decision(String displayId, String question, String description, IExpression visibilityCondition,
+			Set<Rule> rules, DecisionType decisionType) {
 		this.id = uid++;
 		this.displayId = displayId;
 		this.question = question;
@@ -150,10 +157,11 @@ public abstract class Decision<T> implements IDecision<T> {
 				if (getVisibilityCondition().evaluate()) {
 					toSMTStreamDecisionSpecific(builder, decisions);
 				} else {
-					builder.add("(ite"); //else
+					builder.add("(ite"); // else
 					builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "true)"); // if condition
 					toSMTStreamDecisionSpecific(builder, decisions); // if part
-					// ite DECISION_1_TAKEN_POST  toSMTStreamDecisionSpecific(builder, decisions) else
+					// ite DECISION_1_TAKEN_POST toSMTStreamDecisionSpecific(builder, decisions)
+					// else
 					builder.add("(and "); // else
 					mapPreToPostConstants(builder, decisions); // else
 					setDefaultValueInSMT(builder);
@@ -168,11 +176,11 @@ public abstract class Decision<T> implements IDecision<T> {
 			builder.add("(ite ");
 			getVisibilityCondition().toSMTStream(builder, toStringConstforSMT()); // if isVisible condition
 			toSMTStreamDecisionSpecific(builder, decisions); // if part
-				builder.add("(and "); // else
-				mapPreToPostConstants(builder, decisions); // else
-				setDefaultValueInSMT(builder);
-				builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "false" + ")"); // else
-				builder.add(")"); // else
+			builder.add("(and "); // else
+			mapPreToPostConstants(builder, decisions); // else
+			setDefaultValueInSMT(builder);
+			builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "false" + ")"); // else
+			builder.add(")"); // else
 //				builder.add("(ite"); //else
 //				builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "true)"); // if condition
 //				toSMTStreamDecisionSpecific(builder, decisions); // if part
@@ -222,7 +230,6 @@ public abstract class Decision<T> implements IDecision<T> {
 						throw new RuntimeException(e);
 					}
 				} else {
-
 
 					builder.add("(ite ");
 					rule.getCondition().toSMTStream(builder, toStringConstforSMT()); // if condition
@@ -326,5 +333,10 @@ public abstract class Decision<T> implements IDecision<T> {
 
 	public int getId() {
 		return id;
+	}
+
+	@Override
+	public String toString() {
+		return displayId;
 	}
 }
