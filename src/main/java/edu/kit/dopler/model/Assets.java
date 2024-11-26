@@ -4,7 +4,7 @@
  * with this file, You can obtain one at
  * https://mozilla.org/MPL/2.0/.
  *
- * Contributors: 
+ * Contributors:
  * 	@author Fabian Eger
  * 	@author Kevin Feichtinger
  *
@@ -19,7 +19,7 @@ import java.util.Set;
 
 public class Assets {
 
-	public Assets(String description, IExpression inclusionCondition) {
+	public Assets(final String description, final IExpression inclusionCondition) {
 		this.description = description;
 		this.inclusionCondition = inclusionCondition;
 	}
@@ -28,7 +28,7 @@ public class Assets {
 	private IExpression inclusionCondition;
 	private Set<Assets> assets = Collections.emptySet();
 
-	void setDescription(String description) {
+	void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -36,7 +36,7 @@ public class Assets {
 		return description;
 	}
 
-	public void setInclusionCondition(IExpression inclusionCondition) {
+	public void setInclusionCondition(final IExpression inclusionCondition) {
 		this.inclusionCondition = inclusionCondition;
 	}
 
@@ -48,7 +48,7 @@ public class Assets {
 		return assets;
 	}
 
-	public void setAssets(Set<Assets> assets) {
+	public void setAssets(final Set<Assets> assets) {
 		this.assets = assets;
 	}
 

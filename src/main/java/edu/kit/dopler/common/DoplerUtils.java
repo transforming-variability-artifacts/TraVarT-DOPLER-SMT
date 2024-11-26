@@ -4,7 +4,7 @@
  * with this file, You can obtain one at
  * https://mozilla.org/MPL/2.0/.
  *
- * Contributors: 
+ * Contributors:
  * 	@author Fabian Eger
  * 	@author Kevin Feichtinger
  *
@@ -17,8 +17,13 @@ package edu.kit.dopler.common;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import edu.kit.dopler.model.*;
+import edu.kit.dopler.model.Decision;
 import edu.kit.dopler.model.Decision.DecisionType;
+import edu.kit.dopler.model.Dopler;
+import edu.kit.dopler.model.Enumeration;
+import edu.kit.dopler.model.EnumerationLiteral;
+import edu.kit.dopler.model.IDecision;
+import edu.kit.dopler.model.IValue;
 
 public final class DoplerUtils {
 
@@ -26,9 +31,9 @@ public final class DoplerUtils {
 
 	@SuppressWarnings("rawtypes")
 	public static EnumerationLiteral getEnumerationliteral(final Dopler dm, final IValue enumString) {
-		for (Object o : dm.getEnumSet()) {
-			Enumeration enumeration = (Enumeration) o;
-			for (EnumerationLiteral enumerationLiteral : enumeration.getEnumerationLiterals()) {
+		for (final Object o : dm.getEnumSet()) {
+			final Enumeration enumeration = (Enumeration) o;
+			for (final EnumerationLiteral enumerationLiteral : enumeration.getEnumerationLiterals()) {
 				if (enumerationLiteral.getValue().equals(enumString.getValue())) {
 					return enumerationLiteral;
 				}
@@ -39,8 +44,8 @@ public final class DoplerUtils {
 
 	@SuppressWarnings("rawtypes")
 	public static IDecision getDecision(final Dopler dm, final String displayId) {
-		for (Object o : dm.getDecisions()) {
-			IDecision decision = (IDecision) o;
+		for (final Object o : dm.getDecisions()) {
+			final IDecision decision = (IDecision) o;
 			if (decision.getDisplayId().equals(displayId)) {
 				return decision;
 			}
@@ -48,22 +53,22 @@ public final class DoplerUtils {
 		return null;
 	}
 
-	public static Set<? super IDecision<?>> getBooleanDecisions(final Dopler dm) {
+	public static Set<IDecision> getBooleanDecisions(final Dopler dm) {
 		return dm.getDecisions().stream().filter(d -> ((Decision<?>) d).getDecisionType().equals(DecisionType.BOOLEAN))
 				.collect(Collectors.toSet());
 	}
 
-	public static Set<? super IDecision<?>> getEnumerationDecisions(final Dopler dm) {
+	public static Set<IDecision> getEnumerationDecisions(final Dopler dm) {
 		return dm.getDecisions().stream().filter(d -> ((Decision<?>) d).getDecisionType().equals(DecisionType.ENUM))
 				.collect(Collectors.toSet());
 	}
 
-	public static Set<? super IDecision<?>> getNumberDecisions(final Dopler dm) {
+	public static Set<IDecision> getNumberDecisions(final Dopler dm) {
 		return dm.getDecisions().stream().filter(d -> ((Decision<?>) d).getDecisionType().equals(DecisionType.NUMBER))
 				.collect(Collectors.toSet());
 	}
 
-	public static Set<? super IDecision<?>> getStringDecisions(final Dopler dm) {
+	public static Set<IDecision> getStringDecisions(final Dopler dm) {
 		return dm.getDecisions().stream().filter(d -> ((Decision<?>) d).getDecisionType().equals(DecisionType.STRING))
 				.collect(Collectors.toSet());
 	}

@@ -23,11 +23,19 @@ public final class CSVUtils {
 
 	public static final char DELIMITER = ';';
 
-	public static CSVFormat createCSVFormat() {
+	public static CSVFormat createCSVReadFormat() {
+		return createCSVFormat(true);
+	}
+	
+	public static CSVFormat createCSVWriteFormat() {
+		return createCSVFormat(false);
+	}
+
+	private static CSVFormat createCSVFormat(final boolean skipHeader) {
 		Builder builder = CSVFormat.EXCEL.builder();
 		builder.setDelimiter(DELIMITER);
 		builder.setHeader(CSVHeader.stringArray());
-		builder.setSkipHeaderRecord(true);
+		builder.setSkipHeaderRecord(skipHeader);
 		return builder.build();
 	}
 }

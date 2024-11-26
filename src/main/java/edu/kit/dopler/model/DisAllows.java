@@ -52,6 +52,6 @@ public class DisAllows extends ValueRestrictionAction {
 	
 	@Override
 	public String toString() {
-		return String.format("%s(%s)", FUNCTION_NAME, disAllowValue);
+		return String.format("%s(%s.%s)", FUNCTION_NAME, getDecision().getDisplayId(),disAllowValue);
 	}
 }

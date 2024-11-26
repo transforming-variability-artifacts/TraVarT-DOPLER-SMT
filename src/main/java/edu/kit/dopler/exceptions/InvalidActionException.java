@@ -4,7 +4,7 @@
  * with this file, You can obtain one at
  * https://mozilla.org/MPL/2.0/.
  *
- * Contributors: 
+ * Contributors:
  * 	@author Fabian Eger
  * 	@author Kevin Feichtinger
  *
@@ -26,7 +26,7 @@ public class InvalidActionException extends ParserException {
 	 * @param message the detail message. The detail message is saved for later
 	 *                retrieval by the {@link #getMessage()} method.
 	 */
-	public InvalidActionException(String message) {
+	public InvalidActionException(final String message) {
 		super(message);
 	}
 
@@ -42,7 +42,7 @@ public class InvalidActionException extends ParserException {
 	 *              and indicates that the cause is nonexistent or unknown.)
 	 * @since 1.4
 	 */
-	public InvalidActionException(Throwable cause) {
+	public InvalidActionException(final Throwable cause) {
 		super(cause);
 	}
 

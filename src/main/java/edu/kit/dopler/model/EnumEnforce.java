@@ -4,7 +4,7 @@
  * with this file, You can obtain one at
  * https://mozilla.org/MPL/2.0/.
  *
- * Contributors: 
+ * Contributors:
  * 	@author Fabian Eger
  * 	@author Kevin Feichtinger
  *
@@ -19,24 +19,22 @@
  */
 package edu.kit.dopler.model;
 
-import java.util.stream.Stream.Builder;
-
 import edu.kit.dopler.exceptions.ActionExecutionException;
 
 public class EnumEnforce extends Enforce {
 
-	public EnumEnforce(IDecision<?> decision, IValue<?> value) {
+	public EnumEnforce(final IDecision<?> decision, final IValue<?> value) {
 		super(decision, value);
 	}
 
 	@Override
 	public void execute() throws ActionExecutionException {
 		try {
-			EnumerationDecision enumerationDecision = (EnumerationDecision) getDecision();
-			StringValue enumerationValue = (StringValue) getValue();
+			final EnumerationDecision enumerationDecision = (EnumerationDecision) getDecision();
+			final StringValue enumerationValue = (StringValue) getValue();
 			enumerationDecision.setValue(enumerationValue);
 			getDecision().setTaken(true);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new ActionExecutionException(e);
 		}
 	}

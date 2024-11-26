@@ -4,7 +4,7 @@
  * with this file, You can obtain one at
  * https://mozilla.org/MPL/2.0/.
  *
- * Contributors: 
+ * Contributors:
  * 	@author Fabian Eger
  * 	@author Kevin Feichtinger
  *
@@ -25,7 +25,7 @@ public class EvaluationException extends Exception {
 	 * @param message the detail message. The detail message is saved for later
 	 *                retrieval by the {@link #getMessage()} method.
 	 */
-	public EvaluationException(String message) {
+	public EvaluationException(final String message) {
 		super(message);
 	}
 
@@ -41,7 +41,7 @@ public class EvaluationException extends Exception {
 	 *              and indicates that the cause is nonexistent or unknown.)
 	 * @since 1.4
 	 */
-	public EvaluationException(Throwable cause) {
+	public EvaluationException(final Throwable cause) {
 		super(cause);
 	}
 }

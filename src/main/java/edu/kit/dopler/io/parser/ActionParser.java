@@ -4,7 +4,7 @@
  * with this file, You can obtain one at
  * https://mozilla.org/MPL/2.0/.
  *
- * Contributors: 
+ * Contributors:
  * 	@author Fabian Eger
  * 	@author Kevin Feichtinger
  *
@@ -22,7 +22,21 @@ import java.util.Queue;
 import edu.kit.dopler.common.DoplerUtils;
 import edu.kit.dopler.exceptions.InvalidActionException;
 import edu.kit.dopler.exceptions.ParserException;
-import edu.kit.dopler.model.*;
+import edu.kit.dopler.model.AbstractValue;
+import edu.kit.dopler.model.Allows;
+import edu.kit.dopler.model.BooleanDecision;
+import edu.kit.dopler.model.BooleanEnforce;
+import edu.kit.dopler.model.BooleanValue;
+import edu.kit.dopler.model.DisAllows;
+import edu.kit.dopler.model.Dopler;
+import edu.kit.dopler.model.DoubleValue;
+import edu.kit.dopler.model.EnumEnforce;
+import edu.kit.dopler.model.IAction;
+import edu.kit.dopler.model.IDecision;
+import edu.kit.dopler.model.IValue;
+import edu.kit.dopler.model.NumberEnforce;
+import edu.kit.dopler.model.StringEnforce;
+import edu.kit.dopler.model.StringValue;
 
 public class ActionParser {
 
@@ -81,9 +95,9 @@ public class ActionParser {
 				actionElements.add(new BooleanValue(false));
 			} else if (symbol.equals(ASSIGN)) {
 				isAssign = true;
-				Object left = actionElements.remove();
-				if (left instanceof StringValue) {
-					IDecision d = DoplerUtils.getDecision(dm, ((StringValue) left).getValue());
+				final Object left = actionElements.remove();
+				if (left instanceof final StringValue strValue) {
+					final IDecision d = DoplerUtils.getDecision(dm, strValue.getValue());
 					actionElements.add(d);
 				} else {
 					actionElements.add(left);
@@ -100,37 +114,37 @@ public class ActionParser {
 			} else if (RulesParser.isStringRangeValue(dm, symbol)) {
 				actionElements.add(new StringValue(symbol));
 			} else { // decision
-				IDecision d = DoplerUtils.getDecision(dm, symbol);
+				final IDecision d = DoplerUtils.getDecision(dm, symbol);
 				actionElements.add(d);
 			}
 			if (actionElements.size() == NECESSARY_ELEMENTS_FOR_ACTION) {
 
 				if (isAssign) {
-					Object left = actionElements.remove();
-					Object right = actionElements.remove();
+					final Object left = actionElements.remove();
+					final Object right = actionElements.remove();
 					if (!(left instanceof IDecision)) {
 						throw new InvalidActionException("Lefthand operand is not a valid decision.");
 					}
-                    action = switch (((IDecision<?>) left).getDecisionType().toString()) {
-                        case "Boolean" -> new BooleanEnforce((BooleanDecision) left, (IValue<Boolean>) right);
-                        case "Double" -> new NumberEnforce((IDecision<?>) left, (IValue<?>) right);
-                        case "Enumeration" -> new EnumEnforce((IDecision<?>) left, (IValue<?>) new StringValue(DoplerUtils.getEnumerationliteral(dm, (IValue) right).getValue()));
-                        case "String" -> new StringEnforce((IDecision<?>) left, (IValue<?>) right);
-                        default -> action;
-                    };
+					action = switch (((IDecision<?>) left).getDecisionType().toString()) {
+					case "Boolean" -> new BooleanEnforce((BooleanDecision) left, (IValue<Boolean>) right);
+					case "Double" -> new NumberEnforce((IDecision<?>) left, (IValue<?>) right);
+					case "Enumeration" -> new EnumEnforce((IDecision<?>) left, (IValue<?>) new StringValue(DoplerUtils.getEnumerationliteral(dm, (IValue) right).getValue()));
+					case "String" -> new StringEnforce((IDecision<?>) left, (IValue<?>) right);
+					default -> action;
+					};
 
 				} else if (isAllowFunction) {
-					Object left = actionElements.remove();
-					Object right = actionElements.remove();
+					final Object left = actionElements.remove();
+					final Object right = actionElements.remove();
 
-					if (left instanceof IDecision && right instanceof AbstractValue) {
-						action = new Allows((IDecision) left, (AbstractValue) right);
+					if (left instanceof final IDecision decision && right instanceof final AbstractValue value) {
+						action = new Allows(decision, value);
 					}
 				} else if (isDisAllowFunction) {
-					Object left = actionElements.remove();
-					Object right = actionElements.remove();
-					if (left instanceof IDecision && right instanceof AbstractValue) {
-						action = new DisAllows((IDecision) left, (AbstractValue) right);
+					final Object left = actionElements.remove();
+					final Object right = actionElements.remove();
+					if (left instanceof final IDecision decision && right instanceof final AbstractValue value) {
+						action = new DisAllows(decision, value);
 					}
 				}
 			}

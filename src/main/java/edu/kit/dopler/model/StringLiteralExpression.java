@@ -65,6 +65,6 @@ public class StringLiteralExpression extends LiteralExpression {
 
 	@Override
 	public String toString() {
-		return String.format("\"%s \"", literal);
+		return String.format("%s", literal);
 	}
 }

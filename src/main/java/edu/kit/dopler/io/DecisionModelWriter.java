@@ -36,7 +36,7 @@ public class DecisionModelWriter {
 	public void write(final Dopler dm, final Path path) throws IOException {
 		Objects.requireNonNull(dm);
 		Objects.requireNonNull(path);
-		CSVFormat dmFormat = CSVUtils.createCSVFormat();
+		CSVFormat dmFormat = CSVUtils.createCSVWriteFormat();
 		try (FileWriter out = new FileWriter(path.toFile(), StandardCharsets.UTF_8);
 				CSVPrinter printer = new CSVPrinter(out, dmFormat)) {
 			for (Object obj : dm.getDecisions()) {
@@ -68,9 +68,11 @@ public class DecisionModelWriter {
 		String rulesString = "";
 		Set<Rule> rulesSet = decision.getRules();
 		StringBuilder rulesSetBuilder = new StringBuilder();
+		rulesSetBuilder.append("\"");
 		for (Rule rule : rulesSet) {
 			rulesSetBuilder.append(rule);
 		}
+		rulesSetBuilder.append("\"");
 		rulesString = rulesSetBuilder.toString();
 		return rulesString;
 	}
@@ -91,10 +93,10 @@ public class DecisionModelWriter {
 			EnumerationDecision enumDecision = (EnumerationDecision) decision;
 			Set<EnumerationLiteral> enumeration = enumDecision.getEnumeration().getEnumerationLiterals();
 			StringBuilder builder = new StringBuilder();
-			int i = 0;
+			int i = 1;
 			for (EnumerationLiteral literal : enumeration) {
 				builder.append(literal.getValue());
-				if (i != enumeration.size()) {
+				if (i < enumeration.size()) {
 					builder.append(" | ");
 				}
 				i++;

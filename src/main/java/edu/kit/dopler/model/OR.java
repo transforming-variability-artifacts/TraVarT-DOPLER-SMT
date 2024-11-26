@@ -4,7 +4,7 @@
  * with this file, You can obtain one at
  * https://mozilla.org/MPL/2.0/.
  *
- * Contributors: 
+ * Contributors:
  * 	@author Fabian Eger
  * 	@author Kevin Feichtinger
  *
@@ -14,34 +14,35 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-import edu.kit.dopler.exceptions.EvaluationException;
-
 import java.util.stream.Stream;
 
+import edu.kit.dopler.exceptions.EvaluationException;
+
 public class OR extends BinaryExpression {
-	
+
 	private static final String SYMBOL = "||";
 
-	public OR(IExpression leftExpression, IExpression rightExpression) {
+	public OR(final IExpression leftExpression, final IExpression rightExpression) {
 		super(leftExpression, rightExpression);
 	}
 
 	@Override
 	public boolean evaluate() throws EvaluationException {
-		if (getLeftExpression() instanceof BooleanLiteralExpression
-				&& getRightExpression() instanceof DecisionValueCallExpression) {
-			boolean left = ((BooleanLiteralExpression) getLeftExpression()).getLiteral();
-			boolean right = (boolean) ((DecisionValueCallExpression) getRightExpression()).getValue().getValue();
+		if (getLeftExpression() instanceof final BooleanLiteralExpression leftExpression
+				&& getRightExpression() instanceof final DecisionValueCallExpression rightExpression) {
+			final boolean left = leftExpression.getLiteral();
+			final boolean right = (boolean) rightExpression.getValue().getValue();
 			return left || right;
-		} else if (getLeftExpression() instanceof DecisionValueCallExpression
-				&& getRightExpression() instanceof BooleanLiteralExpression) {
-			boolean left = (boolean) ((DecisionValueCallExpression) getLeftExpression()).getValue().getValue();
-			boolean right = ((BooleanLiteralExpression) getRightExpression()).getLiteral();
+		}
+		if (getLeftExpression() instanceof final DecisionValueCallExpression leftExpression
+				&& getRightExpression() instanceof final BooleanLiteralExpression rightExpression) {
+			final boolean left = (boolean) leftExpression.getValue().getValue();
+			final boolean right = rightExpression.getLiteral();
 			return left || right;
-		} else if (getLeftExpression() instanceof BooleanLiteralExpression
-				&& getRightExpression() instanceof BooleanLiteralExpression) {
-			boolean right = ((BooleanLiteralExpression) getRightExpression()).getLiteral();
-			boolean left = ((BooleanLiteralExpression) getLeftExpression()).getLiteral();
+		} else if (getLeftExpression() instanceof final BooleanLiteralExpression leftExpression
+				&& getRightExpression() instanceof final BooleanLiteralExpression rightExpression) {
+			final boolean left = leftExpression.getLiteral();
+			final boolean right = rightExpression.getLiteral();
 			return left || right;
 		} else if (getLeftExpression() instanceof BinaryExpression
 				&& getRightExpression() instanceof BinaryExpression) {
@@ -52,7 +53,7 @@ public class OR extends BinaryExpression {
 	}
 
 	@Override
-	public void toSMTStream(Stream.Builder<String> builder, String callingDecision) {
+	public void toSMTStream(final Stream.Builder<String> builder, final String callingDecision) {
 		builder.add("(or ");
 		getLeftExpression().toSMTStream(builder, callingDecision);
 		getRightExpression().toSMTStream(builder, callingDecision);

@@ -4,7 +4,7 @@
  * with this file, You can obtain one at
  * https://mozilla.org/MPL/2.0/.
  *
- * Contributors: 
+ * Contributors:
  * 	@author Fabian Eger
  * 	@author Kevin Feichtinger
  *
@@ -26,7 +26,7 @@ public enum CSVHeader {
 		return Arrays.stream(CSVHeader.values()).map(CSVHeader::toString).toArray(String[]::new);
 	}
 
-	CSVHeader(String header) {
+	CSVHeader(final String header) {
 		this.header = header;
 	}
 

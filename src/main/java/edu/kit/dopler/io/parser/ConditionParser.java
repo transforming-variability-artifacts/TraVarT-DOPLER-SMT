@@ -4,7 +4,7 @@
  * with this file, You can obtain one at
  * https://mozilla.org/MPL/2.0/.
  *
- * Contributors: 
+ * Contributors:
  * 	@author Fabian Eger
  * 	@author Kevin Feichtinger
  *
@@ -19,12 +19,30 @@ import java.util.Objects;
 
 import edu.kit.dopler.common.DoplerUtils;
 import edu.kit.dopler.exceptions.ParserException;
-import edu.kit.dopler.model.*;
+import edu.kit.dopler.model.AND;
+import edu.kit.dopler.model.BooleanLiteralExpression;
+import edu.kit.dopler.model.DecisionValueCallExpression;
+import edu.kit.dopler.model.Dopler;
+import edu.kit.dopler.model.DoubleLiteralExpression;
+import edu.kit.dopler.model.Enforce;
+import edu.kit.dopler.model.EnumerationLiteral;
+import edu.kit.dopler.model.EnumeratorLiteralExpression;
+import edu.kit.dopler.model.Equals;
+import edu.kit.dopler.model.GreatherThan;
+import edu.kit.dopler.model.IDecision;
+import edu.kit.dopler.model.IExpression;
+import edu.kit.dopler.model.IsTaken;
+import edu.kit.dopler.model.LessThan;
+import edu.kit.dopler.model.LiteralExpression;
+import edu.kit.dopler.model.NOT;
+import edu.kit.dopler.model.OR;
+import edu.kit.dopler.model.StringLiteralExpression;
+import edu.kit.dopler.model.StringValue;
 
 @SuppressWarnings("rawtypes")
 public class ConditionParser {
 
-	private static final String REGEX = "(?<=\\.)|(?=\\.)|((?<=\\=)|(?=\\=)|(?<=\\<)|(?=\\<)|(?<=\\>)|(?=\\>))|((?<=\\|\\|)|(?=\\|\\|))|((?<=&&)|(?=&&))|((?<=!)|(?=!))|((?<=\\()|(?=\\())|((?<=\\))|(?=\\)))";
+	private static final String CONDITION_REGEX = "(?<=\\.)|(?=\\.)|((?<=\\=)|(?=\\=)|(?<=\\<)|(?=\\<)|(?<=\\>)|(?=\\>))|((?<=\\|\\|)|(?=\\|\\|))|((?<=&&)|(?=&&))|((?<=!)|(?=!))|((?<=\\()|(?=\\())|((?<=\\))|(?=\\)))";
 
 	private static final String EOF = "EOF";
 
@@ -48,7 +66,7 @@ public class ConditionParser {
 	private String symbol;
 
 	private boolean isTaken = false;
-	private boolean isSelected = false;
+	private final boolean isSelected = false;
 	private boolean isEquals = false;
 
 	private final Dopler dm;
@@ -62,7 +80,7 @@ public class ConditionParser {
 		isTaken = false;
 		index = 0;
 		isEquals = false;
-		input = Arrays.stream(str.split(REGEX)).map(String::trim).filter(s -> !s.isEmpty() && !s.isBlank())
+		input = Arrays.stream(str.split(CONDITION_REGEX)).map(String::trim).filter(s -> !s.isEmpty() && !s.isBlank())
 				.toArray(String[]::new);
 		//System.out.println(Arrays.toString(input));
 		if (input.length > 0) {
@@ -75,7 +93,7 @@ public class ConditionParser {
 		IExpression v = term();
 		while (symbol.equals(OR)) {
 
-			IExpression r = term();
+			final IExpression r = term();
 			v = new OR(v, r);
 		}
 
@@ -85,7 +103,7 @@ public class ConditionParser {
 	private IExpression term() throws ParserException {
 		IExpression v = comperator();
 		while (symbol.equals(AND)) {
-			IExpression r = comperator();
+			final IExpression r = comperator();
 			v = new AND(v, r);
 		}
 		return v;
@@ -95,18 +113,18 @@ public class ConditionParser {
 		IExpression v = factor();
 
 		while (symbol.equals(EQUAL) || symbol.equals(GREATER) || symbol.equals(LESS)) {
-			String first = symbol;
+			final String first = symbol;
 			nextSymbol();
-			String second = symbol;
+			final String second = symbol;
 			if (first.equals(EQUAL) && second.equals(EQUAL)) {
-				IExpression r =  getValueLiteral(v);
+				final IExpression r =  getValueLiteral(v);
 				v = new Equals(v, r);
 			} else if (first.equals(GREATER) && second.equals(EQUAL)) {
-				IExpression r =  getValueLiteral(v);
+				final IExpression r =  getValueLiteral(v);
 				v = new AND(new GreatherThan(v, r), new Equals(v, r));
 			} else if (first.equals(LESS) && second.equals(EQUAL)) {
 				nextSymbol();
-				IExpression r =  getValueLiteral(v);
+				final IExpression r =  getValueLiteral(v);
 				v = new AND(new LessThan(v, r), new Equals(v, r));
 			} else if (first.equals(GREATER)) {
 				// second is operand
@@ -138,18 +156,19 @@ public class ConditionParser {
 	}
 
 	private IExpression getValueLiteral(IExpression v) throws ParserException {
-		if (symbol.toLowerCase().equals(TRUE)) {
+		if (symbol.equalsIgnoreCase(TRUE)) {
 			v = new BooleanLiteralExpression(true);
-		} else if (symbol.toLowerCase().equals(FALSE)) {
+		} else if (symbol.equalsIgnoreCase(FALSE)) {
 			v = new BooleanLiteralExpression(false);
-		} else if (RulesParser.isDoubleRangeValue(symbol)) {
-			v = new DoubleLiteralExpression(Double.parseDouble(symbol));
-			nextSymbol();
-		} else if (RulesParser.isStringRangeValue(dm, symbol)) {
-			v = new StringLiteralExpression(symbol);
-			nextSymbol();
 		} else {
-			throw new ParserException("Unkown value type!");
+			if (RulesParser.isDoubleRangeValue(symbol)) {
+				v = new DoubleLiteralExpression(Double.parseDouble(symbol));
+			} else if (RulesParser.isStringRangeValue(dm, symbol)) {
+				v = new StringLiteralExpression(symbol);
+			} else {
+				throw new ParserException("Unkown value type!");
+			}
+			nextSymbol();
 		}
 		return v;
 	}
@@ -164,7 +183,7 @@ public class ConditionParser {
 		if (symbol.equals(EOF)) {
 			v = new BooleanLiteralExpression(true);
 		} else if (symbol.equals(NOT)) {
-			IExpression f = factor();
+			final IExpression f = factor();
 			v = new NOT(f);
 		} else if (symbol.equals(OPENING_PARENTHESE)) {
 			v = parseCondition();
@@ -175,41 +194,36 @@ public class ConditionParser {
 			if (symbol.equals(OPENING_PARENTHESE)) {
 				v = parseCondition();
 			}
-
 		} else if (symbol.equals(CLOSING_PARENTHESE)) {
-
-//		} else if (symbol.equals(IsSelectedFunction.FUNCTION_NAME)) {
-//			nextSymbol();
-//			isSelected = true;
-//			if (symbol.equals(OPENING_PARENTHESE)) {
-//				v = parseCondition();
-//				nextSymbol(); // we don't care about )
-//			}
-//		} else if (symbol.equals(GET_VALUE_Function)) {
-//			nextSymbol();
-//			if (symbol.equals(OPENING_PARENTHESE)) {
-//				nextSymbol();
-//				IDecision d = DoplerUtils.getDecision(dm, symbol);
-//				v = new DecisionValueCallExpression(d);
-//
-//				}
-
+			//		} else if (symbol.equals(IsSelectedFunction.FUNCTION_NAME)) {
+			//			nextSymbol();
+			//			isSelected = true;
+			//			if (symbol.equals(OPENING_PARENTHESE)) {
+			//				v = parseCondition();
+			//				nextSymbol(); // we don't care about )
+			//			}
+			//		} else if (symbol.equals(GET_VALUE_Function)) {
+			//			nextSymbol();
+			//			if (symbol.equals(OPENING_PARENTHESE)) {
+			//				nextSymbol();
+			//				IDecision d = DoplerUtils.getDecision(dm, symbol);
+			//				v = new DecisionValueCallExpression(d);
+			//
+			//				}
 		} else if (symbol.equals(Enforce.FUNCTION_NAME)) {
 			throw new ParserException("We need to deal with the different types of enforces here");
-		} else if (symbol.toLowerCase().equals(TRUE)) {
+		} else if (symbol.equalsIgnoreCase(TRUE)) {
 			v = new BooleanLiteralExpression(true);
-		} else if (symbol.toLowerCase().equals(FALSE)) {
+		} else if (symbol.equalsIgnoreCase(FALSE)) {
 			v = new BooleanLiteralExpression(false);
 		} else if (RulesParser.isDoubleRangeValue(symbol)) {
 			v = new DoubleLiteralExpression(Double.parseDouble(symbol));
 			nextSymbol();
 		} else if (RulesParser.isStringRangeValue(dm, symbol)) {
-
 			v = new EnumeratorLiteralExpression(DoplerUtils.getEnumerationliteral(dm,new StringValue(symbol)));
 			nextSymbol();
 		} else { // decision
-			IDecision d = DoplerUtils.getDecision(dm, symbol);
-
+			final IDecision d = DoplerUtils.getDecision(dm, symbol);
 			nextSymbol();
 			if (symbol.equals(DECISION_VALUE_DELIMITER)) {
 				nextSymbol();
@@ -219,18 +233,16 @@ public class ConditionParser {
 					v = new Equals(new DecisionValueCallExpression(d),new EnumeratorLiteralExpression(DoplerUtils.getEnumerationliteral(dm,new StringValue(symbol))));
 
 				}
-
 			} else if (symbol.equals(EOF)) {
 				v = new Equals(new DecisionValueCallExpression(d),new BooleanLiteralExpression(true));
 			} else if (isTaken) {
-
 				v = new IsTaken(d);
 				isTaken = false;
 				nextSymbol();
-//			} else if (isSelected || symbol.equals(CLOSING_PARENTHESE)) {
-//				v = new IsSelected(d);
-//			} else if (d != null) {
-//				v = new IsSelectedFunction(d);
+				//			} else if (isSelected || symbol.equals(CLOSING_PARENTHESE)) {
+				//				v = new IsSelected(d);
+				//			} else if (d != null) {
+				//				v = new IsSelectedFunction(d);
 			} else if (symbol.equals(EQUAL)) {
 				nextSymbol();
 				if (symbol.equals(EQUAL)) {
@@ -238,53 +250,42 @@ public class ConditionParser {
 					v = new Equals(new DecisionValueCallExpression(d), factor());
 				}
 			} else if (symbol.equals(CLOSING_PARENTHESE)) {
-
 				v = new Equals(new DecisionValueCallExpression(d),new BooleanLiteralExpression(true));
-
 			} else if (symbol.equals(OR)) {
 				v = new OR(new DecisionValueCallExpression(d),parseCondition());
 			} else if (symbol.equals(LESS)) {
-
 				v = new LessThan(new DecisionValueCallExpression(d), factor());
-
-
 			} else if (symbol.equals(GREATER)) {
-
 				v = new GreatherThan(new DecisionValueCallExpression(d), factor());
-
-
-
-		} else {
-
+			} else {
 				throw new ParserException("unknown function/decision for symbol " + symbol);
 			}
-
 		}
 		return v;
 	}
 
-	private static LiteralExpression getLiteralExpression(IDecision d, String symbol) {
+	private static LiteralExpression getLiteralExpression(final IDecision d, final String symbol) {
 		LiteralExpression literalExpression;
 		switch (d.getDecisionType().toString()) {
-			case "Boolean":
-				boolean Boolliteral = Boolean.parseBoolean(symbol);
-				literalExpression = new BooleanLiteralExpression(Boolliteral);
-				break;
-			case "Double":
-				double doubleLiteral = Double.parseDouble(symbol);
-				literalExpression = new DoubleLiteralExpression(doubleLiteral);
-				break;
-			case "Enumeration":
-				EnumerationLiteral literal = new EnumerationLiteral(symbol);
-				literalExpression = new EnumeratorLiteralExpression(literal);
-				// TODO get the real Enumeration Literal instead of creating it here
-				break;
-			case "String":
-				String stringliteral = symbol;
-				literalExpression = new StringLiteralExpression(stringliteral);
-				break;
-			default:
-				literalExpression = new BooleanLiteralExpression(true);
+		case "Boolean":
+			final boolean Boolliteral = Boolean.parseBoolean(symbol);
+			literalExpression = new BooleanLiteralExpression(Boolliteral);
+			break;
+		case "Double":
+			final double doubleLiteral = Double.parseDouble(symbol);
+			literalExpression = new DoubleLiteralExpression(doubleLiteral);
+			break;
+		case "Enumeration":
+			final EnumerationLiteral literal = new EnumerationLiteral(symbol);
+			literalExpression = new EnumeratorLiteralExpression(literal);
+			// TODO get the real Enumeration Literal instead of creating it here
+			break;
+		case "String":
+			final String stringliteral = symbol;
+			literalExpression = new StringLiteralExpression(stringliteral);
+			break;
+		default:
+			literalExpression = new BooleanLiteralExpression(true);
 		}
 		return literalExpression;
 	}

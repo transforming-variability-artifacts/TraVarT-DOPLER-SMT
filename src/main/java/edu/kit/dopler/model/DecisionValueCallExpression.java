@@ -4,7 +4,7 @@
  * with this file, You can obtain one at
  * https://mozilla.org/MPL/2.0/.
  *
- * Contributors: 
+ * Contributors:
  * 	@author Fabian Eger
  * 	@author Kevin Feichtinger
  *
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 public class DecisionValueCallExpression extends DecisionCallExpression {
 
-	public DecisionValueCallExpression(IDecision decision) {
+	public DecisionValueCallExpression(final IDecision<?> decision) {
 		super(decision);
 	}
 
@@ -32,7 +32,7 @@ public class DecisionValueCallExpression extends DecisionCallExpression {
 	}
 
 	@Override
-	public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
+	public void toSMTStream(final Stream.Builder<String> builder, final String callingDecisionConst) {
 		builder.add(" " + callingDecisionConst + "_" + getDecision().toStringConstforSMT() + "_PRE ");
 	}
 
