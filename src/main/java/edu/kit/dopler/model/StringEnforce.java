@@ -10,7 +10,6 @@
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
- * All rights reserved
  *******************************************************************************/
 /**
  * Because the Enforce Action is possible with every decision type and the decision are generic

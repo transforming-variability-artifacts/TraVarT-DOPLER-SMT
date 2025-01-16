@@ -4,13 +4,12 @@
  * with this file, You can obtain one at
  * https://mozilla.org/MPL/2.0/.
  *
- * Contributors:
+ * Contributors: 
  * 	@author Fabian Eger
  * 	@author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
- * All rights reserved
  *******************************************************************************/
 /**
  * Because the Enforce Action is possible with every decision type and the decision are generic

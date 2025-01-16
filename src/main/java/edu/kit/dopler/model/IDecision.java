@@ -10,7 +10,6 @@
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
- * All rights reserved
  *******************************************************************************/
 package edu.kit.dopler.model;
 
