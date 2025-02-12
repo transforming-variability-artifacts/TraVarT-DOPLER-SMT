@@ -47,7 +47,7 @@ public class Dopler {
         decisions.remove(decisionType);
     }
 
-    public Set<? extends IDecision<?>> getDecisions() {
+    public Set<IDecision<?>> getDecisions() {
         return decisions;
     }
 

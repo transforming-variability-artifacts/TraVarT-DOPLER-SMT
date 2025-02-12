@@ -3,72 +3,87 @@
  * Public License, v. 2.0. If a copy of the MPL was not distributed
  * with this file, You can obtain one at
  * https://mozilla.org/MPL/2.0/.
- *
- * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
- *
+ * <p>
+ * Contributors:
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
+ * <p>
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  * All rights reserved
  *******************************************************************************/
 package edu.kit.dopler.io;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.Objects;
-import java.util.Set;
-
+import edu.kit.dopler.exceptions.UnknownDecisionTypeException;
+import edu.kit.dopler.model.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
-import edu.kit.dopler.exceptions.UnknownDecisionTypeException;
-import edu.kit.dopler.model.Dopler;
-import edu.kit.dopler.model.EnumerationDecision;
-import edu.kit.dopler.model.EnumerationLiteral;
-import edu.kit.dopler.model.IDecision;
-import edu.kit.dopler.model.Rule;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.*;
 
 public class DecisionModelWriter {
 
-	public void write(final Dopler dm, final Path path) throws IOException {
+	public void write(Dopler dm, Path path) throws IOException {
 		Objects.requireNonNull(dm);
 		Objects.requireNonNull(path);
-		CSVFormat dmFormat = CSVUtils.createCSVWriteFormat();
+		CSVFormat dmFormat = CSVUtils.createCSVFormat(true);
 		try (FileWriter out = new FileWriter(path.toFile(), StandardCharsets.UTF_8);
-				CSVPrinter printer = new CSVPrinter(out, dmFormat)) {
-			for (Object obj : dm.getDecisions()) {
-				assert obj instanceof IDecision;
-				IDecision decision = (IDecision) obj;
+			 CSVPrinter printer = new CSVPrinter(out, dmFormat)) {
+			printer.println();
+			for (IDecision<?> obj : dm.getDecisions()) {
 
-				String rangeString = createRangeString(decision);
-				String rulesString = createRulesString(decision);
-				String cardinalityString = createCardinalityString(decision);
+				String rangeString = createRangeString(obj);
+				String rulesString = createRulesString(obj);
+				String cardinalityString = createCardinalityString(obj);
 
-				printer.printRecord(decision.getDisplayId(), decision.getQuestion(), decision.getDecisionType(),
-						rangeString, cardinalityString, rulesString, decision.getVisibilityCondition());
+				printer.printRecord(obj.getDisplayId(), obj.getQuestion(), obj.getDecisionType(), rangeString,
+						cardinalityString, rulesString, obj.getVisibilityCondition());
 			}
 		} catch (Exception e) {
 			throw new IOException(e);
 		}
 	}
 
-	private String createCardinalityString(IDecision decision) {
+	public String write(Dopler dm) throws IOException {
+		CSVFormat dmFormat = CSVUtils.createCSVFormat(true);
+		try (StringWriter out = new StringWriter(1000); CSVPrinter printer = new CSVPrinter(out, dmFormat)) {
+			printer.println();
+			for (IDecision<?> obj : dm.getDecisions()) {
+				String rangeString = createRangeString(obj);
+				String rulesString = createRulesString(obj);
+				String cardinalityString = createCardinalityString(obj);
+
+				printer.printRecord(obj.getDisplayId(), obj.getQuestion(), obj.getDecisionType(), rangeString,
+						cardinalityString, rulesString, obj.getVisibilityCondition());
+			}
+			return out.toString();
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
+	private String createCardinalityString(IDecision<?> decision) {
 		String cardinalityString = "";
-		if (decision instanceof EnumerationDecision) {
-			EnumerationDecision enumDecision = ((EnumerationDecision) decision);
+		if (decision instanceof EnumerationDecision enumDecision) {
 			cardinalityString = enumDecision.getMinCardinality() + ":" + enumDecision.getMaxCardinality();
 		}
 		return cardinalityString;
 	}
 
-	private String createRulesString(IDecision decision) {
-		String rulesString = "";
+	private String createRulesString(IDecision<?> decision) {
+		String rulesString;
 		Set<Rule> rulesSet = decision.getRules();
-		StringBuilder rulesSetBuilder = new StringBuilder();
-		rulesSetBuilder.append("\"");
+
+		if (rulesSet.isEmpty()) {
+			return "";
+		}
+
+		StringBuilder rulesSetBuilder = new StringBuilder("\"");
 		for (Rule rule : rulesSet) {
 			rulesSetBuilder.append(rule);
 		}
@@ -77,36 +92,22 @@ public class DecisionModelWriter {
 		return rulesString;
 	}
 
-	private String createRangeString(IDecision decision) throws UnknownDecisionTypeException {
+	private String createRangeString(IDecision<?> decision) throws UnknownDecisionTypeException {
 		String rangeString = "";
 		switch (decision.getDecisionType()) {
-		case BOOLEAN:
-			rangeString = "true | false";
-			break;
-		case NUMBER:
-			// no range
-			break;
-		case STRING:
-			// no range
-			break;
-		case ENUM:
-			EnumerationDecision enumDecision = (EnumerationDecision) decision;
-			Set<EnumerationLiteral> enumeration = enumDecision.getEnumeration().getEnumerationLiterals();
-			StringBuilder builder = new StringBuilder();
-			int i = 1;
-			for (EnumerationLiteral literal : enumeration) {
-				builder.append(literal.getValue());
-				if (i < enumeration.size()) {
-					builder.append(" | ");
-				}
-				i++;
+			case BOOLEAN -> rangeString = "true | false";
+			case NUMBER, STRING -> {
+				//empty range
 			}
-			rangeString = builder.toString();
-			break;
-		default:
-			throw new UnknownDecisionTypeException(
+			case ENUM -> {
+				EnumerationDecision enumDecision = (EnumerationDecision) decision;
+				List<EnumerationLiteral> enumeration =
+						new ArrayList<>(enumDecision.getEnumeration().getEnumerationLiterals());
+				enumeration.sort(Comparator.comparing(EnumerationLiteral::getValue));
+				rangeString = String.join(" | ", enumeration.stream().map(EnumerationLiteral::getValue).toList());
+			}
+			default -> throw new UnknownDecisionTypeException(
 					"Unknown Decision Type encountered during writing the DOPLER model.");
-
 		}
 		return rangeString;
 	}

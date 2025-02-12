@@ -36,6 +36,6 @@ public class BooleanEnforce extends Enforce {
 	
 	@Override
 	public String toString() {
-		return String.format("%s = \"%s\"", getDecision(), getValue());
+		return String.format("%s = %s", getDecision(), getValue());
 	}
 }

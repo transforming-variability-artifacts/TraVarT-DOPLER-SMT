@@ -3,46 +3,34 @@
  * Public License, v. 2.0. If a copy of the MPL was not distributed
  * with this file, You can obtain one at
  * https://mozilla.org/MPL/2.0/.
- *
+ * <p>
  * Contributors:
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
- *
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
+ * <p>
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  * All rights reserved
  *******************************************************************************/
 package edu.kit.dopler.io.parser;
 
+import edu.kit.dopler.common.DoplerUtils;
+import edu.kit.dopler.exceptions.InvalidActionException;
+import edu.kit.dopler.exceptions.ParserException;
+import edu.kit.dopler.model.*;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.regex.Pattern;
 
-import edu.kit.dopler.common.DoplerUtils;
-import edu.kit.dopler.exceptions.InvalidActionException;
-import edu.kit.dopler.exceptions.ParserException;
-import edu.kit.dopler.model.AbstractValue;
-import edu.kit.dopler.model.Allows;
-import edu.kit.dopler.model.BooleanDecision;
-import edu.kit.dopler.model.BooleanEnforce;
-import edu.kit.dopler.model.BooleanValue;
-import edu.kit.dopler.model.DisAllows;
-import edu.kit.dopler.model.Dopler;
-import edu.kit.dopler.model.DoubleValue;
-import edu.kit.dopler.model.EnumEnforce;
-import edu.kit.dopler.model.IAction;
-import edu.kit.dopler.model.IDecision;
-import edu.kit.dopler.model.IValue;
-import edu.kit.dopler.model.NumberEnforce;
-import edu.kit.dopler.model.StringEnforce;
-import edu.kit.dopler.model.StringValue;
-
-public class ActionParser {
+class ActionParser {
 
 	private static final int NECESSARY_ELEMENTS_FOR_ACTION = 2;
 
-	private static final String REGEX = "(?<=\\.)|(?=\\.)|(?<=\\=)|(?=\\=)|((?<=\\()|(?=\\())|((?<=\\))|(?=\\)))";
+	private static final Pattern PATTERN =
+			Pattern.compile("(?<=\\.)|(?=\\.)|(?<==)|(?==)|((?<=\\()|(?=\\())|((?<=\\))|(?=\\)))");
 
 	private static final String EOF = "EOF";
 
@@ -53,25 +41,25 @@ public class ActionParser {
 
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
-
-	private String[] input;
-	private int index = 0;
-	private String symbol;
-
 	private final Dopler dm;
 	private final Queue<Object> actionElements = new LinkedList<>();
+	private String[] input;
+	private int index;
+	private String symbol;
 
-	public ActionParser(final Dopler decisions) {
+	ActionParser(Dopler decisions) {
 		dm = Objects.requireNonNull(decisions);
+		input = null;
+		index = 0;
+		symbol = null;
 	}
 
-	public IAction parse(final String str) throws ParserException {
+	IAction parse(String str) throws ParserException {
 		Objects.requireNonNull(str);
 		index = 0;
-		input = Arrays.stream(str.split(REGEX)).map(String::trim).filter(s -> !s.isEmpty() && !s.isBlank())
+		input = Arrays.stream(PATTERN.split(str)).map(String::trim).filter(s -> !s.isEmpty() && !s.isBlank())
 				.toArray(String[]::new);
-		//System.out.println(Arrays.toString(input));
-		if (input.length > 0) {
+		if (0 < input.length) {
 			return parseAction();
 		}
 		throw new ParserException("No action found in String " + str);
@@ -84,67 +72,69 @@ public class ActionParser {
 		boolean isDisAllowFunction = false;
 		nextSymbol();
 		while (!symbol.equals(EOF)) {
-			if (symbol.equals(OPEN_PARENTHESE) || symbol.equals(CLOSING_PARENTHESE)
-					|| symbol.equals(DECISION_VALUE_DELIMITER)) {
+			if (symbol.equals(OPEN_PARENTHESE) || symbol.equals(CLOSING_PARENTHESE) ||
+					symbol.equals(DECISION_VALUE_DELIMITER)) {
 				nextSymbol();
 				continue;
 			}
 			if (symbol.equals(TRUE)) {
-				actionElements.add(new BooleanValue(true));
+				actionElements.add(new BooleanValue(Boolean.TRUE));
 			} else if (symbol.equals(FALSE)) {
-				actionElements.add(new BooleanValue(false));
+				actionElements.add(new BooleanValue(Boolean.FALSE));
 			} else if (symbol.equals(ASSIGN)) {
 				isAssign = true;
-				final Object left = actionElements.remove();
-				if (left instanceof final StringValue strValue) {
-					final IDecision d = DoplerUtils.getDecision(dm, strValue.getValue());
-					actionElements.add(d);
+				Object left = actionElements.remove();
+				if (left instanceof StringValue) {
+					IDecision<?> decision = DoplerUtils.getDecision(dm, ((AbstractValue<String>) left).getValue());
+					actionElements.add(decision);
 				} else {
 					actionElements.add(left);
 				}
-
 			} else if (symbol.equals(Allows.FUNCTION_NAME)) {
 				isAllowFunction = true;
 			} else if (symbol.equals(DisAllows.FUNCTION_NAME)) {
 				isDisAllowFunction = true;
-			} else if (symbol.equals("enforce")) {
+			} else if ("enforce".equals(symbol)) {
 				isAssign = true;
 			} else if (RulesParser.isDoubleRangeValue(symbol)) {
 				actionElements.add(new DoubleValue(Double.parseDouble(symbol)));
 			} else if (RulesParser.isStringRangeValue(dm, symbol)) {
 				actionElements.add(new StringValue(symbol));
+			} else if ((symbol.startsWith("'") && symbol.endsWith("'"))) {
+				//Remove ' at the start and end
+				actionElements.add(new StringValue(symbol.substring(1, symbol.length() - 1)));
 			} else { // decision
-				final IDecision d = DoplerUtils.getDecision(dm, symbol);
-				actionElements.add(d);
+				IDecision<?> decision = DoplerUtils.getDecision(dm, symbol);
+				actionElements.add(decision);
 			}
-			if (actionElements.size() == NECESSARY_ELEMENTS_FOR_ACTION) {
+			if (NECESSARY_ELEMENTS_FOR_ACTION == actionElements.size()) {
 
 				if (isAssign) {
-					final Object left = actionElements.remove();
-					final Object right = actionElements.remove();
+					Object left = actionElements.remove();
+					Object right = actionElements.remove();
 					if (!(left instanceof IDecision)) {
 						throw new InvalidActionException("Lefthand operand is not a valid decision.");
 					}
 					action = switch (((IDecision<?>) left).getDecisionType().toString()) {
-					case "Boolean" -> new BooleanEnforce((BooleanDecision) left, (IValue<Boolean>) right);
-					case "Double" -> new NumberEnforce((IDecision<?>) left, (IValue<?>) right);
-					case "Enumeration" -> new EnumEnforce((IDecision<?>) left, (IValue<?>) new StringValue(DoplerUtils.getEnumerationliteral(dm, (IValue) right).getValue()));
-					case "String" -> new StringEnforce((IDecision<?>) left, (IValue<?>) right);
-					default -> action;
+						case "Boolean" -> new BooleanEnforce((BooleanDecision) left, (IValue<Boolean>) right);
+						case "Double" -> new NumberEnforce((IDecision<?>) left, (IValue<?>) right);
+						case "Enumeration" -> new EnumEnforce((IDecision<?>) left,
+								new StringValue(DoplerUtils.getEnumerationliteral(dm, (IValue<?>) right).getValue()));
+						case "String" -> new StringEnforce((IDecision<?>) left, (IValue<?>) right);
+						default -> action;
 					};
-
 				} else if (isAllowFunction) {
-					final Object left = actionElements.remove();
-					final Object right = actionElements.remove();
+					Object left = actionElements.remove();
+					Object right = actionElements.remove();
 
-					if (left instanceof final IDecision decision && right instanceof final AbstractValue value) {
-						action = new Allows(decision, value);
+					if (left instanceof IDecision && right instanceof AbstractValue) {
+						action = new Allows((IDecision<?>) left, (IValue<?>) right);
 					}
 				} else if (isDisAllowFunction) {
-					final Object left = actionElements.remove();
-					final Object right = actionElements.remove();
-					if (left instanceof final IDecision decision && right instanceof final AbstractValue value) {
-						action = new DisAllows(decision, value);
+					Object left = actionElements.remove();
+					Object right = actionElements.remove();
+					if (left instanceof IDecision && right instanceof AbstractValue) {
+						action = new DisAllows((IDecision<?>) left, (IValue<?>) right);
 					}
 				}
 			}
@@ -157,7 +147,8 @@ public class ActionParser {
 		if (index == input.length) {
 			symbol = EOF;
 		} else {
-			symbol = input[index++];
+			symbol = input[index];
+			index++;
 		}
 	}
 }
