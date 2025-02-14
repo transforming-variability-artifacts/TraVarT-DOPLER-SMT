@@ -58,11 +58,14 @@ public class Rule {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("if (").append(condition).append(") { ");
+		builder.append("if (").append(condition).append(") {");
 		for (IAction action : actions) {
+			if (null == action) {
+				continue;
+			}
 			builder.append(action).append(";");
 		}
-		builder.append(" }");
+		builder.append("}");
 		return builder.toString();
 	}
 }
