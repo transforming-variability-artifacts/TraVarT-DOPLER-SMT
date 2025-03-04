@@ -154,25 +154,10 @@ public abstract class Decision<T> implements IDecision<T> {
 		// if the visibility condition is only a LiteralExpression (true, false) then
 		// the ite should be left out because (ite true if else) is no valid syntax
 		if (getVisibilityCondition() instanceof LiteralExpression) {
-			try {
-				if (getVisibilityCondition().evaluate()) {
-					toSMTStreamDecisionSpecific(builder, decisions);
-				} else {
-					builder.add("(ite"); // else
-					builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "true)"); // if condition
-					toSMTStreamDecisionSpecific(builder, decisions); // if part
-					// ite DECISION_1_TAKEN_POST toSMTStreamDecisionSpecific(builder, decisions)
-					// else
-					builder.add("(and "); // else
-					mapPreToPostConstants(builder, decisions); // else
-					setDefaultValueInSMT(builder);
-					builder.add("(= " + toStringConstforSMT() + "_TAKEN_POST " + "false" + ")"); // else
-					builder.add(")"); // else
-					builder.add(")");
-				}
-			} catch (EvaluationException e) {
-				throw new RuntimeException(e);
-			}
+
+			toSMTStreamDecisionSpecific(builder, decisions);
+			// if the decision has a literal expression (true or false) as visibility condition we add the decision encoding
+			// without ite visibility
 		} else {
 			builder.add("(ite ");
 			getVisibilityCondition().toSMTStream(builder, toStringConstforSMT()); // if isVisible condition
