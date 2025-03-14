@@ -15,13 +15,36 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import de.ovgu.featureide.fm.core.JavaLogger;
+import de.ovgu.featureide.fm.core.Logger;
+import de.ovgu.featureide.fm.core.analysis.cnf.LiteralSet;
+import de.ovgu.featureide.fm.core.analysis.cnf.analysis.ContradictionAnalysis;
+import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
+import de.ovgu.featureide.fm.core.analysis.cnf.generator.configuration.AllConfigurationGenerator;
+import de.ovgu.featureide.fm.core.analysis.cnf.generator.configuration.twise.TWiseConfigurationGenerator;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
+import de.ovgu.featureide.fm.core.base.impl.*;
+import de.ovgu.featureide.fm.core.cli.CLIFunctionManager;
+import de.ovgu.featureide.fm.core.cli.ConfigurationGenerator;
+import de.ovgu.featureide.fm.core.io.FileSystem;
+import de.ovgu.featureide.fm.core.io.JavaFileSystem;
+import de.ovgu.featureide.fm.core.io.ProblemList;
+import de.ovgu.featureide.fm.core.io.uvl.UVLFeatureModelFormat;
+import de.ovgu.featureide.fm.core.job.LongRunningCore;
+import de.ovgu.featureide.fm.core.job.LongRunningWrapper;
 import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
 import edu.kit.dopler.io.DecisionModelReader;
 import junit.framework.TestCase;
 
+
+
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -29,6 +52,28 @@ import static edu.kit.dopler.model.Main.checkSat;
 import static edu.kit.dopler.model.Main.getAmountOfConfigs;
 
 public class SATEncoderTest extends TestCase {
+
+    public int getFeatureIDConfigs(Path filePath) throws IOException {
+        FileSystem.INSTANCE = new JavaFileSystem();
+        LongRunningWrapper.INSTANCE = new LongRunningCore();
+        Logger.logger = new JavaLogger();
+
+        FMFactoryManager.getInstance().addExtension(DefaultFeatureModelFactory.getInstance());
+        FMFactoryManager.getInstance().addExtension(MultiFeatureModelFactory.getInstance());
+        FMFactoryManager.getInstance().setWorkspaceLoader(new CoreFactoryWorkspaceLoader());
+
+        CLIFunctionManager.getInstance().addExtension(new ConfigurationGenerator());
+
+        String content = Files.readString(filePath);
+        IFeatureModel featureIdeFm = new MultiFeatureModelFactory().create();
+        UVLFeatureModelFormat format = new UVLFeatureModelFormat();
+        format.read(featureIdeFm, content);
+
+        FeatureModelFormula formula = new FeatureModelFormula(featureIdeFm);
+        List<LiteralSet> configs = LongRunningWrapper.runMethod(new AllConfigurationGenerator(formula.getCNF()));
+        return configs.size();
+
+    }
 
 
     public void testVariantsWaterfilter() throws NotSupportedVariabilityTypeException, IOException {
@@ -39,7 +84,7 @@ public class SATEncoderTest extends TestCase {
 
     public void testVariantsHICSSDM() throws NotSupportedVariabilityTypeException, IOException {
         DecisionModelReader decisionModelReader = new DecisionModelReader();
-        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/HICSSDM.csv"));
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelCSVs/HICSSDM.csv"));
         assertEquals(4185,getAmountOfConfigs(dopler,"(assert (= END_DECISION_0_Particular_Packages true)) (assert (= END_DECISION_3_Document_Management true)) (assert (= END_DECISION_3_Customer_Management true)) (assert (= END_DECISION_3_Claims_Management true))"));
 
     }
@@ -85,26 +130,39 @@ public class SATEncoderTest extends TestCase {
     public void testVariantsASEJ1() throws NotSupportedVariabilityTypeException, IOException {
         DecisionModelReader decisionModelReader = new DecisionModelReader();
         Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/dm_ASEJ1.csv"));
+        Path filePath = Paths.get(System.getProperty("user.dir") + "/modelEval/ASEJ1.uvl");
 
-        assertEquals(212,getAmountOfConfigs(dopler,""));
+        assertEquals(getFeatureIDConfigs(filePath),getAmountOfConfigs(dopler,""));
 
     }
 
     public void testVariantsDissModel() throws NotSupportedVariabilityTypeException, IOException {
         DecisionModelReader decisionModelReader = new DecisionModelReader();
         Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/dm_DissModel.csv"));
-
-        assertEquals(864,getAmountOfConfigs(dopler,""));
+        Path filePath = Paths.get(System.getProperty("user.dir") + "/modelEval/dm_DissModel.uvl");
+        assertEquals(getFeatureIDConfigs(filePath),getAmountOfConfigs(dopler,""));
 
     }
 
     public void testVariantsPizzas() throws NotSupportedVariabilityTypeException, IOException {
         DecisionModelReader decisionModelReader = new DecisionModelReader();
         Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/Pizzas.csv"));
-
-        assertEquals(42,getAmountOfConfigs(dopler,""));
+        Path filePath = Paths.get(System.getProperty("user.dir") + "/modelEval/pizza.uvl");
+        assertEquals(getFeatureIDConfigs(filePath),getAmountOfConfigs(dopler,""));
 
     }
+
+    public void testPerformanceFeatureIde() throws IOException {
+        Path filePath = Paths.get(System.getProperty("user.dir") + "/modelEval/dm_DissModel.uvl");
+        System.out.println(getFeatureIDConfigs(filePath));
+    }
+
+    public void testPerformanceSMT() throws IOException, NotSupportedVariabilityTypeException {
+        DecisionModelReader decisionModelReader = new DecisionModelReader();
+        Dopler dopler = decisionModelReader.read(Path.of( System.getProperty("user.dir") +"/modelEval/dm_DissModel.csv"));
+        getAmountOfConfigs(dopler,"");
+    }
+
 
     public void testVariantsPizzas2() throws NotSupportedVariabilityTypeException, IOException {
         DecisionModelReader decisionModelReader = new DecisionModelReader();
@@ -385,6 +443,28 @@ public class SATEncoderTest extends TestCase {
         dopler.toSMTStream().build().forEach(System.out::println);
         assertTrue(checkSat(dopler.toSMTStream()));
 
+    }
+
+    public void testreviewerTest() throws Exception {
+
+
+        Dopler dopler = new Dopler(new HashSet<>(),new HashSet<>(),new HashSet<>(),"");
+        BooleanDecision decision1 = new BooleanDecision("test", "Do you want to create an Onlineshop?","",new BooleanLiteralExpression(true), new HashSet<>());
+
+
+
+        BooleanDecision decision3 = new BooleanDecision("test", "Should a search function be suppoted?","",new BooleanLiteralExpression(true), new HashSet<>());
+        decision3.setVisibilityCondition(new IsTaken(decision1));
+        decision1.setVisibilityCondition(new IsTaken(decision3));
+
+
+
+        dopler.addDecision(decision1);
+        dopler.addDecision(decision3);
+        dopler.toSMTStream().build().forEach(System.out::println);
+        getAmountOfConfigs(dopler,"");
+
+        assertTrue(checkSat(dopler.toSMTStream()));
     }
 
 
