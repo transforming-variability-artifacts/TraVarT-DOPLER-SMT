@@ -1,9 +1,16 @@
 package edu.kit.dopler.io.antlr;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import edu.kit.dopler.model.NumberDecision;
+import edu.kit.dopler.model.StringDecision;
+import edu.kit.dopler.io.antlr.resources.CSVLexer;
 import edu.kit.dopler.io.antlr.resources.CSVListener;
 import edu.kit.dopler.io.antlr.resources.CSVParser.ActionContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.AllowsContext;
@@ -32,8 +39,14 @@ import edu.kit.dopler.io.antlr.resources.CSVParser.RuleContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.StringEnForceContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.UnaryExpressionContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.ValueRestrictionActionContext;
+import edu.kit.dopler.model.BooleanDecision;
+import edu.kit.dopler.model.Decision;
+import edu.kit.dopler.model.EnumerationDecision;
+import edu.kit.dopler.model.ValueDecision;
 
 public class CSVDoplerListener implements CSVListener{
+	private Decision currentDecision;
+	private List<Decision> decisions = new ArrayList<>();
 
 	@Override
 	public void visitTerminal(TerminalNode node) {
@@ -85,14 +98,13 @@ public class CSVDoplerListener implements CSVListener{
 
 	@Override
 	public void enterRow(RowContext ctx) {
-		// TODO Auto-generated method stub
-		
+		// Nothing to do when entering a row, the decision is being created, by entering the decision type	
 	}
 
 	@Override
 	public void exitRow(RowContext ctx) {
-		// TODO Auto-generated method stub
-		
+		decisions.add(currentDecision);
+		currentDecision = null;
 	}
 
 	@Override
@@ -133,8 +145,17 @@ public class CSVDoplerListener implements CSVListener{
 
 	@Override
 	public void enterQuestion(QuestionContext ctx) {
-		// TODO Auto-generated method stub
-		
+		for (ParseTree child : ctx.children)
+		{
+			if (child instanceof TerminalNode)
+			{
+				TerminalNode node = (TerminalNode) child;
+				if (node.getSymbol().getType() ***REMOVED*** CSVLexer.QUESTION)
+				{
+					// Initialisieren einer neuen Decision
+				}
+			}
+		}
 	}
 
 	@Override
@@ -253,8 +274,29 @@ public class CSVDoplerListener implements CSVListener{
 
 	@Override
 	public void enterDecisionType(DecisionTypeContext ctx) {
-		// TODO Auto-generated method stub
-		
+		// Decision Type is already implicitly set when choosing the correct decision class
+		for (ParseTree child : ctx.children)
+		{
+			if (child instanceof TerminalNode)
+			{
+				TerminalNode node = (TerminalNode) child;
+				switch(node.getSymbol().getType())
+				{
+				case CSVLexer.NumberDecision:
+					currentDecision = new NumberDecision(null, null, null, null, null, null);
+					break;
+				case CSVLexer.EnumerationDecision:
+					currentDecision = new EnumerationDecision(null, null, null, null, null, null, 0, 0);
+					break;
+				case CSVLexer.BooleanDecision:
+					currentDecision = new BooleanDecision(null, null, null, null, null);
+					break;
+				case CSVLexer.StringDecision:
+					currentDecision = new StringDecision(null, null, null, null, null, null);
+					break;
+				}
+			}
+		}
 	}
 
 	@Override
