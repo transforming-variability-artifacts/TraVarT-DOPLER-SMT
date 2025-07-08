@@ -45,6 +45,8 @@ import edu.kit.dopler.model.EnumerationDecision;
 import edu.kit.dopler.model.ValueDecision;
 
 public class CSVDoplerListener implements CSVListener{
+	private String currentID = "";
+	private String currentQuestion = "";
 	private Decision currentDecision;
 	private List<Decision> decisions = new ArrayList<>();
 
@@ -105,6 +107,8 @@ public class CSVDoplerListener implements CSVListener{
 	public void exitRow(RowContext ctx) {
 		decisions.add(currentDecision);
 		currentDecision = null;
+		currentID = "";
+		currentQuestion = "";
 	}
 
 	@Override
@@ -121,8 +125,18 @@ public class CSVDoplerListener implements CSVListener{
 
 	@Override
 	public void enterId(IdContext ctx) {
-		// TODO Auto-generated method stub
-		
+		if( ctx ***REMOVED*** ctx.getParent().children.get(0))
+		{
+			ParseTree child = ctx.children.get(0);
+			if (child instanceof TerminalNode)
+			{
+				TerminalNode node = (TerminalNode) child;
+				if (node.getSymbol().getType() ***REMOVED*** CSVLexer.IDENTIFIER)
+				{
+					currentID = node.getSymbol().getText();
+				}
+			}
+		}
 	}
 
 	@Override
@@ -152,7 +166,7 @@ public class CSVDoplerListener implements CSVListener{
 				TerminalNode node = (TerminalNode) child;
 				if (node.getSymbol().getType() ***REMOVED*** CSVLexer.QUESTION)
 				{
-					// Initialisieren einer neuen Decision
+					currentQuestion = node.getSymbol().getText();
 				}
 			}
 		}
@@ -283,16 +297,16 @@ public class CSVDoplerListener implements CSVListener{
 				switch(node.getSymbol().getType())
 				{
 				case CSVLexer.NumberDecision:
-					currentDecision = new NumberDecision(null, null, null, null, null, null);
+					currentDecision = new NumberDecision(currentID, currentQuestion, "description", null, null, null);
 					break;
 				case CSVLexer.EnumerationDecision:
-					currentDecision = new EnumerationDecision(null, null, null, null, null, null, 0, 0);
+					currentDecision = new EnumerationDecision(currentID, currentQuestion, "description", null, null, null, 0, 0);
 					break;
 				case CSVLexer.BooleanDecision:
-					currentDecision = new BooleanDecision(null, null, null, null, null);
+					currentDecision = new BooleanDecision(currentID, currentQuestion, "description", null, null);
 					break;
 				case CSVLexer.StringDecision:
-					currentDecision = new StringDecision(null, null, null, null, null, null);
+					currentDecision = new StringDecision(currentID, currentQuestion, "description", null, null, null);
 					break;
 				}
 			}
