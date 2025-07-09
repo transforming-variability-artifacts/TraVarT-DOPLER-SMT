@@ -72,12 +72,6 @@ public interface CSVVisitor<T> extends ParseTreeVisitor<T> {
 	 ***REMOVED***
 	T visitRange(CSVParser.RangeContext ctx);
 	***REMOVED****
-	 * Visit a parse tree produced by {@link CSVParser#decisionCallExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 ***REMOVED***
-	T visitDecisionCallExpression(CSVParser.DecisionCallExpressionContext ctx);
-	***REMOVED****
 	 * Visit a parse tree produced by {@link CSVParser#decisionVisibilityCallExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -101,6 +95,54 @@ public interface CSVVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 ***REMOVED***
 	T visitBinaryExpression(CSVParser.BinaryExpressionContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#andExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitAndExpression(CSVParser.AndExpressionContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#orExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitOrExpression(CSVParser.OrExpressionContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#xorExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitXorExpression(CSVParser.XorExpressionContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#equalityExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitEqualityExpression(CSVParser.EqualityExpressionContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#greaterThanExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitGreaterThanExpression(CSVParser.GreaterThanExpressionContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#lessThanExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitLessThanExpression(CSVParser.LessThanExpressionContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#greaterEqualsExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitGreaterEqualsExpression(CSVParser.GreaterEqualsExpressionContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#lessEqualsExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitLessEqualsExpression(CSVParser.LessEqualsExpressionContext ctx);
 	***REMOVED****
 	 * Visit a parse tree produced by {@link CSVParser#literalExpression}.
 	 * @param ctx the parse tree

@@ -138,18 +138,6 @@ public class CSVBaseListener implements CSVListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 ***REMOVED***
-	@Override public void enterDecisionCallExpression(CSVParser.DecisionCallExpressionContext ctx) { }
-	***REMOVED****
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 ***REMOVED***
-	@Override public void exitDecisionCallExpression(CSVParser.DecisionCallExpressionContext ctx) { }
-	***REMOVED****
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 ***REMOVED***
 	@Override public void enterDecisionVisibilityCallExpression(CSVParser.DecisionVisibilityCallExpressionContext ctx) { }
 	***REMOVED****
 	 * {@inheritDoc}
@@ -193,6 +181,102 @@ public class CSVBaseListener implements CSVListener {
 	 * <p>The default implementation does nothing.</p>
 	 ***REMOVED***
 	@Override public void exitBinaryExpression(CSVParser.BinaryExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterAndExpression(CSVParser.AndExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitAndExpression(CSVParser.AndExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterOrExpression(CSVParser.OrExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitOrExpression(CSVParser.OrExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterXorExpression(CSVParser.XorExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitXorExpression(CSVParser.XorExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterEqualityExpression(CSVParser.EqualityExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitEqualityExpression(CSVParser.EqualityExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterGreaterThanExpression(CSVParser.GreaterThanExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitGreaterThanExpression(CSVParser.GreaterThanExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterLessThanExpression(CSVParser.LessThanExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitLessThanExpression(CSVParser.LessThanExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterGreaterEqualsExpression(CSVParser.GreaterEqualsExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitGreaterEqualsExpression(CSVParser.GreaterEqualsExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterLessEqualsExpression(CSVParser.LessEqualsExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitLessEqualsExpression(CSVParser.LessEqualsExpressionContext ctx) { }
 	***REMOVED****
 	 * {@inheritDoc}
 	 *

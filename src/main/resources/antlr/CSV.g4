@@ -52,8 +52,8 @@ field
     | question
     | decisionType
     | cardinality
-    | decisionCallExpression
-    | expression
+    | range
+    | decisionVisibilityCallExpression
     | HEADER
     | IDENTIFIER
     |
@@ -76,9 +76,9 @@ question
 expression
     : unaryExpression
     | literalExpression
-    | range
+    | isTaken
+    | decisionValueCallExpression
     | binaryExpression
-    | decisionCallExpression
     ;
 
 unaryExpression
@@ -92,19 +92,8 @@ range
     | IDENTIFIER ('-' IDENTIFIER)+ ('|' (IDENTIFIER | literalExpression  | binaryExpression | cardinality)+)
     ;
 
-decisionCallExpression
-    : LPAREN? decisionVisibilityCallExpression RPAREN? ((OR | AND | XOR | EQUALS) LPAREN? decisionVisibilityCallExpression RPAREN?)* 
-    | isTaken
-    | decisionValueCallExpression
-    ;
-
 decisionVisibilityCallExpression
-    : BooleanLiteralExpression
-    | decisionValueCallExpression
-    | unaryExpression
-    | binaryExpression
-    | isTaken
-    | decisionValueCallExpression
+    : expression
     ;
 
 isTaken
@@ -118,9 +107,46 @@ decisionValueCallExpression
     ;
 
 binaryExpression
-    : (IDENTIFIER | BooleanLiteralExpression | ISTAKEN) ((EQUALS | OR | XOR) (BooleanLiteralExpression | IDENTIFIER  ISTAKEN))*
-    | (IDENTIFIER | DoubleLiteralExpression | decisionValueCallExpression) ((EQUALS | GREATER_THAN | LESS_THAN | GREATER_EQUALS | LESS_EQUALS) (DoubleLiteralExpression | IDENTIFIER | decisionValueCallExpression))*
-    | (IDENTIFIER | StringLiteralExpression | EnumerationLiteralExpression) ((EQUALS) (StringLiteralExpression | IDENTIFIER | EnumerationLiteralExpression))*
+    :  andExpression
+    |  orExpression
+    |  xorExpression
+    |  equalityExpression
+    |  greaterThanExpression
+    |  lessThanExpression
+    |  greaterEqualsExpression
+    |  lessEqualsExpression
+    ;
+
+andExpression
+    : LPAREN expression AND expression RPAREN
+    ;
+
+orExpression
+    : LPAREN expression OR expression RPAREN
+    ;
+
+xorExpression
+    : LPAREN expression XOR expression RPAREN
+    ;
+
+equalityExpression
+    : LPAREN expression EQUALS expression RPAREN
+    ;
+
+greaterThanExpression
+    : LPAREN expression GREATER_THAN expression RPAREN
+    ;
+
+lessThanExpression
+    : LPAREN expression LESS_THAN expression RPAREN
+    ;
+
+greaterEqualsExpression
+    : LPAREN expression GREATER_EQUALS expression RPAREN
+    ;
+
+lessEqualsExpression
+    : LPAREN expression LESS_EQUALS expression RPAREN
     ;
 
 literalExpression
@@ -128,6 +154,7 @@ literalExpression
     | BooleanLiteralExpression
     | StringLiteralExpression
     | DoubleLiteralExpression
+    | IDENTIFIER
     ;
 
 decisionType
@@ -141,7 +168,7 @@ decisionType
 rule
     : '"' rule '"'
     | rule rule
-    | IF LPAREN? (expression | IDENTIFIER) RPAREN? LBRACE (action ';'?)* RBRACE 
+    | IF LPAREN? expression RPAREN? LBRACE (action ';'?)* RBRACE 
     ;
 
 action

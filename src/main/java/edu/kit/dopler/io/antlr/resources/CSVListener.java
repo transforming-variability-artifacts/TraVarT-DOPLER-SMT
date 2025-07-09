@@ -109,16 +109,6 @@ public interface CSVListener extends ParseTreeListener {
 	 ***REMOVED***
 	void exitRange(CSVParser.RangeContext ctx);
 	***REMOVED****
-	 * Enter a parse tree produced by {@link CSVParser#decisionCallExpression}.
-	 * @param ctx the parse tree
-	 ***REMOVED***
-	void enterDecisionCallExpression(CSVParser.DecisionCallExpressionContext ctx);
-	***REMOVED****
-	 * Exit a parse tree produced by {@link CSVParser#decisionCallExpression}.
-	 * @param ctx the parse tree
-	 ***REMOVED***
-	void exitDecisionCallExpression(CSVParser.DecisionCallExpressionContext ctx);
-	***REMOVED****
 	 * Enter a parse tree produced by {@link CSVParser#decisionVisibilityCallExpression}.
 	 * @param ctx the parse tree
 	 ***REMOVED***
@@ -158,6 +148,86 @@ public interface CSVListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 ***REMOVED***
 	void exitBinaryExpression(CSVParser.BinaryExpressionContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#andExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterAndExpression(CSVParser.AndExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#andExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitAndExpression(CSVParser.AndExpressionContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#orExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterOrExpression(CSVParser.OrExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#orExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitOrExpression(CSVParser.OrExpressionContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#xorExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterXorExpression(CSVParser.XorExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#xorExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitXorExpression(CSVParser.XorExpressionContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#equalityExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterEqualityExpression(CSVParser.EqualityExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#equalityExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitEqualityExpression(CSVParser.EqualityExpressionContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#greaterThanExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterGreaterThanExpression(CSVParser.GreaterThanExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#greaterThanExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitGreaterThanExpression(CSVParser.GreaterThanExpressionContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#lessThanExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterLessThanExpression(CSVParser.LessThanExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#lessThanExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitLessThanExpression(CSVParser.LessThanExpressionContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#greaterEqualsExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterGreaterEqualsExpression(CSVParser.GreaterEqualsExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#greaterEqualsExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitGreaterEqualsExpression(CSVParser.GreaterEqualsExpressionContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#lessEqualsExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterLessEqualsExpression(CSVParser.LessEqualsExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#lessEqualsExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitLessEqualsExpression(CSVParser.LessEqualsExpressionContext ctx);
 	***REMOVED****
 	 * Enter a parse tree produced by {@link CSVParser#literalExpression}.
 	 * @param ctx the parse tree

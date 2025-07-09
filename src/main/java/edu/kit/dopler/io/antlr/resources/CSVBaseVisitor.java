@@ -89,13 +89,6 @@ public class CSVBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CS
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 ***REMOVED***
-	@Override public T visitDecisionCallExpression(CSVParser.DecisionCallExpressionContext ctx) { return visitChildren(ctx); }
-	***REMOVED****
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 ***REMOVED***
 	@Override public T visitDecisionVisibilityCallExpression(CSVParser.DecisionVisibilityCallExpressionContext ctx) { return visitChildren(ctx); }
 	***REMOVED****
 	 * {@inheritDoc}
@@ -118,6 +111,62 @@ public class CSVBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CS
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 ***REMOVED***
 	@Override public T visitBinaryExpression(CSVParser.BinaryExpressionContext ctx) { return visitChildren(ctx); }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 ***REMOVED***
+	@Override public T visitAndExpression(CSVParser.AndExpressionContext ctx) { return visitChildren(ctx); }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 ***REMOVED***
+	@Override public T visitOrExpression(CSVParser.OrExpressionContext ctx) { return visitChildren(ctx); }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 ***REMOVED***
+	@Override public T visitXorExpression(CSVParser.XorExpressionContext ctx) { return visitChildren(ctx); }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 ***REMOVED***
+	@Override public T visitEqualityExpression(CSVParser.EqualityExpressionContext ctx) { return visitChildren(ctx); }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 ***REMOVED***
+	@Override public T visitGreaterThanExpression(CSVParser.GreaterThanExpressionContext ctx) { return visitChildren(ctx); }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 ***REMOVED***
+	@Override public T visitLessThanExpression(CSVParser.LessThanExpressionContext ctx) { return visitChildren(ctx); }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 ***REMOVED***
+	@Override public T visitGreaterEqualsExpression(CSVParser.GreaterEqualsExpressionContext ctx) { return visitChildren(ctx); }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 ***REMOVED***
+	@Override public T visitLessEqualsExpression(CSVParser.LessEqualsExpressionContext ctx) { return visitChildren(ctx); }
 	***REMOVED****
 	 * {@inheritDoc}
 	 *
