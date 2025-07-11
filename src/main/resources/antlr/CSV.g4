@@ -93,7 +93,8 @@ range
     ;
 
 decisionVisibilityCallExpression
-    : expression
+    : expression ( AND | OR | EQUALS | GREATER_THAN | LESS_THAN ) expression
+    | expression
     ;
 
 isTaken
