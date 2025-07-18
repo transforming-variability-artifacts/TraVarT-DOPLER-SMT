@@ -11,9 +11,11 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import edu.kit.dopler.model.NumberDecision;
+import edu.kit.dopler.model.Rule;
 import edu.kit.dopler.model.StringDecision;
 import edu.kit.dopler.io.antlr.resources.CSVLexer;
 import edu.kit.dopler.io.antlr.resources.CSVListener;
+import edu.kit.dopler.io.antlr.resources.CSVParser;
 import edu.kit.dopler.io.antlr.resources.CSVParser.ActionContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.AllowsContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.AndExpressionContext;
@@ -50,25 +52,36 @@ import edu.kit.dopler.io.antlr.resources.CSVParser.ValueRestrictionActionContext
 import edu.kit.dopler.io.antlr.resources.CSVParser.XorExpressionContext;
 import edu.kit.dopler.model.BooleanDecision;
 import edu.kit.dopler.model.Decision;
+import edu.kit.dopler.model.Decision.DecisionType;
 import edu.kit.dopler.model.DecisionVisibilityCallExpression;
 import edu.kit.dopler.model.Dopler;
+import edu.kit.dopler.model.DoubleLiteralExpression;
+import edu.kit.dopler.model.Enumeration;
 import edu.kit.dopler.model.EnumerationDecision;
+import edu.kit.dopler.model.EnumerationLiteral;
+import edu.kit.dopler.model.GreatherThan;
 import edu.kit.dopler.model.IDecision;
+import edu.kit.dopler.model.IExpression;
+import edu.kit.dopler.model.LessThan;
 
 public class CSVDoplerListener implements CSVListener {
 	private Dopler dopler;
+	
+	
 	private String currentID = "";
 	private String currentQuestion = "";
-	private Decision currentDecision;
+	private String currentDescription = "";
+	private DecisionType currentDecisionType;
+	private Enumeration currentEnumeration;
+	private Set<IExpression> currentValidityConditions;
+	private Set<Rule> currentRules;
+	private int currentMinCardinality = 1;
+	private int currentMaxCardinality = 1;
+	private IExpression currentVisibilityCondition;
+	
 	private Set<IDecision<?>> decisions = new HashSet<>();
 
 	private final int column_ID = 0;
-	private final int column_QUESTION = 1;
-	private final int column_TYPE = 2;
-	private final int column_RANGE = 3;
-	private final int column_CARDINALITY = 4;
-	private final int column_CONSTRAINT = 5;
-	private final int column_VISIBILITY = 6;
 
 	@Override
 	public void visitTerminal(TerminalNode node) {
@@ -103,6 +116,9 @@ public class CSVDoplerListener implements CSVListener {
 	@Override
 	public void exitCsvFile(CsvFileContext ctx) {
 		dopler.setDecisions(decisions);
+		dopler.setAssets(null);
+		dopler.setEnumSet(null);
+		dopler.setName("Name");
 	}
 
 	@Override
@@ -125,12 +141,34 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitRow(RowContext ctx) {
-		if (currentDecision != null) {
-			decisions.add(currentDecision);
-			currentDecision = null;
-			currentID = "";
-			currentQuestion = "";
+		switch(currentDecisionType) {
+		case BOOLEAN:
+			decisions.add(new BooleanDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition, currentRules));
+			break;
+		case STRING:
+			decisions.add(new StringDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition, currentRules, currentValidityConditions));
+			break;
+		case NUMBER:
+			decisions.add(new NumberDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition, currentRules, currentValidityConditions));
+			break;
+		case ENUM:
+			decisions.add(new EnumerationDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition, currentRules, currentEnumeration, currentMinCardinality, currentMaxCardinality));
 		}
+		resetValues();
+	}
+	
+	private void resetValues() {
+		// Reset current variables
+		currentID = "";
+		currentQuestion = "";
+		currentDescription = "";
+		currentDecisionType = null;
+		currentEnumeration = null;
+		currentValidityConditions = null;
+		currentRules = null;
+		currentMinCardinality = 1;
+		currentMaxCardinality = 1;
+		currentVisibilityCondition = null;
 	}
 
 	@Override
@@ -147,14 +185,8 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterId(IdContext ctx) {
-		if (matchesColumn(ctx, column_ID)) {
-			ParseTree child = ctx.children.get(0);
-			if (child instanceof TerminalNode) {
-				TerminalNode node = (TerminalNode) child;
-				if (node.getSymbol().getType() ***REMOVED*** CSVLexer.IDENTIFIER) {
-					currentID = node.getSymbol().getText();
-				}
-			}
+		if (matchesColumn(ctx, column_ID) && ctx.IDENTIFIER() != null) {
+			currentID = ctx.IDENTIFIER().getText();
 		}
 	}
 
@@ -178,13 +210,8 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterQuestion(QuestionContext ctx) {
-		for (ParseTree child : ctx.children) {
-			if (child instanceof TerminalNode) {
-				TerminalNode node = (TerminalNode) child;
-				if (node.getSymbol().getType() ***REMOVED*** CSVLexer.QUESTION) {
-					currentQuestion = node.getSymbol().getText();
-				}
-			}
+		if (ctx.QUESTION() != null) {
+		    currentQuestion = ctx.QUESTION().getSymbol().getText();
 		}
 	}
 
@@ -220,30 +247,75 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterRange(RangeContext ctx) {
-		// No range class in the model exists
+		switch(currentDecisionType) {
+		case BOOLEAN:
+			return;
+		case STRING:
+			// The same way as in NUMBER trough ValidityConditions
+			break;
+		case NUMBER:
+			List<TerminalNode> AllExpressions = ctx.DoubleLiteralExpression();
+			if(AllExpressions.size() % 2 ***REMOVED*** 0) {
+				for(int i = 0; i < AllExpressions.size(); i+=2 ) {
+					TerminalNode left = ctx.DoubleLiteralExpression(i);
+					TerminalNode right = ctx.DoubleLiteralExpression(i+1);
+					//currentValidityConditions.add(new GreatherThan(new DoubleLiteralExpression(Double.parseDouble(left.getText()) - 1 )));
+					//currentValidityConditions.add(new LessThan(new DoubleLiteralExpression(Double.parseDouble(right.getText()) + 1)));
+				}
+			}
+			break;
+		case ENUM:
+			List<ParseTree> children = ctx.children;
+			List<TerminalNode> leafs = new ArrayList<>();
+			for(ParseTree child : children) {
+				leafs.addAll(getAllTerminalNodes(child));
+			}
+			
+			Set<EnumerationLiteral> enumerationLiterals = new HashSet<>();
+			String currentLiteral = "";
+			
+			for(int i = 0; i < leafs.size(); i++ ) {
+				if(leafs.get(i).getSymbol().getType() ***REMOVED*** CSVLexer.PIPE) {
+					enumerationLiterals.add(new EnumerationLiteral(currentLiteral));
+					currentLiteral = "";
+				} else {
+					currentLiteral += leafs.get(i).getSymbol().getText();
+				}
+			}
+			currentEnumeration = new Enumeration(enumerationLiterals);
+		}
+	}
+	
+	private List<TerminalNode> getAllTerminalNodes(ParseTree tree){
+		List<TerminalNode> terminals = new ArrayList<>();
+		collectTerminals(tree, terminals);
+		return terminals;
+	}
+	
+	private void collectTerminals(ParseTree tree, List<TerminalNode> result) {
+	    if (tree instanceof TerminalNode) {
+	        result.add((TerminalNode) tree);
+	    } else {
+	        for (int i = 0; i < tree.getChildCount(); i++) {
+	            collectTerminals(tree.getChild(i), result);
+	        }
+	    }
 	}
 
 	@Override
 	public void exitRange(RangeContext ctx) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void enterDecisionVisibilityCallExpression(DecisionVisibilityCallExpressionContext ctx) {
 		List<ParseTree> children = ctx.children;
-		new DecisionVisibilityCallExpression(currentDecision);
-		currentDecision.setVisibilityCondition(null);
+//		DecisionVisibilityCallExpression expression = new DecisionVisibilityCallExpression(currentDecision);
 		
-		for(ParseTree child : children) {
-			
-		}
-
 	}
 
 	@Override
 	public void exitDecisionVisibilityCallExpression(DecisionVisibilityCallExpressionContext ctx) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -297,24 +369,21 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterDecisionType(DecisionTypeContext ctx) {
-		// Decision Type is already implicitly set when choosing the correct decision
-		// class
 		for (ParseTree child : ctx.children) {
 			if (child instanceof TerminalNode) {
 				TerminalNode node = (TerminalNode) child;
 				switch (node.getSymbol().getType()) {
 				case CSVLexer.NumberDecision:
-					currentDecision = new NumberDecision(currentID, currentQuestion, "description", null, null, null);
+					currentDecisionType = DecisionType.NUMBER;
 					break;
 				case CSVLexer.EnumerationDecision:
-					currentDecision = new EnumerationDecision(currentID, currentQuestion, "description", null, null,
-							null, 0, 0);
+					currentDecisionType = DecisionType.ENUM;
 					break;
 				case CSVLexer.BooleanDecision:
-					currentDecision = new BooleanDecision(currentID, currentQuestion, "description", null, null);
+					currentDecisionType = DecisionType.BOOLEAN;
 					break;
 				case CSVLexer.StringDecision:
-					currentDecision = new StringDecision(currentID, currentQuestion, "description", null, null, null);
+					currentDecisionType = DecisionType.STRING;
 					break;
 				}
 			}
