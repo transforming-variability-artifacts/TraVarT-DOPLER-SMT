@@ -158,7 +158,6 @@ public class CSVDoplerListener implements CSVListener {
 	}
 	
 	private void resetValues() {
-		// Reset current variables
 		currentID = "";
 		currentQuestion = "";
 		currentDescription = "";
