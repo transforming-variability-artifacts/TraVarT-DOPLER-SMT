@@ -2,6 +2,7 @@ package edu.kit.dopler.io.antlr;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -50,23 +51,27 @@ import edu.kit.dopler.io.antlr.resources.CSVParser.StringEnForceContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.UnaryExpressionContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.ValueRestrictionActionContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.XorExpressionContext;
+import edu.kit.dopler.model.Action;
 import edu.kit.dopler.model.BooleanDecision;
 import edu.kit.dopler.model.Decision;
 import edu.kit.dopler.model.Decision.DecisionType;
+import edu.kit.dopler.model.DecisionValueCallExpression;
 import edu.kit.dopler.model.DecisionVisibilityCallExpression;
 import edu.kit.dopler.model.Dopler;
 import edu.kit.dopler.model.DoubleLiteralExpression;
 import edu.kit.dopler.model.Enumeration;
 import edu.kit.dopler.model.EnumerationDecision;
 import edu.kit.dopler.model.EnumerationLiteral;
+import edu.kit.dopler.model.Expression;
 import edu.kit.dopler.model.GreatherThan;
+import edu.kit.dopler.model.IAction;
 import edu.kit.dopler.model.IDecision;
 import edu.kit.dopler.model.IExpression;
 import edu.kit.dopler.model.LessThan;
+import edu.kit.dopler.model.LiteralExpression;
 
 public class CSVDoplerListener implements CSVListener {
 	private Dopler dopler;
-	
 	
 	private String currentID = "";
 	private String currentQuestion = "";
@@ -74,7 +79,18 @@ public class CSVDoplerListener implements CSVListener {
 	private DecisionType currentDecisionType;
 	private Enumeration currentEnumeration;
 	private Set<IExpression> currentValidityConditions;
+	
+	//Current Rules variables
 	private Set<Rule> currentRules;
+	private Rule currentRule;
+	private IExpression currentExpression;
+	private Set<IAction> currentActions;
+	private IAction currentAction;
+	
+	//Current Expression
+	private LiteralExpression currentLiteralExpression;
+	
+	
 	private int currentMinCardinality = 1;
 	private int currentMaxCardinality = 1;
 	private IExpression currentVisibilityCondition;
@@ -82,6 +98,10 @@ public class CSVDoplerListener implements CSVListener {
 	private Set<IDecision<?>> decisions = new HashSet<>();
 
 	private final int column_ID = 0;
+	private final int column_VisibilityCondition = 6;
+	
+	// Context variables
+	private ParserRuleContext currentContext;
 
 	@Override
 	public void visitTerminal(TerminalNode node) {
@@ -173,20 +193,38 @@ public class CSVDoplerListener implements CSVListener {
 	@Override
 	public void enterField(FieldContext ctx) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void exitField(FieldContext ctx) {
-		// TODO Auto-generated method stub
-
+		currentContext = null;
 	}
 
 	@Override
 	public void enterId(IdContext ctx) {
 		if (matchesColumn(ctx, column_ID) && ctx.IDENTIFIER() != null) {
 			currentID = ctx.IDENTIFIER().getText();
+		} else if(matchesColumn(ctx, column_VisibilityCondition) && ctx.IDENTIFIER() != null) {
+			TerminalNode id = ctx.IDENTIFIER();
+			IDecision<?> decision = getDecisionWithID(id.getText());
+			if(decision != null) {
+				currentVisibilityCondition = new DecisionValueCallExpression(decision);
+			}
 		}
+	}
+	
+	private IDecision<?> getDecisionWithID(String ID){
+		for(IDecision<?> decision : decisions) {
+			if(decision.getDisplayId() ***REMOVED*** ID) {
+				return decision;
+			}
+		}
+		return null;
+	}
+
+	private boolean matchesColumn(ParserRuleContext ctx, int column) {
+		return ctx ***REMOVED*** ctx.getParent().children.get(column_ID);
 	}
 
 	@Override
@@ -197,8 +235,11 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterCardinality(CardinalityContext ctx) {
-		// TODO Auto-generated method stub
-
+		List<TerminalNode> cardinals = ctx.DoubleLiteralExpression();
+		if(cardinals.size() >= 2 ) {
+		currentMinCardinality = Integer.parseInt(cardinals.get(0).getText());
+		currentMaxCardinality = Integer.parseInt(cardinals.get(1).getText());
+		}
 	}
 
 	@Override
@@ -309,6 +350,13 @@ public class CSVDoplerListener implements CSVListener {
 	@Override
 	public void enterDecisionVisibilityCallExpression(DecisionVisibilityCallExpressionContext ctx) {
 		List<ParseTree> children = ctx.children;
+		
+		if(children.size() ***REMOVED*** 1) {
+			
+		} else {
+			ctx.children.get(1);
+		}
+		
 //		DecisionVisibilityCallExpression expression = new DecisionVisibilityCallExpression(currentDecision);
 		
 	}
@@ -397,14 +445,12 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterRule(RuleContext ctx) {
-		// TODO Auto-generated method stub
-
+		currentContext = ctx;
 	}
 
 	@Override
 	public void exitRule(RuleContext ctx) {
-		// TODO Auto-generated method stub
-
+		currentContext = null;
 	}
 
 	@Override
@@ -513,10 +559,6 @@ public class CSVDoplerListener implements CSVListener {
 	public void exitDoubleEnForce(DoubleEnForceContext ctx) {
 		// TODO Auto-generated method stub
 
-	}
-
-	private boolean matchesColumn(ParserRuleContext ctx, int column) {
-		return ctx ***REMOVED*** ctx.getParent().children.get(column_ID);
 	}
 
 	@Override
