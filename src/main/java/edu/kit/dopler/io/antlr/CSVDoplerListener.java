@@ -1,6 +1,8 @@
 package edu.kit.dopler.io.antlr;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -12,8 +14,10 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import edu.kit.dopler.model.NumberDecision;
+import edu.kit.dopler.model.OR;
 import edu.kit.dopler.model.Rule;
 import edu.kit.dopler.model.StringDecision;
+import edu.kit.dopler.model.XOR;
 import edu.kit.dopler.io.antlr.resources.CSVLexer;
 import edu.kit.dopler.io.antlr.resources.CSVListener;
 import edu.kit.dopler.io.antlr.resources.CSVParser;
@@ -51,6 +55,7 @@ import edu.kit.dopler.io.antlr.resources.CSVParser.StringEnForceContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.UnaryExpressionContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.ValueRestrictionActionContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.XorExpressionContext;
+import edu.kit.dopler.model.AND;
 import edu.kit.dopler.model.Action;
 import edu.kit.dopler.model.BooleanDecision;
 import edu.kit.dopler.model.Decision;
@@ -62,46 +67,47 @@ import edu.kit.dopler.model.DoubleLiteralExpression;
 import edu.kit.dopler.model.Enumeration;
 import edu.kit.dopler.model.EnumerationDecision;
 import edu.kit.dopler.model.EnumerationLiteral;
+import edu.kit.dopler.model.Equals;
 import edu.kit.dopler.model.Expression;
 import edu.kit.dopler.model.GreatherThan;
 import edu.kit.dopler.model.IAction;
 import edu.kit.dopler.model.IDecision;
 import edu.kit.dopler.model.IExpression;
+import edu.kit.dopler.model.IsTaken;
 import edu.kit.dopler.model.LessThan;
 import edu.kit.dopler.model.LiteralExpression;
 
 public class CSVDoplerListener implements CSVListener {
 	private Dopler dopler;
 	
+	private IDecision<?> currentDecision;
+
 	private String currentID = "";
 	private String currentQuestion = "";
 	private String currentDescription = "";
 	private DecisionType currentDecisionType;
 	private Enumeration currentEnumeration;
 	private Set<IExpression> currentValidityConditions;
-	
-	//Current Rules variables
+
+	// Current Rules variables
 	private Set<Rule> currentRules;
 	private Rule currentRule;
 	private IExpression currentExpression;
 	private Set<IAction> currentActions;
 	private IAction currentAction;
-	
-	//Current Expression
-	private LiteralExpression currentLiteralExpression;
-	
-	
+
+	// Traverse Expression
+	Deque<IExpression> expressionStack = new ArrayDeque<>();
+
 	private int currentMinCardinality = 1;
 	private int currentMaxCardinality = 1;
 	private IExpression currentVisibilityCondition;
-	
+
 	private Set<IDecision<?>> decisions = new HashSet<>();
 
 	private final int column_ID = 0;
 	private final int column_VisibilityCondition = 6;
-	
-	// Context variables
-	private ParserRuleContext currentContext;
+
 
 	@Override
 	public void visitTerminal(TerminalNode node) {
@@ -161,22 +167,27 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitRow(RowContext ctx) {
-		switch(currentDecisionType) {
+		switch (currentDecisionType) {
 		case BOOLEAN:
-			decisions.add(new BooleanDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition, currentRules));
+			currentDecision = new BooleanDecision(currentID, currentQuestion, currentDescription,
+					currentVisibilityCondition, currentRules);
 			break;
 		case STRING:
-			decisions.add(new StringDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition, currentRules, currentValidityConditions));
+			currentDecision = new StringDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
+					currentRules, currentValidityConditions);
 			break;
 		case NUMBER:
-			decisions.add(new NumberDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition, currentRules, currentValidityConditions));
+			currentDecision = new NumberDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
+					currentRules, currentValidityConditions);
 			break;
 		case ENUM:
-			decisions.add(new EnumerationDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition, currentRules, currentEnumeration, currentMinCardinality, currentMaxCardinality));
+			currentDecision = new EnumerationDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
+					currentRules, currentEnumeration, currentMinCardinality, currentMaxCardinality);
 		}
+		decisions.add(currentDecision);
 		resetValues();
 	}
-	
+
 	private void resetValues() {
 		currentID = "";
 		currentQuestion = "";
@@ -193,30 +204,30 @@ public class CSVDoplerListener implements CSVListener {
 	@Override
 	public void enterField(FieldContext ctx) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void exitField(FieldContext ctx) {
-		currentContext = null;
+		
 	}
 
 	@Override
 	public void enterId(IdContext ctx) {
 		if (matchesColumn(ctx, column_ID) && ctx.IDENTIFIER() != null) {
 			currentID = ctx.IDENTIFIER().getText();
-		} else if(matchesColumn(ctx, column_VisibilityCondition) && ctx.IDENTIFIER() != null) {
+		} else if (matchesColumn(ctx, column_VisibilityCondition) && ctx.IDENTIFIER() != null) {
 			TerminalNode id = ctx.IDENTIFIER();
 			IDecision<?> decision = getDecisionWithID(id.getText());
-			if(decision != null) {
+			if (decision != null) {
 				currentVisibilityCondition = new DecisionValueCallExpression(decision);
 			}
 		}
 	}
-	
-	private IDecision<?> getDecisionWithID(String ID){
-		for(IDecision<?> decision : decisions) {
-			if(decision.getDisplayId() ***REMOVED*** ID) {
+
+	private IDecision<?> getDecisionWithID(String ID) {
+		for (IDecision<?> decision : decisions) {
+			if (decision.getDisplayId() ***REMOVED*** ID) {
 				return decision;
 			}
 		}
@@ -236,9 +247,9 @@ public class CSVDoplerListener implements CSVListener {
 	@Override
 	public void enterCardinality(CardinalityContext ctx) {
 		List<TerminalNode> cardinals = ctx.DoubleLiteralExpression();
-		if(cardinals.size() >= 2 ) {
-		currentMinCardinality = Integer.parseInt(cardinals.get(0).getText());
-		currentMaxCardinality = Integer.parseInt(cardinals.get(1).getText());
+		if (cardinals.size() >= 2) {
+			currentMinCardinality = Integer.parseInt(cardinals.get(0).getText());
+			currentMaxCardinality = Integer.parseInt(cardinals.get(1).getText());
 		}
 	}
 
@@ -251,7 +262,7 @@ public class CSVDoplerListener implements CSVListener {
 	@Override
 	public void enterQuestion(QuestionContext ctx) {
 		if (ctx.QUESTION() != null) {
-		    currentQuestion = ctx.QUESTION().getSymbol().getText();
+			currentQuestion = ctx.QUESTION().getSymbol().getText();
 		}
 	}
 
@@ -287,7 +298,7 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterRange(RangeContext ctx) {
-		switch(currentDecisionType) {
+		switch (currentDecisionType) {
 		case BOOLEAN:
 			return;
 		case STRING:
@@ -295,27 +306,27 @@ public class CSVDoplerListener implements CSVListener {
 			break;
 		case NUMBER:
 			List<TerminalNode> AllExpressions = ctx.DoubleLiteralExpression();
-			if(AllExpressions.size() % 2 ***REMOVED*** 0) {
-				for(int i = 0; i < AllExpressions.size(); i+=2 ) {
+			if (AllExpressions.size() % 2 ***REMOVED*** 0) {
+				for (int i = 0; i < AllExpressions.size(); i += 2) {
 					TerminalNode left = ctx.DoubleLiteralExpression(i);
-					TerminalNode right = ctx.DoubleLiteralExpression(i+1);
-					//currentValidityConditions.add(new GreatherThan(new DoubleLiteralExpression(Double.parseDouble(left.getText()) - 1 )));
-					//currentValidityConditions.add(new LessThan(new DoubleLiteralExpression(Double.parseDouble(right.getText()) + 1)));
+					TerminalNode right = ctx.DoubleLiteralExpression(i + 1);
+					currentValidityConditions.add(new GreatherThan(new DoubleLiteralExpression(Double.parseDouble(left.getText()) - 1 ) , new DecisionValueCallExpression(currentDecision)));
+					currentValidityConditions.add(new LessThan(new DoubleLiteralExpression(Double.parseDouble(right.getText()) + 1), new DecisionValueCallExpression(currentDecision)));
 				}
 			}
 			break;
 		case ENUM:
 			List<ParseTree> children = ctx.children;
 			List<TerminalNode> leafs = new ArrayList<>();
-			for(ParseTree child : children) {
+			for (ParseTree child : children) {
 				leafs.addAll(getAllTerminalNodes(child));
 			}
-			
+
 			Set<EnumerationLiteral> enumerationLiterals = new HashSet<>();
 			String currentLiteral = "";
-			
-			for(int i = 0; i < leafs.size(); i++ ) {
-				if(leafs.get(i).getSymbol().getType() ***REMOVED*** CSVLexer.PIPE) {
+
+			for (int i = 0; i < leafs.size(); i++) {
+				if (leafs.get(i).getSymbol().getType() ***REMOVED*** CSVLexer.PIPE) {
 					enumerationLiterals.add(new EnumerationLiteral(currentLiteral));
 					currentLiteral = "";
 				} else {
@@ -325,21 +336,21 @@ public class CSVDoplerListener implements CSVListener {
 			currentEnumeration = new Enumeration(enumerationLiterals);
 		}
 	}
-	
-	private List<TerminalNode> getAllTerminalNodes(ParseTree tree){
+
+	private List<TerminalNode> getAllTerminalNodes(ParseTree tree) {
 		List<TerminalNode> terminals = new ArrayList<>();
 		collectTerminals(tree, terminals);
 		return terminals;
 	}
-	
+
 	private void collectTerminals(ParseTree tree, List<TerminalNode> result) {
-	    if (tree instanceof TerminalNode) {
-	        result.add((TerminalNode) tree);
-	    } else {
-	        for (int i = 0; i < tree.getChildCount(); i++) {
-	            collectTerminals(tree.getChild(i), result);
-	        }
-	    }
+		if (tree instanceof TerminalNode) {
+			result.add((TerminalNode) tree);
+		} else {
+			for (int i = 0; i < tree.getChildCount(); i++) {
+				collectTerminals(tree.getChild(i), result);
+			}
+		}
 	}
 
 	@Override
@@ -347,27 +358,51 @@ public class CSVDoplerListener implements CSVListener {
 
 	}
 
+	private int test;
+
 	@Override
 	public void enterDecisionVisibilityCallExpression(DecisionVisibilityCallExpressionContext ctx) {
-		List<ParseTree> children = ctx.children;
-		
-		if(children.size() ***REMOVED*** 1) {
-			
-		} else {
-			ctx.children.get(1);
-		}
-		
-//		DecisionVisibilityCallExpression expression = new DecisionVisibilityCallExpression(currentDecision);
-		
+		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void exitDecisionVisibilityCallExpression(DecisionVisibilityCallExpressionContext ctx) {
+		// Was wenn empty? Immer true oder immer false?
+		if (ctx.children.size() != 1) {
+			if (ctx.children.get(1) instanceof TerminalNode) {
+				IExpression right = expressionStack.pop();
+				IExpression left = expressionStack.pop();
 
+				TerminalNode operator = (TerminalNode) ctx.children.get(1);
+				switch (operator.getSymbol().getTokenIndex()) {
+				case CSVParser.AND:
+					expressionStack.push(new AND(left, right));
+					break;
+				case CSVParser.OR:
+					expressionStack.push(new OR(left, right));
+					break;
+				case CSVParser.EQUALS:
+					expressionStack.push(new Equals(left, right));
+					break;
+				case CSVParser.GREATER_THAN:
+					expressionStack.push(new GreatherThan(left, right));
+					break;
+				case CSVParser.LESS_THAN:
+					expressionStack.push(new LessThan(left, right));
+					break;
+				}
+			}
+		}
+		currentVisibilityCondition = expressionStack.pop();
 	}
 
 	@Override
 	public void enterIsTaken(IsTakenContext ctx) {
+		TerminalNode decisionID = ctx.IDENTIFIER();
+
+		if (decisionID != null) {
+			IsTaken isTaken = new IsTaken(getDecisionWithID(decisionID.getText()));
+		}
 		// TODO Auto-generated method stub
 
 	}
@@ -445,12 +480,14 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterRule(RuleContext ctx) {
-		currentContext = ctx;
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void exitRule(RuleContext ctx) {
-		currentContext = null;
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -564,97 +601,103 @@ public class CSVDoplerListener implements CSVListener {
 	@Override
 	public void enterAndExpression(AndExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void exitAndExpression(AndExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		
+		IExpression right = expressionStack.pop();
+		IExpression left = expressionStack.pop();
+		expressionStack.push(new AND(left, right));
 	}
 
 	@Override
 	public void enterOrExpression(OrExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void exitOrExpression(OrExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		
+		IExpression right = expressionStack.pop();
+		IExpression left = expressionStack.pop();
+		expressionStack.push(new OR(left, right));
 	}
 
 	@Override
 	public void enterXorExpression(XorExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void exitXorExpression(XorExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		
+		IExpression right = expressionStack.pop();
+		IExpression left = expressionStack.pop();
+		expressionStack.push(new XOR(left, right));
 	}
 
 	@Override
 	public void enterEqualityExpression(EqualityExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void exitEqualityExpression(EqualityExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		
+		IExpression right = expressionStack.pop();
+		IExpression left = expressionStack.pop();
+		expressionStack.push(new Equals(left, right));
 	}
 
 	@Override
 	public void enterGreaterThanExpression(GreaterThanExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void exitGreaterThanExpression(GreaterThanExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		
+		IExpression right = expressionStack.pop();
+		IExpression left = expressionStack.pop();
+		expressionStack.push(new GreatherThan(left, right));
 	}
 
 	@Override
 	public void enterLessThanExpression(LessThanExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void exitLessThanExpression(LessThanExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		
+		IExpression right = expressionStack.pop();
+		IExpression left = expressionStack.pop();
+		expressionStack.push(new LessThan(left, right));
 	}
 
 	@Override
 	public void enterGreaterEqualsExpression(GreaterEqualsExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void exitGreaterEqualsExpression(GreaterEqualsExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void enterLessEqualsExpression(LessEqualsExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void exitLessEqualsExpression(LessEqualsExpressionContext ctx) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
