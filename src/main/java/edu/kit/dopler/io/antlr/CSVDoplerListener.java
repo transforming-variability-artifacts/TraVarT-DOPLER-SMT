@@ -80,8 +80,6 @@ import edu.kit.dopler.model.LiteralExpression;
 public class CSVDoplerListener implements CSVListener {
 	private Dopler dopler;
 	
-	private IDecision<?> currentDecision;
-
 	private String currentID = "";
 	private String currentQuestion = "";
 	private String currentDescription = "";
@@ -141,10 +139,7 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitCsvFile(CsvFileContext ctx) {
-		dopler.setDecisions(decisions);
-		dopler.setAssets(null);
-		dopler.setEnumSet(null);
-		dopler.setName("Name");
+		dopler.setName("File Name");
 	}
 
 	@Override
@@ -169,22 +164,22 @@ public class CSVDoplerListener implements CSVListener {
 	public void exitRow(RowContext ctx) {
 		switch (currentDecisionType) {
 		case BOOLEAN:
-			currentDecision = new BooleanDecision(currentID, currentQuestion, currentDescription,
-					currentVisibilityCondition, currentRules);
+			dopler.addDecision(new BooleanDecision(currentID, currentQuestion, currentDescription,
+					currentVisibilityCondition, currentRules));
 			break;
 		case STRING:
-			currentDecision = new StringDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
-					currentRules, currentValidityConditions);
+			dopler.addDecision(new StringDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
+					currentRules, currentValidityConditions));
 			break;
 		case NUMBER:
-			currentDecision = new NumberDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
-					currentRules, currentValidityConditions);
+			dopler.addDecision(new NumberDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
+					currentRules, currentValidityConditions));
 			break;
 		case ENUM:
-			currentDecision = new EnumerationDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
-					currentRules, currentEnumeration, currentMinCardinality, currentMaxCardinality);
+			dopler.addDecision(new EnumerationDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
+					currentRules, currentEnumeration, currentMinCardinality, currentMaxCardinality));
+			dopler.addEnum(currentEnumeration);
 		}
-		decisions.add(currentDecision);
 		resetValues();
 	}
 
@@ -218,21 +213,13 @@ public class CSVDoplerListener implements CSVListener {
 			currentID = ctx.IDENTIFIER().getText();
 		} else if (matchesColumn(ctx, column_VisibilityCondition) && ctx.IDENTIFIER() != null) {
 			TerminalNode id = ctx.IDENTIFIER();
-			IDecision<?> decision = getDecisionWithID(id.getText());
+			IDecision<?> decision = findDecisionByID(id.getText());
 			if (decision != null) {
 				currentVisibilityCondition = new DecisionValueCallExpression(decision);
 			}
 		}
 	}
 
-	private IDecision<?> getDecisionWithID(String ID) {
-		for (IDecision<?> decision : decisions) {
-			if (decision.getDisplayId() ***REMOVED*** ID) {
-				return decision;
-			}
-		}
-		return null;
-	}
 
 	private boolean matchesColumn(ParserRuleContext ctx, int column) {
 		return ctx ***REMOVED*** ctx.getParent().children.get(column_ID);
@@ -310,8 +297,8 @@ public class CSVDoplerListener implements CSVListener {
 				for (int i = 0; i < AllExpressions.size(); i += 2) {
 					TerminalNode left = ctx.DoubleLiteralExpression(i);
 					TerminalNode right = ctx.DoubleLiteralExpression(i + 1);
-					currentValidityConditions.add(new GreatherThan(new DoubleLiteralExpression(Double.parseDouble(left.getText()) - 1 ) , new DecisionValueCallExpression(currentDecision)));
-					currentValidityConditions.add(new LessThan(new DoubleLiteralExpression(Double.parseDouble(right.getText()) + 1), new DecisionValueCallExpression(currentDecision)));
+					currentValidityConditions.add(new GreatherThan(new DoubleLiteralExpression(Double.parseDouble(left.getText()) - 1 ) , new DecisionValueCallExpression(findDecisionByID(currentID))));
+					currentValidityConditions.add(new LessThan(new DoubleLiteralExpression(Double.parseDouble(right.getText()) + 1), new DecisionValueCallExpression(findDecisionByID(currentID))));
 				}
 			}
 			break;
@@ -336,6 +323,13 @@ public class CSVDoplerListener implements CSVListener {
 			currentEnumeration = new Enumeration(enumerationLiterals);
 		}
 	}
+	
+	private IDecision<?> findDecisionByID(String ID){
+		for(IDecision<?> decision : dopler.getDecisions()) {
+			if(decision.getDisplayId().equals(ID)) return decision;
+		}
+		return null;
+	}
 
 	private List<TerminalNode> getAllTerminalNodes(ParseTree tree) {
 		List<TerminalNode> terminals = new ArrayList<>();
@@ -358,11 +352,9 @@ public class CSVDoplerListener implements CSVListener {
 
 	}
 
-	private int test;
-
 	@Override
 	public void enterDecisionVisibilityCallExpression(DecisionVisibilityCallExpressionContext ctx) {
-		// TODO Auto-generated method stub
+		expressionStack.clear();
 	}
 
 	@Override
@@ -399,12 +391,9 @@ public class CSVDoplerListener implements CSVListener {
 	@Override
 	public void enterIsTaken(IsTakenContext ctx) {
 		TerminalNode decisionID = ctx.IDENTIFIER();
-
 		if (decisionID != null) {
-			IsTaken isTaken = new IsTaken(getDecisionWithID(decisionID.getText()));
+			expressionStack.push(new IsTaken(findDecisionByID(decisionID.getText())));
 		}
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -415,8 +404,10 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterDecisionValueCallExpression(DecisionValueCallExpressionContext ctx) {
-		// TODO Auto-generated method stub
-
+		TerminalNode decisionID = ctx.IDENTIFIER();
+		if (decisionID != null) {
+			expressionStack.push(new DecisionValueCallExpression(findDecisionByID(decisionID.getText())));
+		}
 	}
 
 	@Override
@@ -439,8 +430,8 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterLiteralExpression(LiteralExpressionContext ctx) {
-		// TODO Auto-generated method stub
-
+		
+		
 	}
 
 	@Override
@@ -480,7 +471,7 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterRule(RuleContext ctx) {
-		// TODO Auto-generated method stub
+		expressionStack.clear();
 		
 	}
 
