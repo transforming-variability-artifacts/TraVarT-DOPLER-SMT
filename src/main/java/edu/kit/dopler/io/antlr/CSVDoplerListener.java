@@ -17,6 +17,8 @@ import edu.kit.dopler.model.NumberDecision;
 import edu.kit.dopler.model.OR;
 import edu.kit.dopler.model.Rule;
 import edu.kit.dopler.model.StringDecision;
+import edu.kit.dopler.model.StringLiteralExpression;
+import edu.kit.dopler.model.UnaryExpression;
 import edu.kit.dopler.model.XOR;
 import edu.kit.dopler.io.antlr.resources.CSVLexer;
 import edu.kit.dopler.io.antlr.resources.CSVListener;
@@ -58,6 +60,7 @@ import edu.kit.dopler.io.antlr.resources.CSVParser.XorExpressionContext;
 import edu.kit.dopler.model.AND;
 import edu.kit.dopler.model.Action;
 import edu.kit.dopler.model.BooleanDecision;
+import edu.kit.dopler.model.BooleanLiteralExpression;
 import edu.kit.dopler.model.Decision;
 import edu.kit.dopler.model.Decision.DecisionType;
 import edu.kit.dopler.model.DecisionValueCallExpression;
@@ -100,8 +103,6 @@ public class CSVDoplerListener implements CSVListener {
 	private int currentMinCardinality = 1;
 	private int currentMaxCardinality = 1;
 	private IExpression currentVisibilityCondition;
-
-	private Set<IDecision<?>> decisions = new HashSet<>();
 
 	private final int column_ID = 0;
 	private final int column_VisibilityCondition = 6;
@@ -212,10 +213,10 @@ public class CSVDoplerListener implements CSVListener {
 		if (matchesColumn(ctx, column_ID) && ctx.IDENTIFIER() != null) {
 			currentID = ctx.IDENTIFIER().getText();
 		} else if (matchesColumn(ctx, column_VisibilityCondition) && ctx.IDENTIFIER() != null) {
-			TerminalNode id = ctx.IDENTIFIER();
-			IDecision<?> decision = findDecisionByID(id.getText());
+			expressionStack.push(new DecisionValueCallExpression(findDecisionByID(ctx.IDENTIFIER().getText())));
+			IDecision<?> decision = findDecisionByID(ctx.IDENTIFIER().getText());
 			if (decision != null) {
-				currentVisibilityCondition = new DecisionValueCallExpression(decision);
+				expressionStack.push(new DecisionValueCallExpression(decision));
 			}
 		}
 	}
@@ -279,8 +280,8 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitUnaryExpression(UnaryExpressionContext ctx) {
-		// TODO Auto-generated method stub
-
+		// TODO what do I have to instantiate if unaryExpression is abstract
+		//expressionStack.push(new UnaryExpression(expressionStack.pop()));
 	}
 
 	@Override
@@ -349,7 +350,7 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitRange(RangeContext ctx) {
-
+		expressionStack.clear();
 	}
 
 	@Override
@@ -430,8 +431,16 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterLiteralExpression(LiteralExpressionContext ctx) {
-		
-		
+		if(ctx.BooleanLiteralExpression() != null) {
+			expressionStack.push(new BooleanLiteralExpression(Boolean.parseBoolean(ctx.BooleanLiteralExpression().getText())));
+		} else if(ctx.DoubleLiteralExpression() != null){
+			expressionStack.push(new DoubleLiteralExpression(Double.parseDouble(ctx.DoubleLiteralExpression().getText())));
+		} else if(ctx.EnumerationLiteralExpression() != null) {
+			// Need to define how to extract an Enumeration
+			// Syntax: IDENTIFIER.IDENTIFIER
+		} else if(ctx.StringLiteralExpression() != null) {
+			expressionStack.push(new StringLiteralExpression(ctx.StringLiteralExpression().getText()));
+		}
 	}
 
 	@Override
