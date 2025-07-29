@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -73,6 +74,7 @@ import edu.kit.dopler.model.DoubleLiteralExpression;
 import edu.kit.dopler.model.Enumeration;
 import edu.kit.dopler.model.EnumerationDecision;
 import edu.kit.dopler.model.EnumerationLiteral;
+import edu.kit.dopler.model.EnumeratorLiteralExpression;
 import edu.kit.dopler.model.Equals;
 import edu.kit.dopler.model.Expression;
 import edu.kit.dopler.model.GreatherThan;
@@ -82,6 +84,7 @@ import edu.kit.dopler.model.IExpression;
 import edu.kit.dopler.model.IsTaken;
 import edu.kit.dopler.model.LessThan;
 import edu.kit.dopler.model.LiteralExpression;
+import edu.kit.dopler.model.NOT;
 
 public class CSVDoplerListener implements CSVListener {
 	private Dopler dopler;
@@ -281,8 +284,7 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitUnaryExpression(UnaryExpressionContext ctx) {
-		// TODO what do I have to instantiate if unaryExpression is abstract
-		//expressionStack.push(new UnaryExpression(expressionStack.pop()));
+		expressionStack.push(new NOT(expressionStack.pop()));
 	}
 
 	@Override
@@ -361,7 +363,12 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitDecisionVisibilityCallExpression(DecisionVisibilityCallExpressionContext ctx) {
-		// Was wenn empty? Immer true oder immer false?
+		// visibility condition is set to true by default
+		if(ctx.children.size()***REMOVED***0) {
+			currentVisibilityCondition = new BooleanLiteralExpression(true);
+			return;
+		}
+		
 		if (ctx.children.size() != 1) {
 			if (ctx.children.get(1) instanceof TerminalNode) {
 				IExpression right = expressionStack.pop();
@@ -437,8 +444,14 @@ public class CSVDoplerListener implements CSVListener {
 		} else if(ctx.DoubleLiteralExpression() != null){
 			expressionStack.push(new DoubleLiteralExpression(Double.parseDouble(ctx.DoubleLiteralExpression().getText())));
 		} else if(ctx.EnumerationLiteralExpression() != null) {
-			// Need to define how to extract an Enumeration
-			// Syntax: IDENTIFIER.IDENTIFIER
+			String[] enumeration = ctx.EnumerationLiteralExpression().getText().split(".");
+			if(enumeration.length < 2) return;
+			IDecision<?> decision = findDecisionByID(enumeration[0]);
+			if(decision instanceof EnumerationDecision) {
+				EnumerationDecision enumerationDecision = (EnumerationDecision) decision;
+				Optional<EnumerationLiteral> enumerationLiteral = enumerationDecision.getEnumeration().getEnumerationLiterals().stream().filter(e -> e.getValue().equals(enumeration[1])).findFirst();
+				expressionStack.push(new Equals(new DecisionValueCallExpression(enumerationDecision),new EnumeratorLiteralExpression(enumerationLiteral.get())));
+			}
 		} else if(ctx.StringLiteralExpression() != null) {
 			expressionStack.push(new StringLiteralExpression(ctx.StringLiteralExpression().getText()));
 		}
