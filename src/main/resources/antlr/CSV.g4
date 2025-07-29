@@ -87,24 +87,41 @@ unaryExpression
     ;
 
 range
-    : (IDENTIFIER | literalExpression | binaryExpression | cardinality)+ ('|' (IDENTIFIER | literalExpression  | binaryExpression | cardinality)+)+
+    : rangeItem (rangeItem)*('|' rangeItem (rangeItem)*)+
     | DoubleLiteralExpression '-' DoubleLiteralExpression
-    | IDENTIFIER ('-' IDENTIFIER)+ ('|' (IDENTIFIER | literalExpression  | binaryExpression | cardinality)+)
+    ;
+
+rangeItem
+    : IDENTIFIER
+    | specialCharacter
+    | expression
+    | subrange 
+    | cardinality
+    | QUESTION
+    | HEADER
+    ;
+
+
+specialCharacter
+    : RPAREN | LPAREN | LBRACE | RBRACE | COLON | ANPERSAND | PERCENT | COMMA | SPECIAL_CHAR
+    ;
+
+subrange
+    : expression (( AND | OR | EQUALS | GREATER_THAN | LESS_THAN | LESS_EQUALS | GREATER_EQUALS) expression)*
     ;
 
 decisionVisibilityCallExpression
-    : expression ( AND | OR | EQUALS | GREATER_THAN | LESS_THAN ) expression
+    : expression (( AND | OR | EQUALS | GREATER_THAN | LESS_THAN ) expression)*
     | expression
     ;
 
 isTaken
     : ISTAKEN LPAREN IDENTIFIER RPAREN
-    | ISTAKEN LPAREN expression RPAREN
     ;
 
 decisionValueCallExpression
     : GETVALUE LPAREN IDENTIFIER RPAREN
-    | GETVALUE LPAREN expression RPAREN
+    | IDENTIFIER
     ;
 
 binaryExpression
@@ -155,7 +172,6 @@ literalExpression
     | BooleanLiteralExpression
     | StringLiteralExpression
     | DoubleLiteralExpression
-    | IDENTIFIER
     ;
 
 decisionType
@@ -220,7 +236,6 @@ doubleEnForce
 
 QUESTION
     : (~[?\r\n;])+ '?'   // everything except ? or \r or \n or ; followed by a ?
-    | 'nothing' // Edge case for empty question
     ;
 
 WS
@@ -260,6 +275,10 @@ LBRACE       : '{' ;
 RBRACE       : '}' ;
 COLON        : ':' ;
 IF           : 'if' ;
+ANPERSAND   : '&' ;
+PERCENT      : '%' ;
+COMMA        : ',' ;
+SEMICOLON   : ';' ;
 
 
 //Literal Expressions
@@ -312,6 +331,10 @@ ENUMERATION
 
 BooleanDecision
     : 'Boolean'
+    ;
+
+SPECIAL_CHAR
+    : ~[a-zA-Z0-9\r\n\t ;|]  // Alles außer alphanumerisch, Whitespace, Semikolon, Pipe
     ;
 
 IDENTIFIER

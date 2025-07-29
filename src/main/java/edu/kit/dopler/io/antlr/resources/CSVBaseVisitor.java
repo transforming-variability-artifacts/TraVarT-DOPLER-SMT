@@ -1,5 +1,4 @@
 package edu.kit.dopler.io.antlr.resources;
-
 // Generated from CSV.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -83,6 +82,27 @@ public class CSVBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CS
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 ***REMOVED***
 	@Override public T visitRange(CSVParser.RangeContext ctx) { return visitChildren(ctx); }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 ***REMOVED***
+	@Override public T visitRangeItem(CSVParser.RangeItemContext ctx) { return visitChildren(ctx); }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 ***REMOVED***
+	@Override public T visitSpecialCharacter(CSVParser.SpecialCharacterContext ctx) { return visitChildren(ctx); }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 ***REMOVED***
+	@Override public T visitSubrange(CSVParser.SubrangeContext ctx) { return visitChildren(ctx); }
 	***REMOVED****
 	 * {@inheritDoc}
 	 *

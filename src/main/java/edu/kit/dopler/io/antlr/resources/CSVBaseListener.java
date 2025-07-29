@@ -1,5 +1,4 @@
 package edu.kit.dopler.io.antlr.resources;
-
 // Generated from CSV.g4 by ANTLR 4.13.2
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -133,6 +132,42 @@ public class CSVBaseListener implements CSVListener {
 	 * <p>The default implementation does nothing.</p>
 	 ***REMOVED***
 	@Override public void exitRange(CSVParser.RangeContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterRangeItem(CSVParser.RangeItemContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitRangeItem(CSVParser.RangeItemContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterSpecialCharacter(CSVParser.SpecialCharacterContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitSpecialCharacter(CSVParser.SpecialCharacterContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterSubrange(CSVParser.SubrangeContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitSubrange(CSVParser.SubrangeContext ctx) { }
 	***REMOVED****
 	 * {@inheritDoc}
 	 *

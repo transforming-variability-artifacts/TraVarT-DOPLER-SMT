@@ -51,9 +51,12 @@ import edu.kit.dopler.io.antlr.resources.CSVParser.LiteralExpressionContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.OrExpressionContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.QuestionContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.RangeContext;
+import edu.kit.dopler.io.antlr.resources.CSVParser.RangeItemContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.RowContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.RuleContext;
+import edu.kit.dopler.io.antlr.resources.CSVParser.SpecialCharacterContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.StringEnForceContext;
+import edu.kit.dopler.io.antlr.resources.CSVParser.SubrangeContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.UnaryExpressionContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.ValueRestrictionActionContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.XorExpressionContext;
@@ -92,10 +95,8 @@ public class CSVDoplerListener implements CSVListener {
 
 	// Current Rules variables
 	private Set<Rule> currentRules;
-	private Rule currentRule;
-	private IExpression currentExpression;
+	// Per Rule
 	private Set<IAction> currentActions;
-	private IAction currentAction;
 
 	// Traverse Expression
 	Deque<IExpression> expressionStack = new ArrayDeque<>();
@@ -486,7 +487,12 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitRule(RuleContext ctx) {
-		// TODO Auto-generated method stub
+		if(expressionStack.isEmpty()) {
+			return;
+		}
+		currentRules.add(new Rule(expressionStack.pop(), currentActions));
+		expressionStack.clear();
+		currentActions.clear();
 		
 	}
 
@@ -698,6 +704,42 @@ public class CSVDoplerListener implements CSVListener {
 	public void exitLessEqualsExpression(LessEqualsExpressionContext ctx) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void enterRangeItem(RangeItemContext ctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void exitRangeItem(RangeItemContext ctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void enterSpecialCharacter(SpecialCharacterContext ctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void exitSpecialCharacter(SpecialCharacterContext ctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void enterSubrange(SubrangeContext ctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void exitSubrange(SubrangeContext ctx) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

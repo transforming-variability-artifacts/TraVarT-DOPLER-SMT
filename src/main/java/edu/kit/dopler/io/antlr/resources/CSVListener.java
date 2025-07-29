@@ -1,5 +1,4 @@
 package edu.kit.dopler.io.antlr.resources;
-
 // Generated from CSV.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -108,6 +107,36 @@ public interface CSVListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 ***REMOVED***
 	void exitRange(CSVParser.RangeContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#rangeItem}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterRangeItem(CSVParser.RangeItemContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#rangeItem}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitRangeItem(CSVParser.RangeItemContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#specialCharacter}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterSpecialCharacter(CSVParser.SpecialCharacterContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#specialCharacter}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitSpecialCharacter(CSVParser.SpecialCharacterContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#subrange}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterSubrange(CSVParser.SubrangeContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#subrange}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitSubrange(CSVParser.SubrangeContext ctx);
 	***REMOVED****
 	 * Enter a parse tree produced by {@link CSVParser#decisionVisibilityCallExpression}.
 	 * @param ctx the parse tree

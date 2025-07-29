@@ -1,5 +1,4 @@
 package edu.kit.dopler.io.antlr.resources;
-
 // Generated from CSV.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -71,6 +70,24 @@ public interface CSVVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 ***REMOVED***
 	T visitRange(CSVParser.RangeContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#rangeItem}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitRangeItem(CSVParser.RangeItemContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#specialCharacter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitSpecialCharacter(CSVParser.SpecialCharacterContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#subrange}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitSubrange(CSVParser.SubrangeContext ctx);
 	***REMOVED****
 	 * Visit a parse tree produced by {@link CSVParser#decisionVisibilityCallExpression}.
 	 * @param ctx the parse tree
