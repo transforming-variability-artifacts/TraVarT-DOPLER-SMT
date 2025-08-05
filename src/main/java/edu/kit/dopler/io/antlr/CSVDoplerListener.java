@@ -15,6 +15,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import edu.kit.dopler.model.NumberDecision;
+import edu.kit.dopler.model.NumberEnforce;
 import edu.kit.dopler.model.OR;
 import edu.kit.dopler.model.Rule;
 import edu.kit.dopler.model.StringDecision;
@@ -64,6 +65,7 @@ import edu.kit.dopler.io.antlr.resources.CSVParser.XorExpressionContext;
 import edu.kit.dopler.model.AND;
 import edu.kit.dopler.model.Action;
 import edu.kit.dopler.model.BooleanDecision;
+import edu.kit.dopler.model.BooleanEnforce;
 import edu.kit.dopler.model.BooleanLiteralExpression;
 import edu.kit.dopler.model.Decision;
 import edu.kit.dopler.model.Decision.DecisionType;
@@ -81,10 +83,15 @@ import edu.kit.dopler.model.GreatherThan;
 import edu.kit.dopler.model.IAction;
 import edu.kit.dopler.model.IDecision;
 import edu.kit.dopler.model.IExpression;
+import edu.kit.dopler.model.IValue;
 import edu.kit.dopler.model.IsTaken;
 import edu.kit.dopler.model.LessThan;
 import edu.kit.dopler.model.LiteralExpression;
 import edu.kit.dopler.model.NOT;
+import edu.kit.dopler.model.BooleanValue;
+import edu.kit.dopler.model.DoubleValue;
+import edu.kit.dopler.model.EnumEnforce;
+import edu.kit.dopler.model.StringValue;
 
 public class CSVDoplerListener implements CSVListener {
 	private Dopler dopler;
@@ -334,6 +341,14 @@ public class CSVDoplerListener implements CSVListener {
 		}
 		return null;
 	}
+	
+	private IDecision<?> findOrCreateDecisionByID(String ID, IDecision<?> decisionToCreate){
+		for(IDecision<?> decision : dopler.getDecisions()) {
+			if(decision.getDisplayId().equals(ID)) return decision;
+		}
+		dopler.addDecision(decisionToCreate);
+		return decisionToCreate;
+	}
 
 	private List<TerminalNode> getAllTerminalNodes(ParseTree tree) {
 		List<TerminalNode> terminals = new ArrayList<>();
@@ -571,8 +586,14 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterEnumEnForce(EnumEnForceContext ctx) {
-		// TODO Auto-generated method stub
-
+		String identifier = ctx.IDENTIFIER().getFirst().getText();
+		String value = ctx.IDENTIFIER().getLast().getText();
+		if(!identifier.isEmpty()) {
+			IDecision<?> decision = findOrCreateDecisionByID(identifier, new EnumerationDecision(identifier, null, null, null, null,null,0,0));
+			if(decision != null && decision.getDecisionType() ***REMOVED*** DecisionType.ENUM ) {
+				currentActions.add(new EnumEnforce((EnumerationDecision)decision, new StringValue(value)));
+			}
+		}
 	}
 
 	@Override
@@ -595,8 +616,14 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterBooleanEnForce(BooleanEnForceContext ctx) {
-		// TODO Auto-generated method stub
-
+		String identifier = ctx.IDENTIFIER().getText();
+		if(!identifier.isEmpty()) {
+			IDecision<?> decision = findOrCreateDecisionByID(ctx.IDENTIFIER().getText(), new BooleanDecision(identifier, null, null, null, null));
+			if(decision != null && decision.getDecisionType() ***REMOVED*** DecisionType.BOOLEAN ) {
+				boolean value = Boolean.parseBoolean(ctx.BooleanLiteralExpression().getText());
+				currentActions.add(new BooleanEnforce((BooleanDecision)decision, new BooleanValue(value)));
+			}
+		}
 	}
 
 	@Override
@@ -607,8 +634,14 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterDoubleEnForce(DoubleEnForceContext ctx) {
-		// TODO Auto-generated method stub
-
+		String identifier = ctx.IDENTIFIER().getText();
+		if(!identifier.isEmpty()) {
+			IDecision<?> decision = findOrCreateDecisionByID(ctx.IDENTIFIER().getText(), new NumberDecision(identifier, null, null, null, null, null));
+			if(decision != null && decision.getDecisionType() ***REMOVED*** DecisionType.NUMBER ) {
+				Double value = Double.parseDouble(ctx.DoubleLiteralExpression().getText());
+				currentActions.add(new NumberEnforce((NumberDecision)decision, new DoubleValue(value)));
+			}
+		}
 	}
 
 	@Override
