@@ -117,7 +117,6 @@ public class CSVDoplerListener implements CSVListener {
 	private IExpression currentVisibilityCondition;
 
 	private final int column_ID = 0;
-	private final int column_VisibilityCondition = 12;
 
 	public Dopler getDopler() {
 		return dopler;
@@ -274,7 +273,6 @@ public class CSVDoplerListener implements CSVListener {
 	}
 
 	private boolean matchesColumn(ParserRuleContext ctx, int column) {
-		ParseTree test = ctx.getParent().getParent().children.get(column_ID);
 		return ctx.getParent() ***REMOVED*** ctx.getParent().getParent().children.get(column_ID);
 	}
 
@@ -509,9 +507,6 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterLiteralExpression(LiteralExpressionContext ctx) {
-		if (currentID.equals("CW_resolution")) {
-			System.out.println("HERE in LiteralExpression");
-		}
 		if (ctx.BooleanLiteralExpression() != null) {
 			expressionStack
 					.push(new BooleanLiteralExpression(Boolean.parseBoolean(ctx.BooleanLiteralExpression().getText())));
@@ -540,9 +535,6 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitLiteralExpression(LiteralExpressionContext ctx) {
-		if(currentID.equals("CW_resolution")) {
-			System.out.println("HERE exiting LiteralExpression");
-		}
 		expressionStack.isEmpty();
 
 	}
