@@ -689,7 +689,9 @@ public class CSVParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class UnaryExpressionContext extends ParserRuleContext {
-		public TerminalNode IDENTIFIER() { return getToken(CSVParser.IDENTIFIER, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
 		public TerminalNode EnumerationLiteralExpression() { return getToken(CSVParser.EnumerationLiteralExpression, 0); }
 		public UnaryExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -723,7 +725,7 @@ public class CSVParser extends Parser {
 				setState(124);
 				match(T__2);
 				setState(125);
-				match(IDENTIFIER);
+				expression();
 				}
 				break;
 			case 2:
@@ -2881,7 +2883,7 @@ public class CSVParser extends Parser {
 		"x{\u0003\u001e\u000f\u0000y{\u0003 \u0010\u0000zu\u0001\u0000\u0000\u0000"+
 		"zv\u0001\u0000\u0000\u0000zw\u0001\u0000\u0000\u0000zx\u0001\u0000\u0000"+
 		"\u0000zy\u0001\u0000\u0000\u0000{\u000f\u0001\u0000\u0000\u0000|}\u0005"+
-		"\u0003\u0000\u0000}\u0081\u0005.\u0000\u0000~\u007f\u0005\u0003\u0000"+
+		"\u0003\u0000\u0000}\u0081\u0003\u000e\u0007\u0000~\u007f\u0005\u0003\u0000"+
 		"\u0000\u007f\u0081\u0005%\u0000\u0000\u0080|\u0001\u0000\u0000\u0000\u0080"+
 		"~\u0001\u0000\u0000\u0000\u0081\u0011\u0001\u0000\u0000\u0000\u0082\u0086"+
 		"\u0003\u0014\n\u0000\u0083\u0085\u0003\u0014\n\u0000\u0084\u0083\u0001"+

@@ -21,6 +21,7 @@ import edu.kit.dopler.model.Rule;
 import edu.kit.dopler.model.StringDecision;
 import edu.kit.dopler.model.StringLiteralExpression;
 import edu.kit.dopler.model.UnaryExpression;
+import edu.kit.dopler.model.ValueDecision;
 import edu.kit.dopler.model.XOR;
 import edu.kit.dopler.io.antlr.resources.CSVLexer;
 import edu.kit.dopler.io.antlr.resources.CSVListener;
@@ -104,9 +105,9 @@ public class CSVDoplerListener implements CSVListener {
 	private Set<IExpression> currentValidityConditions;
 
 	// Current Rules variables
-	private Set<Rule> currentRules;
+	private Set<Rule> currentRules = new HashSet<>();
 	// Per Rule
-	private Set<IAction> currentActions;
+	private Set<IAction> currentActions = new HashSet<>();
 
 	// Traverse Expression
 	Deque<IExpression> expressionStack = new ArrayDeque<>();
@@ -117,6 +118,10 @@ public class CSVDoplerListener implements CSVListener {
 
 	private final int column_ID = 0;
 	private final int column_VisibilityCondition = 6;
+	
+	public Dopler getDopler() {
+		return dopler;
+	}
 
 
 	@Override
@@ -174,25 +179,58 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitRow(RowContext ctx) {
+		if(currentDecisionType ***REMOVED*** null) return;
+		IDecision<?> currentDecision = findDecisionByID(currentID);
 		switch (currentDecisionType) {
 		case BOOLEAN:
-			dopler.addDecision(new BooleanDecision(currentID, currentQuestion, currentDescription,
-					currentVisibilityCondition, currentRules));
+			// Check whether the decision was already created or not, if yes update all Values, else create the decision
+			if(currentDecision != null && currentDecision instanceof BooleanDecision) {
+				IDecision<BooleanDecision> currentBooleanDecision = (IDecision<BooleanDecision>) findDecisionByID(currentID);
+				updateCommonDecisionValues(currentBooleanDecision);
+			} else {
+				dopler.addDecision(new BooleanDecision(currentID, currentQuestion, currentDescription,
+						currentVisibilityCondition, currentRules));
+			}
 			break;
 		case STRING:
-			dopler.addDecision(new StringDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
-					currentRules, currentValidityConditions));
+			if(currentDecision != null && currentDecision instanceof StringDecision) {
+				IDecision<StringDecision> currentStringDecision = (IDecision<StringDecision>) findDecisionByID(currentID);
+				updateCommonDecisionValues(currentStringDecision);
+				((ValueDecision<StringDecision>) currentStringDecision).setValidityConditions(currentValidityConditions);
+			} else {
+				dopler.addDecision(new StringDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
+						currentRules, currentValidityConditions));
+			}
 			break;
 		case NUMBER:
-			dopler.addDecision(new NumberDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
-					currentRules, currentValidityConditions));
+			if(currentDecision != null && currentDecision instanceof StringDecision) {
+				IDecision<NumberDecision> currentNumberDecision = (IDecision<NumberDecision>) findDecisionByID(currentID);
+				updateCommonDecisionValues(currentNumberDecision);
+				((ValueDecision<NumberDecision>) currentNumberDecision).setValidityConditions(currentValidityConditions);
+			} else {
+				dopler.addDecision(new NumberDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
+						currentRules, currentValidityConditions));
+			}
 			break;
 		case ENUM:
-			dopler.addDecision(new EnumerationDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
-					currentRules, currentEnumeration, currentMinCardinality, currentMaxCardinality));
+			if(currentDecision != null && currentDecision instanceof StringDecision) {
+				IDecision<EnumerationDecision> currentEnumerationDecision = (IDecision<EnumerationDecision>) findDecisionByID(currentID);
+				updateCommonDecisionValues(currentEnumerationDecision);
+				// Missing currentEnumeration, min and max cardinality
+			} else {
+				dopler.addDecision(new EnumerationDecision(currentID, currentQuestion, currentDescription, currentVisibilityCondition,
+						currentRules, currentEnumeration, currentMinCardinality, currentMaxCardinality));
+			}			
 			dopler.addEnum(currentEnumeration);
 		}
 		resetValues();
+	}
+	
+	private void updateCommonDecisionValues(IDecision<?> decision) {
+		decision.setQuestion(currentQuestion);
+		decision.setDescription(currentDescription);
+		decision.setVisibilityCondition(currentVisibilityCondition);
+		currentRules.forEach(r -> decision.addRule(r));
 	}
 
 	private void resetValues() {
@@ -202,7 +240,8 @@ public class CSVDoplerListener implements CSVListener {
 		currentDecisionType = null;
 		currentEnumeration = null;
 		currentValidityConditions = null;
-		currentRules = null;
+		currentRules.clear();
+		currentActions.clear();
 		currentMinCardinality = 1;
 		currentMaxCardinality = 1;
 		currentVisibilityCondition = null;
@@ -234,7 +273,8 @@ public class CSVDoplerListener implements CSVListener {
 
 
 	private boolean matchesColumn(ParserRuleContext ctx, int column) {
-		return ctx ***REMOVED*** ctx.getParent().children.get(column_ID);
+		ParseTree test = ctx.getParent().getParent().children.get(column_ID);
+		return ctx.getParent() ***REMOVED*** ctx.getParent().getParent().children.get(column_ID);
 	}
 
 	@Override
@@ -286,7 +326,6 @@ public class CSVDoplerListener implements CSVListener {
 	@Override
 	public void enterUnaryExpression(UnaryExpressionContext ctx) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -331,6 +370,7 @@ public class CSVDoplerListener implements CSVListener {
 					currentLiteral += leafs.get(i).getSymbol().getText();
 				}
 			}
+			enumerationLiterals.add(new EnumerationLiteral(currentLiteral));
 			currentEnumeration = new Enumeration(enumerationLiterals);
 		}
 	}
@@ -390,7 +430,7 @@ public class CSVDoplerListener implements CSVListener {
 				IExpression left = expressionStack.pop();
 
 				TerminalNode operator = (TerminalNode) ctx.children.get(1);
-				switch (operator.getSymbol().getTokenIndex()) {
+				switch (operator.getSymbol().getType()) {
 				case CSVParser.AND:
 					expressionStack.push(new AND(left, right));
 					break;
@@ -430,7 +470,10 @@ public class CSVDoplerListener implements CSVListener {
 	public void enterDecisionValueCallExpression(DecisionValueCallExpressionContext ctx) {
 		TerminalNode decisionID = ctx.IDENTIFIER();
 		if (decisionID != null) {
-			expressionStack.push(new DecisionValueCallExpression(findDecisionByID(decisionID.getText())));
+			// Currently always creating an Boolean decision
+			// TODO when do we recognize a different decisiontype?
+			expressionStack.push(new DecisionValueCallExpression(findOrCreateDecisionByID(decisionID.getText(), new BooleanDecision(decisionID.getText(), null, null, null, new HashSet<>()))));
+			//expressionStack.push(new DecisionValueCallExpression(findOrCreateDecisionByID(decisionID.getText(), new EnumerationDecision(decisionID.getText(), null, null, null, new HashSet<>(),null,0,0))));
 		}
 	}
 
@@ -459,7 +502,7 @@ public class CSVDoplerListener implements CSVListener {
 		} else if(ctx.DoubleLiteralExpression() != null){
 			expressionStack.push(new DoubleLiteralExpression(Double.parseDouble(ctx.DoubleLiteralExpression().getText())));
 		} else if(ctx.EnumerationLiteralExpression() != null) {
-			String[] enumeration = ctx.EnumerationLiteralExpression().getText().split(".");
+			String[] enumeration = ctx.EnumerationLiteralExpression().getText().split("\\.");
 			if(enumeration.length < 2) return;
 			IDecision<?> decision = findDecisionByID(enumeration[0]);
 			if(decision instanceof EnumerationDecision) {
@@ -589,7 +632,7 @@ public class CSVDoplerListener implements CSVListener {
 		String identifier = ctx.IDENTIFIER().getFirst().getText();
 		String value = ctx.IDENTIFIER().getLast().getText();
 		if(!identifier.isEmpty()) {
-			IDecision<?> decision = findOrCreateDecisionByID(identifier, new EnumerationDecision(identifier, null, null, null, null,null,0,0));
+			IDecision<?> decision = findOrCreateDecisionByID(identifier, new EnumerationDecision(identifier, null, null, null, new HashSet<>(),null,0,0));
 			if(decision != null && decision.getDecisionType() ***REMOVED*** DecisionType.ENUM ) {
 				currentActions.add(new EnumEnforce((EnumerationDecision)decision, new StringValue(value)));
 			}
@@ -618,7 +661,7 @@ public class CSVDoplerListener implements CSVListener {
 	public void enterBooleanEnForce(BooleanEnForceContext ctx) {
 		String identifier = ctx.IDENTIFIER().getText();
 		if(!identifier.isEmpty()) {
-			IDecision<?> decision = findOrCreateDecisionByID(ctx.IDENTIFIER().getText(), new BooleanDecision(identifier, null, null, null, null));
+			IDecision<?> decision = findOrCreateDecisionByID(ctx.IDENTIFIER().getText(), new BooleanDecision(identifier, null, null, null, new HashSet<>()));
 			if(decision != null && decision.getDecisionType() ***REMOVED*** DecisionType.BOOLEAN ) {
 				boolean value = Boolean.parseBoolean(ctx.BooleanLiteralExpression().getText());
 				currentActions.add(new BooleanEnforce((BooleanDecision)decision, new BooleanValue(value)));
@@ -636,7 +679,7 @@ public class CSVDoplerListener implements CSVListener {
 	public void enterDoubleEnForce(DoubleEnForceContext ctx) {
 		String identifier = ctx.IDENTIFIER().getText();
 		if(!identifier.isEmpty()) {
-			IDecision<?> decision = findOrCreateDecisionByID(ctx.IDENTIFIER().getText(), new NumberDecision(identifier, null, null, null, null, null));
+			IDecision<?> decision = findOrCreateDecisionByID(ctx.IDENTIFIER().getText(), new NumberDecision(identifier, null, null, null, new HashSet<>(), new HashSet<>()));
 			if(decision != null && decision.getDecisionType() ***REMOVED*** DecisionType.NUMBER ) {
 				Double value = Double.parseDouble(ctx.DoubleLiteralExpression().getText());
 				currentActions.add(new NumberEnforce((NumberDecision)decision, new DoubleValue(value)));

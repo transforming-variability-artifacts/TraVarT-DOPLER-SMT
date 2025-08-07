@@ -82,7 +82,7 @@ expression
     ;
 
 unaryExpression
-    : '!' IDENTIFIER
+    : '!' expression
     | '!' EnumerationLiteralExpression
     ;
 
