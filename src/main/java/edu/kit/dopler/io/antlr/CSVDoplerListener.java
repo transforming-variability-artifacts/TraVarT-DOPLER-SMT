@@ -65,6 +65,7 @@ import edu.kit.dopler.io.antlr.resources.CSVParser.ValueRestrictionActionContext
 import edu.kit.dopler.io.antlr.resources.CSVParser.XorExpressionContext;
 import edu.kit.dopler.model.AND;
 import edu.kit.dopler.model.Action;
+import edu.kit.dopler.model.Allows;
 import edu.kit.dopler.model.BooleanDecision;
 import edu.kit.dopler.model.BooleanEnforce;
 import edu.kit.dopler.model.BooleanLiteralExpression;
@@ -72,6 +73,7 @@ import edu.kit.dopler.model.Decision;
 import edu.kit.dopler.model.Decision.DecisionType;
 import edu.kit.dopler.model.DecisionValueCallExpression;
 import edu.kit.dopler.model.DecisionVisibilityCallExpression;
+import edu.kit.dopler.model.DisAllows;
 import edu.kit.dopler.model.Dopler;
 import edu.kit.dopler.model.DoubleLiteralExpression;
 import edu.kit.dopler.model.Enumeration;
@@ -177,6 +179,9 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitRow(RowContext ctx) {
+		// Setting the Default Visibility Condition to True
+		currentVisibilityCondition = (currentVisibilityCondition ***REMOVED*** null) ? new BooleanLiteralExpression(true) : currentVisibilityCondition;
+		
 		if (currentDecisionType ***REMOVED*** null)
 			return;
 		IDecision<?> currentDecision = findDecisionByID(currentID);
@@ -617,8 +622,17 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitAllows(AllowsContext ctx) {
-		// TODO Auto-generated method stub
-
+		String[] enumerationArray = ctx.EnumerationLiteralExpression().getText().split("\\.");
+		if(enumerationArray.length > 1) {
+			String identifier = enumerationArray[0];
+			if (!identifier.isEmpty()) {
+				IDecision<?> decision = findOrCreateDecisionByID(identifier,
+						new EnumerationDecision(identifier, null, null, null, new HashSet<>(), null, 0, 0));
+				if (decision != null && decision.getDecisionType() ***REMOVED*** DecisionType.ENUM) {
+					currentActions.add(new Allows((EnumerationDecision) decision, new StringValue(enumerationArray[1])));
+				}
+			}
+		}
 	}
 
 	@Override
@@ -629,8 +643,17 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitDisallows(DisallowsContext ctx) {
-		// TODO Auto-generated method stub
-
+		String[] enumerationArray = ctx.EnumerationLiteralExpression().getText().split("\\.");
+		if(enumerationArray.length > 1) {
+			String identifier = enumerationArray[0];
+			if (!identifier.isEmpty()) {
+				IDecision<?> decision = findOrCreateDecisionByID(identifier,
+						new EnumerationDecision(identifier, null, null, null, new HashSet<>(), null, 0, 0));
+				if (decision != null && decision.getDecisionType() ***REMOVED*** DecisionType.ENUM) {
+					currentActions.add(new DisAllows((EnumerationDecision) decision, new StringValue(enumerationArray[1])));
+				}
+			}
+		}
 	}
 
 	@Override
