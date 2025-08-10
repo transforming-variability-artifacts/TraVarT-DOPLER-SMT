@@ -42,7 +42,7 @@ import edu.kit.dopler.io.antlr.resources.CSVParser;
 public class Main {
 
 	public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {		
-		CharStream input = CharStreams.fromFileName("dm_DOPLERTools.csv");
+		CharStream input = CharStreams.fromFileName("issue.csv");
 		CSVLexer lexer = new CSVLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		CSVParser parser = new CSVParser(tokens);

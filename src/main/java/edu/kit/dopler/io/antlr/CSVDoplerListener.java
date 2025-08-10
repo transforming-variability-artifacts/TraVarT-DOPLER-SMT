@@ -119,6 +119,7 @@ public class CSVDoplerListener implements CSVListener {
 	private IExpression currentVisibilityCondition;
 
 	private final int column_ID = 0;
+	private boolean rangeContext = false;
 
 	public Dopler getDopler() {
 		return dopler;
@@ -221,7 +222,9 @@ public class CSVDoplerListener implements CSVListener {
 			if (currentDecision != null && currentDecision instanceof EnumerationDecision) {
 				EnumerationDecision currentEnumerationDecision = (EnumerationDecision) currentDecision;
 				updateCommonDecisionValues(currentEnumerationDecision);
-				// Missing currentEnumeration, min and max cardinality
+				currentEnumerationDecision.setEnumeration(currentEnumeration);
+				currentEnumerationDecision.setMinCardinality(currentMinCardinality);
+				currentEnumerationDecision.setMaxCardinality(currentMaxCardinality);
 			} else {
 				dopler.addDecision(new EnumerationDecision(currentID, currentQuestion, currentDescription,
 						currentVisibilityCondition, currentRules, currentEnumeration, currentMinCardinality,
@@ -339,6 +342,7 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void enterRange(RangeContext ctx) {
+		rangeContext = true;
 		switch (currentDecisionType) {
 		case BOOLEAN:
 			return;
@@ -385,6 +389,7 @@ public class CSVDoplerListener implements CSVListener {
 	}
 
 	private IDecision<?> findDecisionByID(String ID) {
+		if(rangeContext) return null;
 		for (IDecision<?> decision : dopler.getDecisions()) {
 			if (decision.getDisplayId().equals(ID))
 				return decision;
@@ -393,6 +398,7 @@ public class CSVDoplerListener implements CSVListener {
 	}
 
 	private IDecision<?> findOrCreateDecisionByID(String ID, IDecision<?> decisionToCreate) {
+		if(rangeContext) return null;
 		for (IDecision<?> decision : dopler.getDecisions()) {
 			if (decision.getDisplayId().equals(ID))
 				return decision;
@@ -419,6 +425,7 @@ public class CSVDoplerListener implements CSVListener {
 
 	@Override
 	public void exitRange(RangeContext ctx) {
+		rangeContext = false;
 		expressionStack.clear();
 	}
 
