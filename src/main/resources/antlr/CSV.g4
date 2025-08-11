@@ -73,19 +73,7 @@ question
     : QUESTION
     ;
 
-expression
-    : unaryExpression
-    | literalExpression
-    | isTaken
-    | decisionValueCallExpression
-    | binaryExpression
-    ;
-
-unaryExpression
-    : '!' expression
-    | '!' EnumerationLiteralExpression
-    ;
-
+// Range
 range
     : rangeItem (rangeItem)*('|' rangeItem (rangeItem)*)+
     | DoubleLiteralExpression '-' DoubleLiteralExpression
@@ -101,13 +89,26 @@ rangeItem
     | HEADER
     ;
 
-
 specialCharacter
     : RPAREN | LPAREN | LBRACE | RBRACE | COLON | ANPERSAND | PERCENT | COMMA | SPECIAL_CHAR
     ;
 
 subrange
     : expression (( AND | OR | EQUALS | GREATER_THAN | LESS_THAN | LESS_EQUALS | GREATER_EQUALS) expression)*
+    ;
+
+// Expressions
+expression
+    : unaryExpression
+    | literalExpression
+    | isTaken
+    | decisionValueCallExpression
+    | binaryExpression
+    ;
+
+unaryExpression
+    : '!' expression
+    | '!' EnumerationLiteralExpression
     ;
 
 decisionVisibilityCallExpression
@@ -124,6 +125,7 @@ decisionValueCallExpression
     | IDENTIFIER
     ;
 
+// Binary Expressions
 binaryExpression
     :  andExpression
     |  orExpression
@@ -167,15 +169,34 @@ lessEqualsExpression
     : LPAREN expression LESS_EQUALS expression RPAREN
     ;
 
+// Literal Expressions
 literalExpression
-    : EnumerationLiteralExpression
-    | BooleanLiteralExpression
-    | StringLiteralExpression
-    | DoubleLiteralExpression
+    : enumerationLiteralExpression
+    | booleanLiteralExpression
+    | stringLiteralExpression
+    | doubleLiteralExpression
     ;
 
+enumerationLiteralExpression
+    : EnumerationLiteralExpression
+    ;
+
+booleanLiteralExpression
+    : BooleanLiteralExpression
+    ;
+
+stringLiteralExpression
+    : StringLiteralExpression
+    ;
+
+doubleLiteralExpression
+    : DoubleLiteralExpression
+    ;
+
+
+// Decision Types
 decisionType
-    : ValueDecision
+    : NumberDecision
     | EnumerationDecision
     | BooleanDecision
     | StringDecision
@@ -309,11 +330,6 @@ StringLiteralExpression
     ;
 
 // Decision Types
-ValueDecision
-    : StringDecision
-    | NumberDecision
-    ;
-
 StringDecision
     : 'String'
     ;

@@ -53,18 +53,6 @@ public interface CSVVisitor<T> extends ParseTreeVisitor<T> {
 	 ***REMOVED***
 	T visitQuestion(CSVParser.QuestionContext ctx);
 	***REMOVED****
-	 * Visit a parse tree produced by {@link CSVParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 ***REMOVED***
-	T visitExpression(CSVParser.ExpressionContext ctx);
-	***REMOVED****
-	 * Visit a parse tree produced by {@link CSVParser#unaryExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 ***REMOVED***
-	T visitUnaryExpression(CSVParser.UnaryExpressionContext ctx);
-	***REMOVED****
 	 * Visit a parse tree produced by {@link CSVParser#range}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -88,6 +76,18 @@ public interface CSVVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 ***REMOVED***
 	T visitSubrange(CSVParser.SubrangeContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitExpression(CSVParser.ExpressionContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#unaryExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitUnaryExpression(CSVParser.UnaryExpressionContext ctx);
 	***REMOVED****
 	 * Visit a parse tree produced by {@link CSVParser#decisionVisibilityCallExpression}.
 	 * @param ctx the parse tree
@@ -166,6 +166,30 @@ public interface CSVVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 ***REMOVED***
 	T visitLiteralExpression(CSVParser.LiteralExpressionContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#enumerationLiteralExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitEnumerationLiteralExpression(CSVParser.EnumerationLiteralExpressionContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#booleanLiteralExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitBooleanLiteralExpression(CSVParser.BooleanLiteralExpressionContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#stringLiteralExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitStringLiteralExpression(CSVParser.StringLiteralExpressionContext ctx);
+	***REMOVED****
+	 * Visit a parse tree produced by {@link CSVParser#doubleLiteralExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 ***REMOVED***
+	T visitDoubleLiteralExpression(CSVParser.DoubleLiteralExpressionContext ctx);
 	***REMOVED****
 	 * Visit a parse tree produced by {@link CSVParser#decisionType}.
 	 * @param ctx the parse tree

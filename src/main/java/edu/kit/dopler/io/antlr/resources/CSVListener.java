@@ -78,26 +78,6 @@ public interface CSVListener extends ParseTreeListener {
 	 ***REMOVED***
 	void exitQuestion(CSVParser.QuestionContext ctx);
 	***REMOVED****
-	 * Enter a parse tree produced by {@link CSVParser#expression}.
-	 * @param ctx the parse tree
-	 ***REMOVED***
-	void enterExpression(CSVParser.ExpressionContext ctx);
-	***REMOVED****
-	 * Exit a parse tree produced by {@link CSVParser#expression}.
-	 * @param ctx the parse tree
-	 ***REMOVED***
-	void exitExpression(CSVParser.ExpressionContext ctx);
-	***REMOVED****
-	 * Enter a parse tree produced by {@link CSVParser#unaryExpression}.
-	 * @param ctx the parse tree
-	 ***REMOVED***
-	void enterUnaryExpression(CSVParser.UnaryExpressionContext ctx);
-	***REMOVED****
-	 * Exit a parse tree produced by {@link CSVParser#unaryExpression}.
-	 * @param ctx the parse tree
-	 ***REMOVED***
-	void exitUnaryExpression(CSVParser.UnaryExpressionContext ctx);
-	***REMOVED****
 	 * Enter a parse tree produced by {@link CSVParser#range}.
 	 * @param ctx the parse tree
 	 ***REMOVED***
@@ -137,6 +117,26 @@ public interface CSVListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 ***REMOVED***
 	void exitSubrange(CSVParser.SubrangeContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#expression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterExpression(CSVParser.ExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#expression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitExpression(CSVParser.ExpressionContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#unaryExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterUnaryExpression(CSVParser.UnaryExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#unaryExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitUnaryExpression(CSVParser.UnaryExpressionContext ctx);
 	***REMOVED****
 	 * Enter a parse tree produced by {@link CSVParser#decisionVisibilityCallExpression}.
 	 * @param ctx the parse tree
@@ -267,6 +267,46 @@ public interface CSVListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 ***REMOVED***
 	void exitLiteralExpression(CSVParser.LiteralExpressionContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#enumerationLiteralExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterEnumerationLiteralExpression(CSVParser.EnumerationLiteralExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#enumerationLiteralExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitEnumerationLiteralExpression(CSVParser.EnumerationLiteralExpressionContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#booleanLiteralExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterBooleanLiteralExpression(CSVParser.BooleanLiteralExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#booleanLiteralExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitBooleanLiteralExpression(CSVParser.BooleanLiteralExpressionContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#stringLiteralExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterStringLiteralExpression(CSVParser.StringLiteralExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#stringLiteralExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitStringLiteralExpression(CSVParser.StringLiteralExpressionContext ctx);
+	***REMOVED****
+	 * Enter a parse tree produced by {@link CSVParser#doubleLiteralExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void enterDoubleLiteralExpression(CSVParser.DoubleLiteralExpressionContext ctx);
+	***REMOVED****
+	 * Exit a parse tree produced by {@link CSVParser#doubleLiteralExpression}.
+	 * @param ctx the parse tree
+	 ***REMOVED***
+	void exitDoubleLiteralExpression(CSVParser.DoubleLiteralExpressionContext ctx);
 	***REMOVED****
 	 * Enter a parse tree produced by {@link CSVParser#decisionType}.
 	 * @param ctx the parse tree

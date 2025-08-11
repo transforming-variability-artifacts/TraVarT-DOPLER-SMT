@@ -101,30 +101,6 @@ public class CSVBaseListener implements CSVListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 ***REMOVED***
-	@Override public void enterExpression(CSVParser.ExpressionContext ctx) { }
-	***REMOVED****
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 ***REMOVED***
-	@Override public void exitExpression(CSVParser.ExpressionContext ctx) { }
-	***REMOVED****
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 ***REMOVED***
-	@Override public void enterUnaryExpression(CSVParser.UnaryExpressionContext ctx) { }
-	***REMOVED****
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 ***REMOVED***
-	@Override public void exitUnaryExpression(CSVParser.UnaryExpressionContext ctx) { }
-	***REMOVED****
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 ***REMOVED***
 	@Override public void enterRange(CSVParser.RangeContext ctx) { }
 	***REMOVED****
 	 * {@inheritDoc}
@@ -168,6 +144,30 @@ public class CSVBaseListener implements CSVListener {
 	 * <p>The default implementation does nothing.</p>
 	 ***REMOVED***
 	@Override public void exitSubrange(CSVParser.SubrangeContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterExpression(CSVParser.ExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitExpression(CSVParser.ExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterUnaryExpression(CSVParser.UnaryExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitUnaryExpression(CSVParser.UnaryExpressionContext ctx) { }
 	***REMOVED****
 	 * {@inheritDoc}
 	 *
@@ -324,6 +324,54 @@ public class CSVBaseListener implements CSVListener {
 	 * <p>The default implementation does nothing.</p>
 	 ***REMOVED***
 	@Override public void exitLiteralExpression(CSVParser.LiteralExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterEnumerationLiteralExpression(CSVParser.EnumerationLiteralExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitEnumerationLiteralExpression(CSVParser.EnumerationLiteralExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterBooleanLiteralExpression(CSVParser.BooleanLiteralExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitBooleanLiteralExpression(CSVParser.BooleanLiteralExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterStringLiteralExpression(CSVParser.StringLiteralExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitStringLiteralExpression(CSVParser.StringLiteralExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void enterDoubleLiteralExpression(CSVParser.DoubleLiteralExpressionContext ctx) { }
+	***REMOVED****
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 ***REMOVED***
+	@Override public void exitDoubleLiteralExpression(CSVParser.DoubleLiteralExpressionContext ctx) { }
 	***REMOVED****
 	 * {@inheritDoc}
 	 *

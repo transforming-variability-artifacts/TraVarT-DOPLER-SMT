@@ -9,6 +9,7 @@
  * Contributors: 
  * 	@author Fabian Eger
  * 	@author Kevin Feichtinger
+ *  @author David Kowal
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -35,25 +36,28 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
 import edu.kit.dopler.io.DecisionModelReader;
-import edu.kit.dopler.io.antlr.CSVDoplerListener;
+import edu.kit.dopler.io.antlr.DoplerDecisionCreator;
+import edu.kit.dopler.io.antlr.DoplerExpressionParser;
 import edu.kit.dopler.io.antlr.resources.CSVLexer;
 import edu.kit.dopler.io.antlr.resources.CSVParser;
 
 public class Main {
 
 	public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {		
-		CharStream input = CharStreams.fromFileName("issue.csv");
+		CharStream input = CharStreams.fromFileName("dm_DOPLERTools.csv");
 		CSVLexer lexer = new CSVLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		CSVParser parser = new CSVParser(tokens);
 		
 		ParseTree tree = parser.csvFile();
-		
 		ParseTreeWalker walker = new ParseTreeWalker();
-		CSVDoplerListener listener = new CSVDoplerListener();
-		walker.walk(listener, tree);
 		
-		Dopler dopler = listener.getDopler();
+		DoplerDecisionCreator decisionCreator = new DoplerDecisionCreator();
+		walker.walk(decisionCreator, tree);
+		DoplerExpressionParser expressionParser = new DoplerExpressionParser(decisionCreator.getDopler());
+		walker.walk(expressionParser, tree);
+		
+		Dopler dopler = expressionParser.getDopler();
 		
 		
 		final DecisionModelReader decisionModelReader = new DecisionModelReader();
