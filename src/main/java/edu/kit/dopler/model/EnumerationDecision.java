@@ -16,6 +16,7 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.InvalidCardinalityException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
 import java.util.HashSet;
@@ -76,12 +77,15 @@ public class EnumerationDecision extends Decision<String> {
 		this.enumeration = enumeration;
 	}
 	
-	public void setMinCardinality(int minCardinality) {
-		this.minCardinality = minCardinality;
-	}
-	
-	public void setMaxCardinality(int maxCardinality) {
-		this.maxCardinality = maxCardinality;
+	public void setCardinality(int minCardinality, int maxCardinality) throws InvalidCardinalityException {
+		if(minCardinality < 0 ) {
+			throw new InvalidCardinalityException("min cardinality is negative" + minCardinality);
+		} else if ( minCardinality > maxCardinality) {
+			throw new InvalidCardinalityException("min cardinality: " + minCardinality + "is bigger than max cardinality: " + maxCardinality);
+		} else {
+			this.minCardinality = minCardinality;
+			this.maxCardinality = maxCardinality;
+		}
 	}
 
 	private boolean inRange(String value) {

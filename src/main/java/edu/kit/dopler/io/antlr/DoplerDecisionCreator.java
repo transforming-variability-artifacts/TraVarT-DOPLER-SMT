@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import edu.kit.dopler.model.NumberDecision;
 import edu.kit.dopler.model.StringDecision;
+import edu.kit.dopler.exceptions.InvalidCardinalityException;
 import edu.kit.dopler.io.antlr.resources.CSVLexer;
 import edu.kit.dopler.io.antlr.resources.CSVParser.CardinalityContext;
 import edu.kit.dopler.io.antlr.resources.CSVParser.CsvFileContext;
@@ -57,8 +58,13 @@ public class DoplerDecisionCreator extends DecisionParserBase {
 			if(currentDecision instanceof EnumerationDecision)
 			{
 				EnumerationDecision enumerationDecision = (EnumerationDecision) currentDecision;
-				enumerationDecision.setMinCardinality(Integer.parseInt(cardinals.get(0).getText()));
-				enumerationDecision.setMaxCardinality(Integer.parseInt(cardinals.get(1).getText()));
+				try {
+					enumerationDecision.setCardinality(Integer.parseInt(cardinals.get(0).getText()), Integer.parseInt(cardinals.get(1).getText()));
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				} catch (InvalidCardinalityException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
