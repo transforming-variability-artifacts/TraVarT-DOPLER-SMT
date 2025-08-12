@@ -41,10 +41,6 @@ public class DoplerDecisionCreator extends DecisionParserBase {
 	@Override
 	public void enterCsvFile(CsvFileContext ctx) {
 		dopler = new Dopler();
-	}
-
-	@Override
-	public void exitCsvFile(CsvFileContext ctx) {
 		dopler.setName(name);
 	}
 
