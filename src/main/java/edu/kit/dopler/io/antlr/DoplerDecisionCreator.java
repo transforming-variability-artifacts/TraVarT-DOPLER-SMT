@@ -32,6 +32,11 @@ import edu.kit.dopler.model.IExpression;
 import edu.kit.dopler.model.LessThan;
 
 public class DoplerDecisionCreator extends DecisionParserBase {
+	String name;
+	
+	public DoplerDecisionCreator(String name){
+		this.name = name;
+	}
 
 	@Override
 	public void enterCsvFile(CsvFileContext ctx) {
@@ -40,7 +45,7 @@ public class DoplerDecisionCreator extends DecisionParserBase {
 
 	@Override
 	public void exitCsvFile(CsvFileContext ctx) {
-		dopler.setName("File Name");
+		dopler.setName(name);
 	}
 
 	@Override
