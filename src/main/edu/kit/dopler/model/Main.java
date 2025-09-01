@@ -22,45 +22,104 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import de.ovgu.featureide.fm.core.JavaLogger;
+import de.ovgu.featureide.fm.core.Logger;
+import de.ovgu.featureide.fm.core.analysis.cnf.LiteralSet;
+import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
+import de.ovgu.featureide.fm.core.analysis.cnf.generator.configuration.AllConfigurationGenerator;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
+import de.ovgu.featureide.fm.core.base.impl.CoreFactoryWorkspaceLoader;
+import de.ovgu.featureide.fm.core.base.impl.DefaultFeatureModelFactory;
+import de.ovgu.featureide.fm.core.base.impl.FMFactoryManager;
+import de.ovgu.featureide.fm.core.base.impl.MultiFeatureModelFactory;
+import de.ovgu.featureide.fm.core.cli.CLIFunctionManager;
+import de.ovgu.featureide.fm.core.cli.ConfigurationGenerator;
+import de.ovgu.featureide.fm.core.io.FileSystem;
+import de.ovgu.featureide.fm.core.io.JavaFileSystem;
+import de.ovgu.featureide.fm.core.io.uvl.UVLFeatureModelFormat;
+import de.ovgu.featureide.fm.core.job.LongRunningCore;
+import de.ovgu.featureide.fm.core.job.LongRunningWrapper;
 import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
 import edu.kit.dopler.io.DecisionModelReader;
+import org.apache.commons.io.FilenameUtils;
 
 public class Main {
 
 	public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {
 
+		final String filename = "WikiMatrix";
 		final DecisionModelReader decisionModelReader = new DecisionModelReader();
-		final Dopler dopler = decisionModelReader
-				.read(Path.of(System.getProperty("user.dir") + "/modelEval/product_chesspiece.csv"));
-		final Set<? extends IDecision<?>> decisions = dopler.getDecisions();
+		//final Dopler dopler = decisionModelReader
+		//		.read(Path.of(System.getProperty("user.dir") + "/modelEvalSPLC/BoolCSV/" +  filename + ".csv"));
+		//final Set<? extends IDecision<?>> decisions = dopler.getDecisions();
 
-		dopler.toSMTStream().build().forEach(System.out::println);
+		//dopler.toSMTStream().build().forEach(System.out::println);
 		try {
-			final Stream.Builder<String> builder = dopler.toSMTStream();
 
-			System.out.println(getAmountOfConfigs(dopler));
+			long startTime = System.nanoTime();
+			//final Stream.Builder<String> builder = dopler.toSMTStream();
+			long endTime = System.nanoTime();
+			long duration = (endTime - startTime) / 1000000;
+			System.out.println("SMT DOPLER encoding needed: " + duration+ "ms");  //divide by 1000000 to get milliseconds.
+
+			 startTime = System.nanoTime();
+			//getAmountOfConfigs(dopler);
+			 endTime = System.nanoTime();
+			 duration = (endTime - startTime) / 1000000;
+			System.out.println("SMT DOPLER needed: " + duration  + "ms");  //divide by 1000000 to get milliseconds.
+
+
+
 
 			// builder.add("(assert (= DECISION_1_TAKEN_POST true))");
-			builder.add("(check-sat)");
-			dopler.createGetValueOFEndConstants(builder);
+			//builder.add("(check-sat)");
+			//dopler.createGetValueOFEndConstants(builder);
 			// builder.add("(get-model)");
 			// builder.add("(get-value (END_DECISION_0 DECISION_0_TAKEN_POST END_DECISION_1
 			// DECISION_1_TAKEN_POST END_DECISION_2 DECISION_2_TAKEN_POST END_DECISION_3
 			// DECISION_3_TAKEN_POST END_DECISION_4 DECISION_4_TAKEN_POST ))");
-			builder.add("(exit)");
-			final Stream<String> stream = builder.build();
-			final Scanner scanner = satSolver(stream);
-			if (scanner == null) {
-				throw new Exception();
-			}
-			while (scanner.hasNextLine()) {
+			//builder.add("(exit)");
+			//final Stream<String> stream = builder.build();
+
+
+			//startTime = System.nanoTime();
+			//final Scanner scanner = satSolver(stream);
+			//endTime = System.nanoTime();
+			//duration = (endTime - startTime) / 1000000;
+			//System.out.println("SMT DOPLER one valid config needed: " + duration+ "ms");  //divide by 1000000 to get milliseconds.
+
+
+			// "/modelEvalSPLC/UVLSMTStreams/"
+			// "/../../Masterthesis/WorkingUVLModelsSPLC/WorkingBooleGuruSMTWithAnomalies/"
+			startTime = System.nanoTime();
+			Path filePath = Paths.get(System.getProperty("user.dir") + "/modelEvalSPLC/UVLSMTStreams/" + filename + ".txt");
+			String content = Files.readString(filePath);
+
+
+
+			checkForAnomalies(content);
+			//getAmountOfConfigsUVLSMT(content,"");
+			endTime = System.nanoTime();
+			duration = (endTime - startTime) / 1000000;
+			System.out.println("Booleguru needed: " + duration + "ms");  //divide by 1000000 to get milliseconds.
+
+			//
+
+
+
+			//System.out.println(getFeatureIDConfigs(Paths.get(System.getProperty("user.dir") + "/modelEvalSPLC/BoolUVL/ASEJ1.uvl")));
+			//while (scanner.hasNextLine()) {
 				// System.out.println(scanner.nextLine());
-			}
+			//}
 
 		} catch (final Exception e) {
 			System.out.println(e);
@@ -100,9 +159,32 @@ public class Main {
 		throw new Exception();
 	}
 
+	public static int getFeatureIDConfigs(Path filePath) throws IOException {
+		FileSystem.INSTANCE = new JavaFileSystem();
+		LongRunningWrapper.INSTANCE = new LongRunningCore();
+		Logger.logger = new JavaLogger();
+
+		FMFactoryManager.getInstance().addExtension(DefaultFeatureModelFactory.getInstance());
+		FMFactoryManager.getInstance().addExtension(MultiFeatureModelFactory.getInstance());
+		FMFactoryManager.getInstance().setWorkspaceLoader(new CoreFactoryWorkspaceLoader());
+
+		CLIFunctionManager.getInstance().addExtension(new ConfigurationGenerator());
+
+		String content = Files.readString(filePath);
+		IFeatureModel featureIdeFm = new MultiFeatureModelFactory().create();
+		UVLFeatureModelFormat format = new UVLFeatureModelFormat();
+		format.read(featureIdeFm, content);
+
+		FeatureModelFormula formula = new FeatureModelFormula(featureIdeFm);
+		List<LiteralSet> configs = LongRunningWrapper.runMethod(new AllConfigurationGenerator(formula.getCNF()));
+		return configs.size();
+
+	}
+
+
 	static int getAmountOfConfigs(final Dopler dopler) {
 		final int amount = getAmountOfConfigs(dopler, dopler.toSMTStream());
-		System.out.println(amount);
+		System.out.println("SMT DOPLER variants: " + amount);
 		return amount;
 	}
 
@@ -114,6 +196,165 @@ public class Main {
 		return amount;
 	}
 
+	static int getAmountOfConfigsUVLSMT(final String encoding, final String asserts) {
+		final Stream.Builder<String> builder = Stream.builder();
+		builder.add(encoding);
+		//System.out.println(encoding);
+		final int amount = getAmountOfConfigsUVLSMT(encoding, builder);
+		System.out.println("UVL variants: " + amount);
+		return amount;
+	}
+
+	static void checkForAnomalies(final String encoding){
+		Stream.Builder<String> builder = Stream.builder();
+		builder.add(encoding);
+		//System.out.println(encoding);
+		checkForDeadFeatures(encoding, builder);
+		builder = Stream.builder();
+		builder.add(encoding);
+		checkForFalseOptionalFeatures(encoding,builder);
+
+	}
+	private static void checkForFalseOptionalFeatures(final String encoding, Stream.Builder<String> builder){
+		builder.add("(check-sat)");
+		builder.add("(get-model)");
+
+
+		final Stream<String> stream = builder.build();
+		final Scanner scanner = satSolver(stream);
+
+
+		while (true) {
+			builder = Stream.builder();
+			builder.add(encoding);
+			assert scanner != null;
+			if (!scanner.hasNextLine()) break;
+
+			final String line = scanner.nextLine();
+			if (line.equals("unsat")) {
+				System.out.println("Void FM");
+				return;
+			} else if(line.contains("(define-fun")){
+				String[] newLine = line.split("\\s+");
+				String nextLine = scanner.nextLine();
+				builder.add("(assert (= " + newLine[2]+ " " + "false" + "))");
+				builder.add("(check-sat)");
+				builder.add("(get-model)");
+				final Stream<String> deadFeaturestream = builder.build();
+
+				final Scanner scannerDeadFeature = satSolver(deadFeaturestream);
+				while (scannerDeadFeature.hasNextLine()) {
+					final String deadFeatureLine = scannerDeadFeature.nextLine();
+					//System.out.println(deadFeatureLine);
+					if (deadFeatureLine.equals("unsat")) {
+						System.out.println("False Optional Feature: " + newLine[2]);
+						break;
+					} else if (deadFeatureLine.equals("sat")) {
+						break;
+					}
+
+				}
+
+			}
+		}
+
+
+	}
+
+	private static void checkForDeadFeatures(final String encoding, Stream.Builder<String> builder){
+		builder.add("(check-sat)");
+		builder.add("(get-model)");
+
+
+		final Stream<String> stream = builder.build();
+		final Scanner scanner = satSolver(stream);
+
+
+		while (true) {
+			builder = Stream.builder();
+			builder.add(encoding);
+            assert scanner != null;
+            if (!scanner.hasNextLine()) break;
+
+            final String line = scanner.nextLine();
+			if (line.equals("unsat")) {
+				System.out.println("Void FM");
+				return;
+			} else if(line.contains("(define-fun")){
+				String[] newLine = line.split("\\s+");
+				String nextLine = scanner.nextLine();
+				//System.out.println("Check for Feature: " +  newLine[2]);
+				builder.add("(assert (= " + newLine[2]+ " " + "true" + "))");
+				builder.add("(check-sat)");
+				builder.add("(get-model)");
+				final Stream<String> deadFeaturestream = builder.build();
+
+				final Scanner scannerDeadFeature = satSolver(deadFeaturestream);
+				while (scannerDeadFeature.hasNextLine()) {
+					final String deadFeatureLine = scannerDeadFeature.nextLine();
+					//System.out.println(deadFeatureLine);
+					if (deadFeatureLine.equals("unsat")) {
+						System.out.println("Dead Feature: " + newLine[2]);
+						break;
+					} else if (deadFeatureLine.equals("sat")) {
+						break;
+					}
+
+				}
+
+			}
+		}
+
+
+	}
+
+
+	private static int getAmountOfConfigsUVLSMT(final String encoding, Stream.Builder<String> builder) {
+		int amount = 0;
+		final boolean isSAT = true;
+		String asserts = "";
+
+
+		do {
+			builder.add(asserts);
+			//builder.add("(minimize (+ (ite DECISION_0_TAKEN_POST 1 0) (ite DECISION_1_TAKEN_POST 1 0) ) )")
+			builder.add("(check-sat)");
+			builder.add("(get-model)");
+
+			final Stream<String> stream = builder.build();
+			final Scanner scanner = satSolver(stream);
+			builder = Stream.builder();
+			builder.add(encoding);
+
+			while (scanner.hasNextLine()) {
+
+				final String line = scanner.nextLine();
+				if (line.equals("unsat")) {
+					return amount;
+				}
+				if (line.equals("sat")) {
+
+					asserts += "(assert (not (and";
+					amount++;
+					System.out.println(amount);
+
+				} else if (line.equals(" ")) {
+
+				} else if(line.contains("(define-fun")){
+					String[] newLine = line.split("\\s+");
+					String nextLine = scanner.nextLine();
+					String[] value = nextLine.split("\\)");
+					//System.out.println(newLine[2]);
+					asserts += "(= " + newLine[2]+ " " + value[0] + ")";
+				}
+			}
+			asserts += ")))";
+		} while (true);
+
+	}
+
+
+
 	private static int getAmountOfConfigs(final Dopler dopler, Stream.Builder<String> builder) {
 		int amount = 0;
 		final boolean isSAT = true;
@@ -123,7 +364,9 @@ public class Main {
 		// builder.add("(assert (= DECISION_1_TAKEN_POST true))");
 		do {
 			builder.add(asserts);
+			//builder.add("(minimize (+ (ite DECISION_0_TAKEN_POST 1 0) (ite DECISION_1_TAKEN_POST 1 0) ) )");
 			builder.add("(check-sat)");
+
 			dopler.createGetValueOFEndConstants(builder);
 			final Stream<String> stream = builder.build();
 			final Scanner scanner = satSolver(stream);
@@ -142,7 +385,7 @@ public class Main {
 				} else if (line.equals(" ")) {
 
 				} else {
-					System.out.println(line);
+					//System.out.println(line);
 					final String[] result = line.split("[\\(\\)]");
 
 					if (result.length == 3) {
@@ -178,7 +421,7 @@ public class Main {
 		final String[] command = { "/Documents/z3/z3/build/z3", "-in", "-smt2" };
 
 		final ProcessBuilder processBuilder = new ProcessBuilder();
-		processBuilder.command("../../Documents/z3/z3/build/z3", "-in", "-smt2");
+		processBuilder.command("../../z3/z3/build/z3", "-in", "-smt2");
 		Process process;
 		try {
 			process = processBuilder.start();
@@ -208,4 +451,48 @@ public class Main {
 		}
 		return null;
 	}
+
+
+	/**
+	 * Starts a Process of the local Z3 Solver and feeds him the SMT Encoding Stream
+	 *
+	 * @param stream SMT Encoding
+	 * @return Output of the Solver
+	 */
+	static Scanner satSolverWithoutSMT(final Stream<String> stream) {
+
+		final String[] command = { "/Documents/z3/z3/build/z3"};
+
+		final ProcessBuilder processBuilder = new ProcessBuilder();
+		processBuilder.command("../../z3/z3/build/z3");
+		Process process;
+		try {
+			process = processBuilder.start();
+
+			final OutputStream stdin = process.getOutputStream(); // <- Eh?
+			final InputStream stdout = process.getInputStream();
+
+			final BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
+			final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
+
+			stream.forEach(a -> {
+				try {
+					writer.write(a);
+					writer.newLine();
+				} catch (final IOException e) {
+					throw new RuntimeException(e);
+				}
+			});
+			writer.flush();
+			writer.close();
+			final Scanner scanner = new Scanner(stdout);
+
+			return scanner;
+		} catch (final IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return null;
+	}
+
 }
