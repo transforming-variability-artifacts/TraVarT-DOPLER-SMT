@@ -84,7 +84,7 @@ public class DoplerDecisionCreator extends DecisionParserBase {
 			List<TerminalNode> AllExpressions = ctx.DoubleLiteralExpression();
 			Set<IExpression> currentValidityConditions = new HashSet<>();
 			NumberDecision numberDecision = (NumberDecision) currentDecision;
-			if (AllExpressions.size() % 2 ***REMOVED*** 0) {
+			if (AllExpressions.size() % 2 == 0) {
 				for (int i = 0; i < AllExpressions.size(); i += 2) {
 					TerminalNode left = ctx.DoubleLiteralExpression(i);
 					TerminalNode right = ctx.DoubleLiteralExpression(i + 1);
@@ -108,7 +108,7 @@ public class DoplerDecisionCreator extends DecisionParserBase {
 			Set<EnumerationLiteral> enumerationLiterals = new HashSet<>();
 			String currentLiteral = "";
 			for (int i = 0; i < leafs.size(); i++) {
-				if (leafs.get(i).getSymbol().getType() ***REMOVED*** CSVLexer.PIPE) {
+				if (leafs.get(i).getSymbol().getType() == CSVLexer.PIPE) {
 					enumerationLiterals.add(new EnumerationLiteral(currentLiteral));
 					currentLiteral = "";
 				} else {

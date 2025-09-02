@@ -95,8 +95,8 @@ public class DoplerExpressionParser extends DecisionParserBase {
 	@Override
 	public void exitRow(RowContext ctx) {		
 		IDecision<?> currentDecision = findDecisionByID(currentID);
-		if(currentDecision ***REMOVED*** null) return;
-		if(!(currentVisibilityCondition ***REMOVED*** null)) currentDecision.setVisibilityCondition(currentVisibilityCondition);
+		if(currentDecision == null) return;
+		if(!(currentVisibilityCondition == null)) currentDecision.setVisibilityCondition(currentVisibilityCondition);
 		currentRules.forEach(r -> currentDecision.addRule(r));
 		resetValues();
 	}
@@ -235,7 +235,7 @@ public class DoplerExpressionParser extends DecisionParserBase {
 			String identifier = enumerationArray[0];
 			if (!identifier.isEmpty()) {
 				IDecision<?> decision = findDecisionByID(identifier);
-				if (decision != null && decision.getDecisionType() ***REMOVED*** DecisionType.ENUM) {
+				if (decision != null && decision.getDecisionType() == DecisionType.ENUM) {
 					currentActions.add(new Allows((EnumerationDecision) decision, new StringValue(enumerationArray[1])));
 				}
 			}
@@ -249,7 +249,7 @@ public class DoplerExpressionParser extends DecisionParserBase {
 			String identifier = enumerationArray[0];
 			if (!identifier.isEmpty()) {
 				IDecision<?> decision = findDecisionByID(identifier);
-				if (decision != null && decision.getDecisionType() ***REMOVED*** DecisionType.ENUM) {
+				if (decision != null && decision.getDecisionType() == DecisionType.ENUM) {
 					currentActions.add(new DisAllows((EnumerationDecision) decision, new StringValue(enumerationArray[1])));
 				}
 			}
@@ -262,7 +262,7 @@ public class DoplerExpressionParser extends DecisionParserBase {
 		String value = ctx.IDENTIFIER().getLast().getText();
 		if (!identifier.isEmpty()) {
 			IDecision<?> decision = findDecisionByID(identifier);
-			if (decision != null && decision.getDecisionType() ***REMOVED*** DecisionType.ENUM) {
+			if (decision != null && decision.getDecisionType() == DecisionType.ENUM) {
 				currentActions.add(new EnumEnforce((EnumerationDecision) decision, new StringValue(value)));
 			}
 		}
@@ -273,7 +273,7 @@ public class DoplerExpressionParser extends DecisionParserBase {
 		String identifier = ctx.IDENTIFIER().getText();
 		if (!identifier.isEmpty()) {
 			IDecision<?> decision = findDecisionByID(ctx.IDENTIFIER().getText());
-			if (decision != null && decision.getDecisionType() ***REMOVED*** DecisionType.BOOLEAN) {
+			if (decision != null && decision.getDecisionType() == DecisionType.BOOLEAN) {
 				boolean value = Boolean.parseBoolean(ctx.BooleanLiteralExpression().getText());
 				currentActions.add(new BooleanEnforce((BooleanDecision) decision, new BooleanValue(value)));
 			}
@@ -285,7 +285,7 @@ public class DoplerExpressionParser extends DecisionParserBase {
 		String identifier = ctx.IDENTIFIER().getText();
 		if (!identifier.isEmpty()) {
 			IDecision<?> decision = findDecisionByID(ctx.IDENTIFIER().getText());
-			if (decision != null && decision.getDecisionType() ***REMOVED*** DecisionType.NUMBER) {
+			if (decision != null && decision.getDecisionType() == DecisionType.NUMBER) {
 				Double value = Double.parseDouble(ctx.DoubleLiteralExpression().getText());
 				currentActions.add(new NumberEnforce((NumberDecision) decision, new DoubleValue(value)));
 			}

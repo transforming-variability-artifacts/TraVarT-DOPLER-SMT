@@ -25,7 +25,7 @@ public abstract class DecisionParserBase extends CSVBaseListener {
 	}
 	
 	protected boolean matchesColumn(ParserRuleContext ctx, int column) {
-		return ctx.getParent() ***REMOVED*** ctx.getParent().getParent().children.get(column_ID);
+		return ctx.getParent() == ctx.getParent().getParent().children.get(column_ID);
 	}
 	
 	protected IDecision<?> findDecisionByID(String ID) {
