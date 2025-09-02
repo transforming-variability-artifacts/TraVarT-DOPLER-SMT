@@ -1,4 +1,22 @@
-grammar CSV;
+/*******************************************************************************
+ * SPDX-License-Identifier: MPL-2.0
+ *
+ * This Source Code Form is subject to the terms of the Mozilla
+ * Public License, v. 2.0. If a copy of the MPL was not distributed
+ * with this file, You can obtain one at
+ * https://mozilla.org/MPL/2.0/.
+ *
+ * Contributors: 
+ * 	@author David Kowal
+ * 	@author Kevin Feichtinger
+ *
+ * Copyright 2024 Karlsruhe Institute of Technology (KIT)
+ * KASTEL - Dependability of Software-intensive Systems
+ *******************************************************************************/
+
+parser grammar DoplerParser;
+
+options {tokenVocab = DoplerLexer;}
 
 document
     : jsonDocument
@@ -12,23 +30,23 @@ jsonDocument
     ;
 
 jsonValue
-    : jsonObject ('\n')* 
+    : jsonObject
     ;
 
 jsonObject
-    : '{'  ('\n')*  jsonPair ('\n')* (',' ('\n')*  jsonPair) * ('\n')* '}'
-    | '{' ('\n')* '}'
+    : LBRACE jsonPair (COMMA jsonPair) * RBRACE
+    | LBRACE RBRACE
     ;
 
 jsonPair
-    : DQ IDENTIFIER DQ ':' '\n'* '{' '\n'* (jsonPair ','?)* '\n'* '}' '\n'*
+    : DQ IDENTIFIER DQ COLON LBRACE (jsonPair COMMA?)* RBRACE
     | QUESTION_KEY DQ question DQ
-    | DQ ID_KEY DQ ':' DQ id DQ
-    | DQ TYPE_KEY DQ ':' DQ decisionType DQ
-    | DQ RANGE_KEY DQ ':' DQ range DQ
-    | DQ CARDINALITY_KEY DQ ':' DQ (cardinality | ) DQ
-    | DQ CONSTRAINT_RULE_KEY DQ ':' rule 
-    | DQ VISIBLE_RELEVANT_KEY DQ ':' DQ decisionVisibilityCallExpression DQ
+    | DQ ID_KEY DQ COLON DQ id DQ
+    | DQ TYPE_KEY DQ COLON DQ decisionType DQ
+    | DQ RANGE_KEY DQ COLON DQ range DQ
+    | DQ CARDINALITY_KEY DQ COLON DQ (cardinality | ) DQ
+    | DQ CONSTRAINT_RULE_KEY DQ COLON (rule | DQ DQ | )
+    | DQ VISIBLE_RELEVANT_KEY DQ COLON DQ (decisionVisibilityCallExpression | ) DQ
     ;
 
 
@@ -44,7 +62,7 @@ hdr
     ;
 
 row
-    : field (';' field)* '\r'? '\n' 
+    : field (SEMICOLON field)* CR? LF 
     ;
 
 field
@@ -66,7 +84,7 @@ id
     ;
 
 cardinality
-    : DoubleLiteralExpression ':' DoubleLiteralExpression
+    : DoubleLiteralExpression COLON DoubleLiteralExpression
     ;
 
 // Question
@@ -76,8 +94,8 @@ question
 
 // Range
 range
-    : rangeItem (rangeItem)*('|' rangeItem (rangeItem)*)+
-    | DoubleLiteralExpression '-' DoubleLiteralExpression
+    : rangeItem (rangeItem)*(PIPE rangeItem (rangeItem)*)+
+    | DoubleLiteralExpression MINUS DoubleLiteralExpression
     ;
 
 rangeItem
@@ -108,8 +126,8 @@ expression
     ;
 
 unaryExpression
-    : '!' expression
-    | '!' EnumerationLiteralExpression
+    : NOT expression
+    | NOT EnumerationLiteralExpression
     ;
 
 decisionVisibilityCallExpression
@@ -205,9 +223,9 @@ decisionType
 
 // Action and Rule Definitions
 rule
-    : '"' rule '"'
+    : DQ rule DQ
     | rule rule
-    | IF LPAREN? expression RPAREN? LBRACE (action ';'?)* RBRACE 
+    | IF LPAREN? expression RPAREN? LBRACE (action SEMICOLON?)* RBRACE 
     ;
 
 action
@@ -252,144 +270,3 @@ booleanEnForce
 doubleEnForce
     : IDENTIFIER SET DoubleLiteralExpression
     ;
-
-
-// Lexer Rules
-// Schaltet JSON-Mode zusätzlich ein
-
-QUESTION_KEY
-    : '"Question":'
-    ;
-
-QUESTION
-    : (~[?\r\n;"])+ '?'   // everything except ? or \r or \n or ; followed by a ?
-    ;
-
-ID_KEY
-    : 'ID'
-    ;
-
-TYPE_KEY
-    : 'Type'
-    ;
-
-RANGE_KEY
-    : 'Range'
-    ;
-
-CARDINALITY_KEY
-    : 'Cardinality'
-    ;
-
-CONSTRAINT_RULE_KEY
-    : 'Constraint/Rule'
-    ;
-
-VISIBLE_RELEVANT_KEY
-    : 'Visible/relevant if'
-    ;
-
-
-WS_DEFAULT
-    : [ ]+ -> skip  
-    ;
-
-HEADER 
-    : QUESTION_KEY
-    | ID_KEY
-    | TYPE_KEY
-    | RANGE_KEY
-    | CARDINALITY_KEY
-    | CONSTRAINT_RULE_KEY
-    | VISIBLE_RELEVANT_KEY
-    ;
-
-
-
-// Keywords
-ALLOW        : 'allow' | 'Allow';
-DISALLOW     : 'disAllow' | 'DisAllow';
-ISTAKEN      : 'isTaken' | 'IsTaken';
-GETVALUE     : 'getValue' | 'GetValue';
-
-// Operators
-EQUALS       : '***REMOVED***' ;
-GREATER_THAN : '>'  ;
-LESS_THAN    : '<'  ;
-LESS_EQUALS  : '<=' ;
-GREATER_EQUALS : '>=' ;
-OR           : '||' ;
-AND          : '&&' ;
-XOR          : '^'  ;
-PIPE         : '|'  ;
-SET          : '='  ;
-// Delimiters
-LPAREN       : '(' ;
-RPAREN       : ')' ;
-LBRACE       : '{' ;
-RBRACE       : '}' ;
-COLON        : ':' ;
-IF           : 'if' ;
-ANPERSAND   : '&' ;
-PERCENT      : '%' ;
-COMMA        : ',' ;
-SEMICOLON   : ';' ;
-DQ  : '"';
-
-
-//Literal Expressions
-BooleanLiteralExpression
-    : TRUE
-    | FALSE
-    ;
-TRUE
-    : 'TRUE'
-    | 'true'
-    ;
-FALSE
-    : 'FALSE'
-    | 'false'
-    ;
-
-DoubleLiteralExpression
-    : [0-9]+
-    | [0-9]+ '.' [0-9]+
-    ;
-
-EnumerationLiteralExpression
-    : IDENTIFIER '.' IDENTIFIER
-    ;
-
-StringLiteralExpression
-    : '\'' IDENTIFIER '\''
-    ;
-
-// Decision Types
-StringDecision
-    : 'String'
-    ;
-
-NumberDecision
-    : 'Double'
-    ;
-
-EnumerationDecision
-    : ENUMERATION
-    ;
-ENUMERATION  
-    : 'Enumeration' 
-    ;
-
-BooleanDecision
-    : 'Boolean'
-    ;
-
-SPECIAL_CHAR
-    : ~[a-zA-Z0-9\r\n\t ;|]  // Alles außer alphanumerisch, Whitespace, Semikolon, Pipe
-    ;
-
-IDENTIFIER
-    : [a-zA-Z0-9_][a-zA-Z0-9_]*
-    | [a-zA-Z_][a-zA-Z-]*
-    ; 
-

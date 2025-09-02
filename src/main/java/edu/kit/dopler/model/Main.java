@@ -38,17 +38,17 @@ import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
 import edu.kit.dopler.io.DecisionModelReader;
 import edu.kit.dopler.io.antlr.DoplerDecisionCreator;
 import edu.kit.dopler.io.antlr.DoplerExpressionParser;
-import edu.kit.dopler.io.antlr.resources.CSVLexer;
-import edu.kit.dopler.io.antlr.resources.CSVParser;
+import edu.kit.dopler.io.antlr.resources.DoplerLexer;
+import edu.kit.dopler.io.antlr.resources.DoplerParser;
 
 public class Main {
 
 	public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {		
 		String fileName = "dm_DOPLERTools.csv";
 		CharStream input = CharStreams.fromFileName(fileName);
-		CSVLexer lexer = new CSVLexer(input);
+		DoplerLexer lexer = new DoplerLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		CSVParser parser = new CSVParser(tokens);
+		DoplerParser parser = new DoplerParser(tokens);
 		
 		ParseTree tree = parser.csvFile();
 		ParseTreeWalker walker = new ParseTreeWalker();

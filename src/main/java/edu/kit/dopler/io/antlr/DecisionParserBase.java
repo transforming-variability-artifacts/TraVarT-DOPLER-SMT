@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * SPDX-License-Identifier: MPL-2.0
+ *
+ * This Source Code Form is subject to the terms of the Mozilla
+ * Public License, v. 2.0. If a copy of the MPL was not distributed
+ * with this file, You can obtain one at
+ * https://mozilla.org/MPL/2.0/.
+ *
+ * Contributors: 
+ * 	@author David Kowal
+ * 	@author Kevin Feichtinger
+ *
+ * Copyright 2024 Karlsruhe Institute of Technology (KIT)
+ * KASTEL - Dependability of Software-intensive Systems
+ *******************************************************************************/
+
 package edu.kit.dopler.io.antlr;
 
 import java.util.ArrayList;
@@ -7,11 +23,11 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import edu.kit.dopler.io.antlr.resources.CSVBaseListener;
+import edu.kit.dopler.io.antlr.resources.DoplerParserBaseListener;
 import edu.kit.dopler.model.Dopler;
 import edu.kit.dopler.model.IDecision;
 
-public abstract class DecisionParserBase extends CSVBaseListener {
+public abstract class DecisionParserBase extends DoplerParserBaseListener {
 	protected Dopler dopler;
 	
 	protected String currentID = "";

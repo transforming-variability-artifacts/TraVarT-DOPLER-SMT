@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * SPDX-License-Identifier: MPL-2.0
+ *
+ * This Source Code Form is subject to the terms of the Mozilla
+ * Public License, v. 2.0. If a copy of the MPL was not distributed
+ * with this file, You can obtain one at
+ * https://mozilla.org/MPL/2.0/.
+ *
+ * Contributors: 
+ * 	@author David Kowal
+ * 	@author Kevin Feichtinger
+ *
+ * Copyright 2024 Karlsruhe Institute of Technology (KIT)
+ * KASTEL - Dependability of Software-intensive Systems
+ *******************************************************************************/
+
 package edu.kit.dopler.io.antlr;
 
 import java.util.ArrayList;
@@ -11,13 +27,13 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import edu.kit.dopler.model.NumberDecision;
 import edu.kit.dopler.model.StringDecision;
 import edu.kit.dopler.exceptions.InvalidCardinalityException;
-import edu.kit.dopler.io.antlr.resources.CSVLexer;
-import edu.kit.dopler.io.antlr.resources.CSVParser.CardinalityContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.CsvFileContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.DecisionTypeContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.IdContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.QuestionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.RangeContext;
+import edu.kit.dopler.io.antlr.resources.DoplerLexer;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.CardinalityContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.CsvFileContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.DecisionTypeContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.IdContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.QuestionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.RangeContext;
 import edu.kit.dopler.model.BooleanDecision;
 import edu.kit.dopler.model.BooleanLiteralExpression;
 import edu.kit.dopler.model.DecisionValueCallExpression;
@@ -37,7 +53,7 @@ public class DoplerDecisionCreator extends DecisionParserBase {
 		dopler = new Dopler();
 		dopler.setName(name);
 	}
-
+	
 	@Override
 	public void enterId(IdContext ctx) {
 		if (matchesColumn(ctx, column_ID) && ctx.IDENTIFIER() != null) {
@@ -108,7 +124,7 @@ public class DoplerDecisionCreator extends DecisionParserBase {
 			Set<EnumerationLiteral> enumerationLiterals = new HashSet<>();
 			String currentLiteral = "";
 			for (int i = 0; i < leafs.size(); i++) {
-				if (leafs.get(i).getSymbol().getType() == CSVLexer.PIPE) {
+				if (leafs.get(i).getSymbol().getType() == DoplerLexer.PIPE) {
 					enumerationLiterals.add(new EnumerationLiteral(currentLiteral));
 					currentLiteral = "";
 				} else {
@@ -129,16 +145,16 @@ public class DoplerDecisionCreator extends DecisionParserBase {
 			if (child instanceof TerminalNode) {
 				TerminalNode node = (TerminalNode) child;
 				switch (node.getSymbol().getType()) {
-				case CSVLexer.NumberDecision:
+				case DoplerLexer.NumberDecision:
 					dopler.addDecision(new NumberDecision(currentID, currentQuestion, currentDescription, new BooleanLiteralExpression(true) , new HashSet<>(), new HashSet<>()));
 					break;
-				case CSVLexer.EnumerationDecision:
+				case DoplerLexer.EnumerationDecision:
 					dopler.addDecision(new EnumerationDecision(currentID, currentQuestion, currentDescription, new BooleanLiteralExpression(true), new HashSet<>(), null, 1, 1));
 					break;
-				case CSVLexer.BooleanDecision:
+				case DoplerLexer.BooleanDecision:
 					dopler.addDecision(new BooleanDecision(currentID, currentQuestion, currentDescription, new BooleanLiteralExpression(true), new HashSet<>()));
 					break;
-				case CSVLexer.StringDecision:
+				case DoplerLexer.StringDecision:
 					dopler.addDecision(new StringDecision(currentID, currentQuestion, currentDescription, new BooleanLiteralExpression(true), new HashSet<>(), new HashSet<>()));
 					break;
 				}

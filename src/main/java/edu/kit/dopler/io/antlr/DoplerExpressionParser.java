@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * SPDX-License-Identifier: MPL-2.0
+ *
+ * This Source Code Form is subject to the terms of the Mozilla
+ * Public License, v. 2.0. If a copy of the MPL was not distributed
+ * with this file, You can obtain one at
+ * https://mozilla.org/MPL/2.0/.
+ *
+ * Contributors: 
+ * 	@author David Kowal
+ * 	@author Kevin Feichtinger
+ *
+ * Copyright 2024 Karlsruhe Institute of Technology (KIT)
+ * KASTEL - Dependability of Software-intensive Systems
+ *******************************************************************************/
+
 package edu.kit.dopler.io.antlr;
 
 import java.util.ArrayDeque;
@@ -14,31 +30,31 @@ import edu.kit.dopler.model.OR;
 import edu.kit.dopler.model.Rule;
 import edu.kit.dopler.model.StringLiteralExpression;
 import edu.kit.dopler.model.XOR;
-import edu.kit.dopler.io.antlr.resources.CSVParser;
-import edu.kit.dopler.io.antlr.resources.CSVParser.AllowsContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.AndExpressionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.BooleanEnForceContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.BooleanLiteralExpressionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.DecisionValueCallExpressionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.DecisionVisibilityCallExpressionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.DisallowsContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.DoubleEnForceContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.DoubleLiteralExpressionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.EnumEnForceContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.EnumerationLiteralExpressionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.EqualityExpressionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.GreaterThanExpressionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.IdContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.IsTakenContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.LessThanExpressionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.LiteralExpressionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.OrExpressionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.RowContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.RuleContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.StringEnForceContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.StringLiteralExpressionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.UnaryExpressionContext;
-import edu.kit.dopler.io.antlr.resources.CSVParser.XorExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.AllowsContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.AndExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.BooleanEnForceContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.BooleanLiteralExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.DecisionValueCallExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.DecisionVisibilityCallExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.DisallowsContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.DoubleEnForceContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.DoubleLiteralExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.EnumEnForceContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.EnumerationLiteralExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.EqualityExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.GreaterThanExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.IdContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.IsTakenContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.LessThanExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.LiteralExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.OrExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.RowContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.RuleContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.StringEnForceContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.StringLiteralExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.UnaryExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.XorExpressionContext;
 import edu.kit.dopler.model.AND;
 import edu.kit.dopler.model.Allows;
 import edu.kit.dopler.model.BooleanDecision;
@@ -142,19 +158,19 @@ public class DoplerExpressionParser extends DecisionParserBase {
 
 				TerminalNode operator = (TerminalNode) ctx.children.get(1);
 				switch (operator.getSymbol().getType()) {
-				case CSVParser.AND:
+				case DoplerParser.AND:
 					expressionStack.push(new AND(left, right));
 					break;
-				case CSVParser.OR:
+				case DoplerParser.OR:
 					expressionStack.push(new OR(left, right));
 					break;
-				case CSVParser.EQUALS:
+				case DoplerParser.EQUALS:
 					expressionStack.push(new Equals(left, right));
 					break;
-				case CSVParser.GREATER_THAN:
+				case DoplerParser.GREATER_THAN:
 					expressionStack.push(new GreatherThan(left, right));
 					break;
-				case CSVParser.LESS_THAN:
+				case DoplerParser.LESS_THAN:
 					expressionStack.push(new LessThan(left, right));
 					break;
 				}
