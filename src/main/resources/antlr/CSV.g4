@@ -1,35 +1,36 @@
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-
-// $antlr-format alignTrailingComments true, columnLimit 150, minEmptyLines 1, maxEmptyLinesToKeep 1, reflowComments false, useTab false
-// $antlr-format allowShortRulesOnASingleLine false, allowShortBlocksOnASingleLine true, alignSemicolons hanging, alignColons hanging
-
 grammar CSV;
+
+document
+    : jsonDocument
+    | csvFile
+    ;
+
+
+// JSON File Structure
+jsonDocument
+    : jsonValue EOF
+    ;
+
+jsonValue
+    : jsonObject ('\n')* 
+    ;
+
+jsonObject
+    : '{'  ('\n')*  jsonPair ('\n')* (',' ('\n')*  jsonPair) * ('\n')* '}'
+    | '{' ('\n')* '}'
+    ;
+
+jsonPair
+    : DQ IDENTIFIER DQ ':' '\n'* '{' '\n'* (jsonPair ','?)* '\n'* '}' '\n'*
+    | QUESTION_KEY DQ question DQ
+    | DQ ID_KEY DQ ':' DQ id DQ
+    | DQ TYPE_KEY DQ ':' DQ decisionType DQ
+    | DQ RANGE_KEY DQ ':' DQ range DQ
+    | DQ CARDINALITY_KEY DQ ':' DQ (cardinality | ) DQ
+    | DQ CONSTRAINT_RULE_KEY DQ ':' rule 
+    | DQ VISIBLE_RELEVANT_KEY DQ ':' DQ decisionVisibilityCallExpression DQ
+    ;
+
 
 // Parsing Rules
 
@@ -254,23 +255,56 @@ doubleEnForce
 
 
 // Lexer Rules
+// Schaltet JSON-Mode zusätzlich ein
 
-QUESTION
-    : (~[?\r\n;])+ '?'   // everything except ? or \r or \n or ; followed by a ?
+QUESTION_KEY
+    : '"Question":'
     ;
 
-WS
+QUESTION
+    : (~[?\r\n;"])+ '?'   // everything except ? or \r or \n or ; followed by a ?
+    ;
+
+ID_KEY
+    : 'ID'
+    ;
+
+TYPE_KEY
+    : 'Type'
+    ;
+
+RANGE_KEY
+    : 'Range'
+    ;
+
+CARDINALITY_KEY
+    : 'Cardinality'
+    ;
+
+CONSTRAINT_RULE_KEY
+    : 'Constraint/Rule'
+    ;
+
+VISIBLE_RELEVANT_KEY
+    : 'Visible/relevant if'
+    ;
+
+
+WS_DEFAULT
     : [ ]+ -> skip  
     ;
 
-HEADER : 'Question'
-    | 'ID'
-    | 'Type'
-    | 'Range'
-    | 'Cardinality'
-    | 'Constraint/Rule'
-    | 'Visible/relevant if'
+HEADER 
+    : QUESTION_KEY
+    | ID_KEY
+    | TYPE_KEY
+    | RANGE_KEY
+    | CARDINALITY_KEY
+    | CONSTRAINT_RULE_KEY
+    | VISIBLE_RELEVANT_KEY
     ;
+
+
 
 // Keywords
 ALLOW        : 'allow' | 'Allow';
@@ -300,6 +334,7 @@ ANPERSAND   : '&' ;
 PERCENT      : '%' ;
 COMMA        : ',' ;
 SEMICOLON   : ';' ;
+DQ  : '"';
 
 
 //Literal Expressions
@@ -357,3 +392,4 @@ IDENTIFIER
     : [a-zA-Z0-9_][a-zA-Z0-9_]*
     | [a-zA-Z_][a-zA-Z-]*
     ; 
+
