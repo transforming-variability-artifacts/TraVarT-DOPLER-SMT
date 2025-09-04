@@ -14,8 +14,8 @@
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 
+// Generated from DoplerParser.g4 by ANTLR 4.13.2
 package edu.kit.dopler.io.antlr.resources;
-// Generated from DoplerParser.g4 by ANTLR 4.13.1
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -136,6 +136,18 @@ public class DoplerParserBaseListener implements DoplerParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitField(DoplerParser.FieldContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterHeader(DoplerParser.HeaderContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitHeader(DoplerParser.HeaderContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -44,13 +44,13 @@ import edu.kit.dopler.io.antlr.resources.DoplerParser;
 public class Main {
 
 	public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {		
-		String fileName = "dm_DOPLERTools.csv";
+		String fileName = "issue.csv";
 		CharStream input = CharStreams.fromFileName(fileName);
 		DoplerLexer lexer = new DoplerLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		DoplerParser parser = new DoplerParser(tokens);
 		
-		ParseTree tree = parser.csvFile();
+		ParseTree tree = parser.document();
 		ParseTreeWalker walker = new ParseTreeWalker();
 		
 		DoplerDecisionCreator decisionCreator = new DoplerDecisionCreator(fileName);
@@ -58,8 +58,8 @@ public class Main {
 		DoplerExpressionParser expressionParser = new DoplerExpressionParser(decisionCreator.getDopler());
 		walker.walk(expressionParser, tree);
 		
+		System.out.println(tree.toStringTree(parser));
 		Dopler dopler = expressionParser.getDopler();
-		
 		
 		final DecisionModelReader decisionModelReader = new DecisionModelReader();
 //		final Dopler dopler = decisionModelReader

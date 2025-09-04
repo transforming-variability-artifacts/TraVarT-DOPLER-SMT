@@ -34,37 +34,18 @@ lexer grammar DoplerLexer;
 CR        : { !jsonFile }? '\r';
 LF        : { !jsonFile }? '\n';
 
-QUESTION_KEY
-    : '"Question":'
-    ;
+QUESTION_KEY : '"Question":';
 
 QUESTION
     : (~[?\r\n;"])+ '?'   // everything except ? or \r or \n or ; followed by a ?
     ;
 
-ID_KEY
-    : 'ID'
-    ;
-
-TYPE_KEY
-    : 'Type'
-    ;
-
-RANGE_KEY
-    : 'Range'
-    ;
-
-CARDINALITY_KEY
-    : 'Cardinality'
-    ;
-
-CONSTRAINT_RULE_KEY
-    : 'Constraint/Rule'
-    ;
-
-VISIBLE_RELEVANT_KEY
-    : 'Visible/relevant if'
-    ;
+TYPE_KEY : 'Type';
+RANGE_KEY : 'Range';
+CARDINALITY_KEY : 'Cardinality';
+CONSTRAINT_RULE_KEY : 'Constraint/Rule';
+VISIBLE_RELEVANT_KEY : 'Visible/relevant if';
+DOPLER_KEY : 'DOPLER';
 
 
 WS_DEFAULT
@@ -75,18 +56,6 @@ WS_DEFAULT
 WS_JSON
     : { jsonFile }? [ \t\r\n]+ -> skip
     ;
-
-HEADER 
-    : QUESTION_KEY
-    | ID_KEY
-    | TYPE_KEY
-    | RANGE_KEY
-    | CARDINALITY_KEY
-    | CONSTRAINT_RULE_KEY
-    | VISIBLE_RELEVANT_KEY
-    ;
-
-
 
 // Keywords
 ALLOW        : 'allow' | 'Allow';

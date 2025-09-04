@@ -26,22 +26,21 @@ document
 
 // JSON File Structure
 jsonDocument
-    : jsonValue EOF
+    : LBRACE jsonValue? RBRACE EOF
     ;
 
 jsonValue
-    : jsonObject
+    : DQ DOPLER_KEY DQ COLON LBRACE (jsonObject COMMA?)* RBRACE
+    | LBRACE RBRACE
     ;
 
 jsonObject
-    : LBRACE jsonPair (COMMA jsonPair) * RBRACE
+    : DQ id DQ COLON LBRACE (jsonPair COMMA?)* RBRACE
     | LBRACE RBRACE
     ;
 
 jsonPair
-    : DQ IDENTIFIER DQ COLON LBRACE (jsonPair COMMA?)* RBRACE
-    | QUESTION_KEY DQ question DQ
-    | DQ ID_KEY DQ COLON DQ id DQ
+    : QUESTION_KEY DQ question DQ
     | DQ TYPE_KEY DQ COLON DQ decisionType DQ
     | DQ RANGE_KEY DQ COLON DQ range DQ
     | DQ CARDINALITY_KEY DQ COLON DQ (cardinality | ) DQ
@@ -73,9 +72,18 @@ field
     | cardinality
     | range
     | decisionVisibilityCallExpression
-    | HEADER
+    | header
     | IDENTIFIER
     |
+    ;
+
+header
+    : QUESTION_KEY
+    | TYPE_KEY
+    | RANGE_KEY
+    | CARDINALITY_KEY
+    | CONSTRAINT_RULE_KEY
+    | VISIBLE_RELEVANT_KEY
     ;
 
 // Parsing Rules for specific elements
@@ -105,7 +113,7 @@ rangeItem
     | subrange 
     | cardinality
     | QUESTION
-    | HEADER
+    | header
     ;
 
 specialCharacter

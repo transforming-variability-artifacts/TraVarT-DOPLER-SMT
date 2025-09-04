@@ -29,8 +29,8 @@ import edu.kit.dopler.model.StringDecision;
 import edu.kit.dopler.exceptions.InvalidCardinalityException;
 import edu.kit.dopler.io.antlr.resources.DoplerLexer;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.CardinalityContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.CsvFileContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.DecisionTypeContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.DocumentContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.IdContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.QuestionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.RangeContext;
@@ -79,6 +79,7 @@ public class DoplerDecisionCreator extends DecisionParserBase {
 			}
 		}
 	}
+	
 
 	@Override
 	public void enterQuestion(QuestionContext ctx) {

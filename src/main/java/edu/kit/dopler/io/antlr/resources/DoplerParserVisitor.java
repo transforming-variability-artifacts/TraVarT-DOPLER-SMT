@@ -14,8 +14,8 @@
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 
+// Generated from DoplerParser.g4 by ANTLR 4.13.2
 package edu.kit.dopler.io.antlr.resources;
-// Generated from DoplerParser.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -80,6 +80,12 @@ public interface DoplerParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitField(DoplerParser.FieldContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DoplerParser#header}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitHeader(DoplerParser.HeaderContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DoplerParser#id}.
 	 * @param ctx the parse tree

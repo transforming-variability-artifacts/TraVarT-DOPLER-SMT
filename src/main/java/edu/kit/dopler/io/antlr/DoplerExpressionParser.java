@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import edu.kit.dopler.model.NumberDecision;
@@ -46,6 +47,7 @@ import edu.kit.dopler.io.antlr.resources.DoplerParser.EqualityExpressionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.GreaterThanExpressionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.IdContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.IsTakenContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.JsonObjectContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.LessThanExpressionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.LiteralExpressionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.OrExpressionContext;
@@ -85,16 +87,17 @@ import edu.kit.dopler.model.StringValue;
 public class DoplerExpressionParser extends DecisionParserBase {
 	private boolean idSet;
 
-	// Current Rules variables
+	// Variables of current Rule
 	private Set<Rule> currentRules = new HashSet<>();
-	// Per Rule
+	// Actions of current Rule
 	private Set<IAction> currentActions = new HashSet<>();
 
-	// Traverse Expression
+	// Stack to traverse Expressions
 	Deque<IExpression> expressionStack = new ArrayDeque<>();
 
 	private IExpression currentVisibilityCondition;
 	
+
 	public DoplerExpressionParser(Dopler dopler) {
 		this.dopler = dopler;
 	}
@@ -104,12 +107,26 @@ public class DoplerExpressionParser extends DecisionParserBase {
 	}
 	
 	@Override
+	public void enterJsonObject(JsonObjectContext ctx) {
+		idSet = false;
+	}
+	
+	@Override
+	public void exitJsonObject(JsonObjectContext ctx) {
+		setDecisionValues();
+	}
+	
+	@Override
 	public void enterRow(RowContext ctx) {
 		idSet = false;
 	}
 
 	@Override
 	public void exitRow(RowContext ctx) {		
+		setDecisionValues();
+	}
+	
+	private void setDecisionValues() {
 		IDecision<?> currentDecision = findDecisionByID(currentID);
 		if(currentDecision == null) return;
 		if(!(currentVisibilityCondition == null)) currentDecision.setVisibilityCondition(currentVisibilityCondition);
