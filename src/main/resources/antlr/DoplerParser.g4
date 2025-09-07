@@ -40,12 +40,12 @@ jsonObject
     ;
 
 jsonPair
-    : QUESTION_KEY DQ question DQ
-    | DQ TYPE_KEY DQ COLON DQ decisionType DQ
-    | DQ RANGE_KEY DQ COLON DQ range DQ
-    | DQ CARDINALITY_KEY DQ COLON DQ (cardinality | ) DQ
-    | DQ CONSTRAINT_RULE_KEY DQ COLON (rule | DQ DQ | )
-    | DQ VISIBLE_RELEVANT_KEY DQ COLON DQ (decisionVisibilityCallExpression | ) DQ
+    : QUESTION_KEY DQ (question | DQ DQ | ) DQ
+    | DQ TYPE_KEY DQ COLON DQ (decisionType | DQ DQ | ) DQ
+    | DQ RANGE_KEY DQ COLON DQ (range | DQ DQ | ) DQ
+    | DQ CARDINALITY_KEY DQ COLON DQ (cardinality | DQ DQ | ) DQ
+    | DQ CONSTRAINT_RULE_KEY DQ COLON (rule | DQ DQ |  )
+    | DQ VISIBLE_RELEVANT_KEY DQ COLON DQ (decisionVisibilityCallExpression | DQ DQ | ) DQ
     ;
 
 
@@ -257,14 +257,10 @@ disallows
     ;
 
 enForce
-    : enumEnForce
-    | booleanEnForce
+    : booleanEnForce
     | doubleEnForce
     | stringEnForce
-    ;
-
-enumEnForce
-    : IDENTIFIER SET IDENTIFIER
+    | enumEnForce
     ;
 
 stringEnForce
@@ -277,4 +273,8 @@ booleanEnForce
 
 doubleEnForce
     : IDENTIFIER SET DoubleLiteralExpression
+    ;
+
+enumEnForce
+    : IDENTIFIER SET (rangeItem)*
     ;

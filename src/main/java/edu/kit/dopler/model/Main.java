@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Path;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -44,7 +43,8 @@ import edu.kit.dopler.io.antlr.resources.DoplerParser;
 public class Main {
 
 	public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {		
-		String fileName = "issue.csv";
+		String fileName = "dm_dopler.json";
+		//fileName = "dm_DOPLERTools.csv";
 		CharStream input = CharStreams.fromFileName(fileName);
 		DoplerLexer lexer = new DoplerLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);

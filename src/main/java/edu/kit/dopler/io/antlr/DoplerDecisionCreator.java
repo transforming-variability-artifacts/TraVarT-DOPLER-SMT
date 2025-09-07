@@ -29,8 +29,8 @@ import edu.kit.dopler.model.StringDecision;
 import edu.kit.dopler.exceptions.InvalidCardinalityException;
 import edu.kit.dopler.io.antlr.resources.DoplerLexer;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.CardinalityContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.CsvFileContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.DecisionTypeContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.DocumentContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.IdContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.QuestionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.RangeContext;
@@ -49,14 +49,21 @@ import edu.kit.dopler.model.LessThan;
 
 public class DoplerDecisionCreator extends DecisionParserBase {
 	
+	private boolean csvFile = false;
+	
 	public DoplerDecisionCreator(String name){
 		dopler = new Dopler();
 		dopler.setName(name);
 	}
 	
 	@Override
+	public void enterCsvFile(CsvFileContext ctx) {
+		csvFile = true;
+	}
+	
+	@Override
 	public void enterId(IdContext ctx) {
-		if (matchesColumn(ctx, column_ID) && ctx.IDENTIFIER() != null) {
+		if ((matchesColumn(ctx, column_ID) && ctx.IDENTIFIER() != null) || !csvFile) {
 			currentID = ctx.IDENTIFIER().getText();
 		} 
 	}

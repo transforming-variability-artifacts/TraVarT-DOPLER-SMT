@@ -14,8 +14,9 @@
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 
-// Generated from DoplerParser.g4 by ANTLR 4.13.2
 package edu.kit.dopler.io.antlr.resources;
+
+// Generated from DoplerParser.g4 by ANTLR 4.13.2
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -549,18 +550,6 @@ public class DoplerParserBaseListener implements DoplerParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEnumEnForce(DoplerParser.EnumEnForceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEnumEnForce(DoplerParser.EnumEnForceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterStringEnForce(DoplerParser.StringEnForceContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -592,6 +581,18 @@ public class DoplerParserBaseListener implements DoplerParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDoubleEnForce(DoplerParser.DoubleEnForceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterEnumEnForce(DoplerParser.EnumEnForceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEnumEnForce(DoplerParser.EnumEnForceContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

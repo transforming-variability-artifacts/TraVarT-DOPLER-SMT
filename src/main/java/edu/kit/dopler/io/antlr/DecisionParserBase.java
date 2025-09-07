@@ -24,7 +24,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import edu.kit.dopler.io.antlr.resources.DoplerParserBaseListener;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.DocumentContext;
 import edu.kit.dopler.model.Dopler;
 import edu.kit.dopler.model.IDecision;
 

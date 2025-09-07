@@ -14,8 +14,9 @@
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 
-// Generated from DoplerParser.g4 by ANTLR 4.13.2
 package edu.kit.dopler.io.antlr.resources;
+
+// Generated from DoplerParser.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -454,16 +455,6 @@ public interface DoplerParserListener extends ParseTreeListener {
 	 */
 	void exitEnForce(DoplerParser.EnForceContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DoplerParser#enumEnForce}.
-	 * @param ctx the parse tree
-	 */
-	void enterEnumEnForce(DoplerParser.EnumEnForceContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DoplerParser#enumEnForce}.
-	 * @param ctx the parse tree
-	 */
-	void exitEnumEnForce(DoplerParser.EnumEnForceContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link DoplerParser#stringEnForce}.
 	 * @param ctx the parse tree
 	 */
@@ -493,4 +484,14 @@ public interface DoplerParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDoubleEnForce(DoplerParser.DoubleEnForceContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DoplerParser#enumEnForce}.
+	 * @param ctx the parse tree
+	 */
+	void enterEnumEnForce(DoplerParser.EnumEnForceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DoplerParser#enumEnForce}.
+	 * @param ctx the parse tree
+	 */
+	void exitEnumEnForce(DoplerParser.EnumEnForceContext ctx);
 }

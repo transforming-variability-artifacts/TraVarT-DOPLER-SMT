@@ -14,8 +14,9 @@
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 
-// Generated from DoplerLexer.g4 by ANTLR 4.13.2
 package edu.kit.dopler.io.antlr.resources;
+
+// Generated from DoplerLexer.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

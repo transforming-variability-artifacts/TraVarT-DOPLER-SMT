@@ -17,12 +17,15 @@
 package edu.kit.dopler.io.antlr;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import edu.kit.dopler.model.NumberDecision;
@@ -31,6 +34,7 @@ import edu.kit.dopler.model.OR;
 import edu.kit.dopler.model.Rule;
 import edu.kit.dopler.model.StringLiteralExpression;
 import edu.kit.dopler.model.XOR;
+import edu.kit.dopler.exceptions.NoActionInRuleException;
 import edu.kit.dopler.io.antlr.resources.DoplerParser;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.AllowsContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.AndExpressionContext;
@@ -49,11 +53,9 @@ import edu.kit.dopler.io.antlr.resources.DoplerParser.IdContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.IsTakenContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.JsonObjectContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.LessThanExpressionContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.LiteralExpressionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.OrExpressionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.RowContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.RuleContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.StringEnForceContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.StringLiteralExpressionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.UnaryExpressionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.XorExpressionContext;
@@ -256,6 +258,9 @@ public class DoplerExpressionParser extends DecisionParserBase {
 		if (expressionStack.isEmpty()) {
 			return;
 		}
+		if (currentActions.isEmpty()) {
+			// throw new NoActionInRuleException("A rule must have at least one action to perform!");
+		}
 		currentRules.add(new Rule(expressionStack.pop(), new HashSet<>(currentActions)));
 		expressionStack.clear();
 		currentActions.clear();
@@ -291,8 +296,16 @@ public class DoplerExpressionParser extends DecisionParserBase {
 
 	@Override
 	public void enterEnumEnForce(EnumEnForceContext ctx) {
-		String identifier = ctx.IDENTIFIER().getFirst().getText();
-		String value = ctx.IDENTIFIER().getLast().getText();
+		if(ctx.IDENTIFIER().getChild(0) == null) {
+			return;
+		}
+		String identifier = ctx.IDENTIFIER().getChild(0).getText();
+		List<TerminalNode> leafs = ctx.children.subList(2, ctx.children.size()).stream()
+				.flatMap(child -> getAllTerminalNodes(child).stream())
+				.collect(Collectors.toList());
+		String value = leafs.stream()
+				.map(TerminalNode::getText)
+				.collect(Collectors.joining());
 		if (!identifier.isEmpty()) {
 			IDecision<?> decision = findDecisionByID(identifier);
 			if (decision != null && decision.getDecisionType() == DecisionType.ENUM) {
