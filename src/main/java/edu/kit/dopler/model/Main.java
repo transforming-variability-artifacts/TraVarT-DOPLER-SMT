@@ -34,7 +34,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
-import edu.kit.dopler.io.DecisionModelReader;
 import edu.kit.dopler.io.antlr.DoplerDecisionCreator;
 import edu.kit.dopler.io.antlr.DoplerExpressionParser;
 import edu.kit.dopler.io.antlr.resources.DoplerLexer;
@@ -44,7 +43,6 @@ public class Main {
 
 	public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {		
 		String fileName = "dm_dopler.json";
-		//fileName = "dm_DOPLERTools.csv";
 		CharStream input = CharStreams.fromFileName(fileName);
 		DoplerLexer lexer = new DoplerLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -58,13 +56,7 @@ public class Main {
 		DoplerExpressionParser expressionParser = new DoplerExpressionParser(decisionCreator.getDopler());
 		walker.walk(expressionParser, tree);
 		
-		System.out.println(tree.toStringTree(parser));
 		Dopler dopler = expressionParser.getDopler();
-		
-		final DecisionModelReader decisionModelReader = new DecisionModelReader();
-//		final Dopler dopler = decisionModelReader
-//				.read(Path.of(System.getProperty("user.dir") + "/modelEval/product_chesspiece.csv"));
-		final Set<? extends IDecision<?>> decisions = dopler.getDecisions();
 
 		dopler.toSMTStream().build().forEach(System.out::println);
 		try {
