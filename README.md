@@ -15,7 +15,7 @@ Reads the input from the file and creates the corresponding lexer, tokens and pa
 		DoplerParser parser = new DoplerParser(tokens);
 ```
 ### Create Parse Tree
-Creates the corresponding parse tree of the earlier input, by calling the first parser rule
+Creates the corresponding parse tree of the earlier input, by calling the first parser rule. The tree can be traversed with a ParseTreeWalker.
 ```
         ParseTree tree = parser.document(); 
         ParseTreeWalker walker = new ParseTreeWalker();
@@ -31,13 +31,13 @@ Performs two consecutive listener walks: the first constructs all decisions, and
 ```
 
 ### Extract Dopler Model
-In the last step we extract the resulting DOPLER model from the expressionParser
+After walking through both listeners, the resulting Dopler model can be obtained from the DoplerExpressionParser.
 ```
 		Dopler dopler = expressionParser.getDopler();
 ```
 
 ### Write Dopler Model
-A DoplerModelWriter was implemented to write the model back in either a json or csv file.
+The DoplerModelWriter can be used to export the parsed model either as JSON or CSV.
 ```
 		DoplerModelWriter dmw = new DoplerModelWriter();
 		dmw.writeCSV(dopler, Paths.get("output_dm_dopler.csv"));
