@@ -177,7 +177,7 @@ xorExpression
     ;
 
 equalityExpression
-    : LPAREN expression EQUALS expression RPAREN
+    : LPAREN expression (EQUALS | SET) expression RPAREN
     ;
 
 greaterThanExpression
@@ -233,7 +233,7 @@ decisionType
 rule
     : DQ rule DQ
     | rule rule
-    | IF LPAREN? expression RPAREN? LBRACE (action SEMICOLON?)* RBRACE 
+    | IF LPAREN? expression RPAREN? LBRACE (action SEMICOLON?)+ RBRACE 
     ;
 
 action
@@ -263,6 +263,10 @@ enForce
     | enumEnForce
     ;
 
+enumEnForce
+    : IDENTIFIER SET (rangeItem)*
+    ;
+
 stringEnForce
     : IDENTIFIER SET StringLiteralExpression
     ;
@@ -273,8 +277,4 @@ booleanEnForce
 
 doubleEnForce
     : IDENTIFIER SET DoubleLiteralExpression
-    ;
-
-enumEnForce
-    : IDENTIFIER SET (rangeItem)*
     ;

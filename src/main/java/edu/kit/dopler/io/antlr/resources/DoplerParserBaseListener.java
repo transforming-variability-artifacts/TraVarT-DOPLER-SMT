@@ -550,6 +550,18 @@ public class DoplerParserBaseListener implements DoplerParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterEnumEnForce(DoplerParser.EnumEnForceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEnumEnForce(DoplerParser.EnumEnForceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterStringEnForce(DoplerParser.StringEnForceContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -581,18 +593,6 @@ public class DoplerParserBaseListener implements DoplerParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDoubleEnForce(DoplerParser.DoubleEnForceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterEnumEnForce(DoplerParser.EnumEnForceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEnumEnForce(DoplerParser.EnumEnForceContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -34,6 +36,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
+import edu.kit.dopler.io.DoplerModelWriter;
+import edu.kit.dopler.io.DoplerModelWriter;
 import edu.kit.dopler.io.antlr.DoplerDecisionCreator;
 import edu.kit.dopler.io.antlr.DoplerExpressionParser;
 import edu.kit.dopler.io.antlr.resources.DoplerLexer;
@@ -42,21 +46,32 @@ import edu.kit.dopler.io.antlr.resources.DoplerParser;
 public class Main {
 
 	public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {		
+		// ANTLR Setup
+		// Input file, JSON or CSV
 		String fileName = "dm_dopler.json";
 		CharStream input = CharStreams.fromFileName(fileName);
 		DoplerLexer lexer = new DoplerLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		DoplerParser parser = new DoplerParser(tokens);
 		
+		// Create parse tree
 		ParseTree tree = parser.document();
 		ParseTreeWalker walker = new ParseTreeWalker();
 		
+		// Walk through both listeners, first to create the decisions, second to create the expressions
 		DoplerDecisionCreator decisionCreator = new DoplerDecisionCreator(fileName);
 		walker.walk(decisionCreator, tree);
 		DoplerExpressionParser expressionParser = new DoplerExpressionParser(decisionCreator.getDopler());
 		walker.walk(expressionParser, tree);
 		
+		// Extract Dopler Model
 		Dopler dopler = expressionParser.getDopler();
+		
+		// Write Dopler Model in csv and json
+		DoplerModelWriter dmw = new DoplerModelWriter();
+		dmw.writeCSV(dopler, Paths.get("output_dm_dopler.csv"));
+		dmw.writeJson(dopler, Paths.get("output_dm_dopler.json"));
+		
 
 		dopler.toSMTStream().build().forEach(System.out::println);
 		try {

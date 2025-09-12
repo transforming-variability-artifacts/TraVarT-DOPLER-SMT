@@ -210,7 +210,12 @@ public class DoplerExpressionParser extends DecisionParserBase {
 	public void enterDecisionValueCallExpression(DecisionValueCallExpressionContext ctx) {
 		TerminalNode decisionID = ctx.IDENTIFIER();
 		if (decisionID != null) {
-			expressionStack.push(new DecisionValueCallExpression(findDecisionByID(decisionID.getText())));
+			if(findDecisionByID(decisionID.getText()) != null) {
+				expressionStack.push(new DecisionValueCallExpression(findDecisionByID(decisionID.getText())));
+				return;
+			} else if (findEnumerationLiteralByName(decisionID.getText()) != null){
+				expressionStack.push(new EnumeratorLiteralExpression(findEnumerationLiteralByName(decisionID.getText())));
+			}
 		}
 	}
 	
@@ -258,9 +263,6 @@ public class DoplerExpressionParser extends DecisionParserBase {
 		if (expressionStack.isEmpty()) {
 			return;
 		}
-		if (currentActions.isEmpty()) {
-			// throw new NoActionInRuleException("A rule must have at least one action to perform!");
-		}
 		currentRules.add(new Rule(expressionStack.pop(), new HashSet<>(currentActions)));
 		expressionStack.clear();
 		currentActions.clear();
@@ -296,10 +298,11 @@ public class DoplerExpressionParser extends DecisionParserBase {
 
 	@Override
 	public void enterEnumEnForce(EnumEnForceContext ctx) {
-		if(ctx.IDENTIFIER().getChild(0) == null) {
+		Object o = ctx.IDENTIFIER();
+		if(ctx.IDENTIFIER() == null) {
 			return;
 		}
-		String identifier = ctx.IDENTIFIER().getChild(0).getText();
+		String identifier = ctx.IDENTIFIER().getText();
 		List<TerminalNode> leafs = ctx.children.subList(2, ctx.children.size()).stream()
 				.flatMap(child -> getAllTerminalNodes(child).stream())
 				.collect(Collectors.toList());

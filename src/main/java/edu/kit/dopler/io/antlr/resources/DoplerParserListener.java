@@ -455,6 +455,16 @@ public interface DoplerParserListener extends ParseTreeListener {
 	 */
 	void exitEnForce(DoplerParser.EnForceContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DoplerParser#enumEnForce}.
+	 * @param ctx the parse tree
+	 */
+	void enterEnumEnForce(DoplerParser.EnumEnForceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DoplerParser#enumEnForce}.
+	 * @param ctx the parse tree
+	 */
+	void exitEnumEnForce(DoplerParser.EnumEnForceContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DoplerParser#stringEnForce}.
 	 * @param ctx the parse tree
 	 */
@@ -484,14 +494,4 @@ public interface DoplerParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDoubleEnForce(DoplerParser.DoubleEnForceContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DoplerParser#enumEnForce}.
-	 * @param ctx the parse tree
-	 */
-	void enterEnumEnForce(DoplerParser.EnumEnForceContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DoplerParser#enumEnForce}.
-	 * @param ctx the parse tree
-	 */
-	void exitEnumEnForce(DoplerParser.EnumEnForceContext ctx);
 }

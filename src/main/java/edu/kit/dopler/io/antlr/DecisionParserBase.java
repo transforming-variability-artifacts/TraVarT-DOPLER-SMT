@@ -25,6 +25,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import edu.kit.dopler.io.antlr.resources.DoplerParserBaseListener;
 import edu.kit.dopler.model.Dopler;
+import edu.kit.dopler.model.EnumerationLiteral;
 import edu.kit.dopler.model.IDecision;
 
 public abstract class DecisionParserBase extends DoplerParserBaseListener {
@@ -45,11 +46,18 @@ public abstract class DecisionParserBase extends DoplerParserBaseListener {
 	}
 	
 	protected IDecision<?> findDecisionByID(String ID) {
-		for (IDecision<?> decision : dopler.getDecisions()) {
-			if (decision.getDisplayId().equals(ID))
-				return decision;
-		}
-		return null;
+		return dopler.getDecisions().stream()
+		        .filter(d -> d.getDisplayId().equals(ID))
+		        .findFirst()
+		        .orElse(null);
+	}
+	
+	protected EnumerationLiteral findEnumerationLiteralByName(String name) {
+		return dopler.getEnumSet().stream()
+		        .flatMap(e -> e.getEnumerationLiterals().stream())
+		        .filter(lit -> lit.getValue().equals(name))
+		        .findFirst()
+		        .orElse(null);
 	}
 	
 	protected List<TerminalNode> getAllTerminalNodes(ParseTree tree) {
