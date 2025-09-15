@@ -1,0 +1,33 @@
+features
+        STANDARD_MODEL_NAME
+                or
+                        BOpt
+                                or
+                                        AboutButtonFeat
+                                        AltTabButtonFeat
+                                        ClipboardButtonFeat
+                                        CtrlAltDelButtonFeat
+                                        DisconnectButtonFeat
+                                        OptionsButtonFeat
+                                        RecordButtonFeat
+                                        RefreshButtonFeat
+                        ClipboardFeat
+                        OptionsMenuFeatures
+                                optional
+                                        MOpt
+                                                or
+                                                        OpCompressionFeat
+                                                        OpCopyRectFeat
+                                                        OpCursorShapeFeat
+                                                        OpEncodingFeat
+                                                        OpJPEGqualityFeat
+                                                        OpMouse23Feat
+                                                        OpRestrictedColorsFeat
+                                                        OpShareFeat
+                                                        OpViewFeat
+                        RecordingFeat
+
+constraints
+        ClipboardButtonFeat => ClipboardFeat
+        OptionsButtonFeat => OptionsMenuFeatures
+        RecordButtonFeat => RecordingFeat

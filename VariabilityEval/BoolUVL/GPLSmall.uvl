@@ -1,0 +1,30 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        Directed
+                        Undirected
+                alternative
+                        Unweighted
+                        Weighted
+                optional
+                        Src
+                                alternative
+                                        BFS
+                                        DFS
+                or
+                        Connected
+                        Cycle
+                        MSTKruskal
+                        MSTPrim
+                        Number
+                        ShortestPath
+                        StrongConnect
+
+constraints
+        !(!MSTKruskal & !MSTPrim) => Undirected & Weighted
+        Connected => Undirected & Src
+        Cycle => DFS
+        MSTKruskal => !MSTPrim
+        Number => Src
+        ShortestPath => Directed & Weighted
+        StrongConnect => Directed & DFS

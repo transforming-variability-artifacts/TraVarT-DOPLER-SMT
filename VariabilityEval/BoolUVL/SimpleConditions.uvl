@@ -1,0 +1,17 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        e
+                        f
+                alternative
+                        g
+                        h
+                optional
+                        D
+                or
+                        a
+                        b
+                        c
+
+constraints
+        (!(b & (!c & !D)) | !!!!D) => f

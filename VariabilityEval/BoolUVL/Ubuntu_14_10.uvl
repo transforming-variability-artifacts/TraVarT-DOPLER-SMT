@@ -1,0 +1,330 @@
+features
+        STANDARD_MODEL_NAME
+                optional
+                        AcceptanceDelay
+                        AllowDifferentLayoutsForIndividualWindows
+                        Alt_Super_plus
+                        Appearance
+                                alternative
+                                        Adwaita
+                                        AmbianceDefault
+                                        HighContrast1
+                                        Radiance
+                                alternative
+                                        DelicatePetals2560x1600
+                                        EarlyBlossom2560x1600
+                                        MorningDew2560x1600
+                                        PrecisePagolin2560x1600
+                                        TwillightFrost2560x1600
+                                        Ubuntu2560x1600
+                                alternative
+                                        High
+                                        Low
+                                alternative
+                                        InTheMenuBar
+                                        InTheWindowsTitleBar
+                                alternative
+                                        Left1
+                                        TopLeftCorner
+                                alternative
+                                        x_32
+                                        x_48
+                                        x_64
+                                optional
+                                        AddShowDesktopIconToTheLauncher
+                                        AutoHideTheLauncher
+                                        EnableWorkspaces
+                        BrightnessAndLock
+                                alternative
+                                        Never
+                                        x_10Minutes
+                                        x_1Hour
+                                        x_1Minute
+                                        x_2Minutes
+                                        x_30Minutes
+                                        x_3Minutes
+                                optional
+                                        DimSceenToSaveLeft
+                                        Lock1
+                                                alternative
+                                                        ScreenTurnsOff
+                                                        x_10Minutes_
+                                                        x_1Hour_
+                                                        x_1Minute_
+                                                        x_2Minutes_
+                                                        x_30Minutes_
+                                                        x_30Seconds
+                                                        x_5Minutes_
+                                        RequireMyPasswordWhenWakingFromSuspend
+                        BuiltInDisplay
+                        Ctrl_Alt_S
+                        Delay
+                        Disabled
+                        Displays
+                                alternative
+                                        AllDisplays
+                                        BuiltInDisplay1
+                                alternative
+                                        BuiltInDisplay2
+                                        DisplayWithLargestControls
+                                        DisplayWithSmallestControls
+                                alternative
+                                        Clockwise
+                                        Counterclockwise
+                                        Normal
+                                        x_180Degres
+                                optional
+                                        StickyEdges
+                        Fast
+                        HighContrast
+                        Left
+                        Long
+                        New_Accelerator
+                        Shift_Super_Space
+                        Short
+                        Slow
+                        Speed
+                        Super_Space
+                        TextEntry
+                                alternative
+                                        AllowDifferentSourcesForEachWindow
+                                        UseTheSameSourceForAllWindows
+                                alternative
+                                        Horizontally
+                                        Vertically
+                                alternative
+                                        New_Accelerator1
+                                        Shift_Super_Space1
+                                alternative
+                                        New_Accelerator2
+                                        Super_Space1
+                                optional
+                                        AllowDifferentLayoutsForIndividualWindows1
+                                                alternative
+                                                        NewWindowsUseTheCurrentSource
+                                                        NewWindowsUseTheDefaultSource
+                                        KeyboardSetting
+                                                alternative
+                                                        CursorBlinking
+                                                                optional
+                                                                        CursorBlinksInTextFields
+                                                                        Speed2
+                                                                                alternative
+                                                                                        Fast2
+                                                                                        Slow2
+                                                        RepeatKeys
+                                                                alternative
+                                                                        Fast1
+                                                                        Slow1
+                                                                alternative
+                                                                        Long1
+                                                                        Short4
+                                                                optional
+                                                                        KeyPressesRepeatWhenKeyIsHeldDown
+                                                optional
+                                                        LayoutSettings
+                                                                alternative
+                                                                        AllowDifferentLayoutsForIndividualWindows2
+                                                                                alternative
+                                                                                        NewWindowsUseTheDefaultLayout
+                                                                                        NewWindowsUseThePreviousWindowsLayout
+                                                                        UseTheSameLayoutForAllWindows
+                                                        Shortcuts
+                                                                optional
+                                                                        CustomShortcuts
+                                                                        Launchers
+                                                                                alternative
+                                                                                        KeyToShowTheHUD
+                                                                                        LauncherTerminal
+                                                                        Navigation
+                                                                        Screenshots
+                                                                                alternative
+                                                                                        CopyAScreenhotOfAnAreaToClipboard
+                                                                                        CopyAScreenshotOfAwindowToClipboard
+                                                                                        CopyAScreenshotToClipboard
+                                                                                        TakeAScreenshot
+                                                                                        TakeAScreenshotOfAWindow
+                                                                                        TakeAScreenshotOfAnArea
+                                                                        SoundAndMedia
+                                                                        System
+                                                                                alternative
+                                                                                        LockScreen
+                                                                                        LogOut
+                                                                        Typing2
+                                                                                alternative
+                                                                                        AlternativeCharactersKey
+                                                                                        ComposeKey
+                                                                                        SwitchToNextSource
+                                                                                        SwitchToPreviousSource
+                                                                        UniversalAccess2
+                                                                                alternative
+                                                                                        DecreaseTextSize
+                                                                                        HighContrastOnOrOff
+                                                                                        IncreaseTextSize
+                                                                                        TurnOnScreenKeyboardOnOrOff
+                                                                                        TurnScreenReaderOnOrOff
+                                                                                        TurnZoomOnOrOff
+                                                                                        ZoomIn
+                                                                                        ZoomOut
+                                                                        Windows
+                                                                                alternative
+                                                                                        ActivateTheWindowMenu
+                                                                                        CloseWindow
+                                                                                        LowerWindowBelowOtherWindows
+                                                                                        MaximiseWindow
+                                                                                        MinimizeWindow
+                                                                                        MoveWindow
+                                                                                        RaiseWindowAboveOtherWindows
+                                                                                        ResizeWindow
+                                                                                        RestoreWindow
+                                                                                        ToggleFullscreenMode
+                                                                                        ToggleMaximisationState
+                                                                                        ToggleShadedState
+                                        UsingCustomFont
+                        Typing
+                        UniversalAccess
+                        UniversalAccess1
+                                optional
+                                        Hearing
+                                                optional
+                                                        VisualAlerts
+                                                                alternative
+                                                                        FlashTheEntireScreen
+                                                                        FlashTheWindowTitle
+                                        PointingAndClicking
+                                                optional
+                                                        HoverClick
+                                                                optional
+                                                                        Delay1
+                                                                                alternative
+                                                                                        Long5
+                                                                                        Short3
+                                                                        MotionThreshold
+                                                                                alternative
+                                                                                        Large
+                                                                                        Small
+                                                        MouseKeys
+                                                        MouseSettings
+                                                                alternative
+                                                                        Fast3
+                                                                        Slow3
+                                                                alternative
+                                                                        Left2
+                                                                        Right
+                                                                optional
+                                                                        Touchpad
+                                                                                optional
+                                                                                        DisableWhileTyping
+                                                                                        NaturalScrolling
+                                                                                        TapTopClick
+                                                                                        TwoFingerScroll
+                                                        SimulatedSecondaryCLick
+                                                                optional
+                                                                        AcceptanceDelay2
+                                                                                alternative
+                                                                                        Long4
+                                                                                        Short2
+                                        Seeing
+                                                optional
+                                                        BeepOnCapsAndNumLock
+                                                        HighContrast2
+                                                        LargeText
+                                                        ScreenReader
+                                        Typing3
+                                                optional
+                                                        BounceKeys
+                                                                alternative
+                                                                        Long3
+                                                                        Short1
+                                                                optional
+                                                                        BeepWhenAKeyIsRejected
+                                                        EnableByKeyboard
+                                                        OnScreenKeyboard
+                                                        SlowKeys
+                                                                alternative
+                                                                        Long2
+                                                                        Short5
+                                                                optional
+                                                                        BeepWhenAKeysIs
+                                                                                or
+                                                                                        Accepted
+                                                                                        Pressed
+                                                                                        Rejected
+                                                        StickyKeys
+                                                                optional
+                                                                        BeepWhenAModifierKeysIsPressed
+                                                                        DisableIfTwoKeysArePressedTogether
+
+constraints
+        !(((((((((LowerWindowBelowOtherWindows | RaiseWindowAboveOtherWindows) | ToggleFullscreenMode) | HighContrastOnOrOff) | DecreaseTextSize) | IncreaseTextSize) | TurnOnScreenKeyboardOnOrOff) | AlternativeCharactersKey) | ComposeKey) | !Disabled) => Navigation
+        !((((Long5 | Long4) | Long3) | Long2) | !Long) => Long1
+        !((((Short5 | Short4) | Short3) | Short2) | !Short) => Short1
+        !((Fast3 | Fast2) | !Fast) => Fast1
+        !((Slow3 | Slow2) | !Slow) => Slow1
+        !((SlowKeys | AcceptanceDelay2) | !AcceptanceDelay) => BounceKeys
+        !((Typing3 | Typing2) | !Typing) => KeyboardSetting
+        !(AllowDifferentLayoutsForIndividualWindows2 | !AllowDifferentLayoutsForIndividualWindows) => AllowDifferentLayoutsForIndividualWindows1
+        !(BuiltInDisplay2 | !BuiltInDisplay) => BuiltInDisplay1
+        !(Left2 | !Left) => Left1
+        !(New_Accelerator2 | !New_Accelerator) => New_Accelerator1
+        !(RepeatKeys | !Delay) => Delay1
+        !(Speed2 | !Speed) => RepeatKeys
+        !(SwitchToNextSource | !Super_Space) => Super_Space1
+        !(SwitchToPreviousSource | !Shift_Super_Space) => Shift_Super_Space1
+        !(ToggleShadedState | !Ctrl_Alt_S) => ToggleMaximisationState
+        !(TurnScreenReaderOnOrOff | !Alt_Super_plus) => TurnZoomOnOrOff
+        !(UniversalAccess2 | !UniversalAccess) => UniversalAccess1
+        AcceptanceDelay2 => AcceptanceDelay
+        AllowDifferentLayoutsForIndividualWindows1 => AllowDifferentLayoutsForIndividualWindows
+        AllowDifferentLayoutsForIndividualWindows2 => AllowDifferentLayoutsForIndividualWindows
+        AlternativeCharactersKey => Disabled
+        BounceKeys => AcceptanceDelay
+        BuiltInDisplay1 => BuiltInDisplay
+        BuiltInDisplay2 => BuiltInDisplay
+        ComposeKey => Disabled
+        DecreaseTextSize => Disabled
+        Delay1 => Delay
+        Fast1 => Fast
+        Fast2 => Fast
+        Fast3 => Fast
+        HighContrastOnOrOff => Disabled
+        IncreaseTextSize => Disabled
+        KeyboardSetting => Typing
+        Left1 => Left
+        Left2 => Left
+        Long1 => Long
+        Long2 => Long
+        Long3 => Long
+        Long4 => Long
+        Long5 => Long
+        LowerWindowBelowOtherWindows => Disabled
+        Navigation => Disabled
+        New_Accelerator1 => New_Accelerator
+        New_Accelerator2 => New_Accelerator
+        RaiseWindowAboveOtherWindows => Disabled
+        RepeatKeys => Delay
+        RepeatKeys => Speed
+        Shift_Super_Space1 => Shift_Super_Space
+        Short1 => Short
+        Short2 => Short
+        Short3 => Short
+        Short4 => Short
+        Short5 => Short
+        Slow1 => Slow
+        Slow2 => Slow
+        Slow3 => Slow
+        SlowKeys => AcceptanceDelay
+        Speed2 => Speed
+        Super_Space1 => Super_Space
+        SwitchToNextSource => Super_Space
+        SwitchToPreviousSource => Shift_Super_Space
+        ToggleFullscreenMode => Disabled
+        ToggleMaximisationState => Ctrl_Alt_S
+        ToggleShadedState => Ctrl_Alt_S
+        TurnOnScreenKeyboardOnOrOff => Disabled
+        TurnScreenReaderOnOrOff => Alt_Super_plus
+        TurnZoomOnOrOff => Alt_Super_plus
+        Typing2 => Typing
+        Typing3 => Typing
+        UniversalAccess1 => UniversalAccess
+        UniversalAccess2 => UniversalAccess

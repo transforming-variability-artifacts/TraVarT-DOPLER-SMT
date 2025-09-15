@@ -1,0 +1,157 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        Adamo
+                        InspironLaptops
+                        MiniNotebooks
+                        StudioLaptops
+                        StudioXPSLaptops
+                        XPSLaptops
+                alternative
+                        DesktopReplacement
+                        Light
+                        UltraLight
+                alternative
+                        IntelAtom
+                        IntelCeleron
+                        IntelCore2Duo
+                        IntelPentiumDualcore
+                alternative
+                        Lessthan_400
+                        Morethan_1200
+                        x_400__800
+                        x_800__1200
+                alternative
+                        Morethan4GB
+                        a1GB
+                        a2GB
+                        a3GB
+                        a4GB
+                alternative
+                        UbuntuLinux
+                        Windows7
+                        Windows8
+                        WindowsVista64bit
+                        WindowsXPHome
+                alternative
+                        a120GB
+                        a128GBSolidState
+                        a160GB
+                        a250GB
+                        a320GB
+                        a500GB
+                        a80GB
+                optional
+                        OpticalDrive
+                                alternative
+                                        BluRayDisc
+                                        CD_DVD_RW
+                                        DVD_ROMDriveandDVD__RW
+                                        DVD__RWandCD_RWCombo
+
+constraints
+        Adamo => !BluRayDisc
+        Adamo => !CD_DVD_RW
+        Adamo => !DVD_ROMDriveandDVD__RW
+        Adamo => !DVD__RWandCD_RWCombo
+        Adamo => !DesktopReplacement
+        Adamo => !IntelAtom
+        Adamo => !IntelCeleron
+        Adamo => !IntelPentiumDualcore
+        Adamo => !Lessthan_400
+        Adamo => !Light
+        Adamo => !Morethan4GB
+        Adamo => !UbuntuLinux
+        Adamo => !WindowsXPHome
+        Adamo => !a120GB
+        Adamo => !a160GB
+        Adamo => !a1GB
+        Adamo => !a250GB
+        Adamo => !a320GB
+        Adamo => !a3GB
+        Adamo => !a500GB
+        Adamo => !a80GB
+        Adamo => !x_400__800
+        Adamo => !x_800__1200
+        InspironLaptops => !BluRayDisc
+        InspironLaptops => !DVD_ROMDriveandDVD__RW
+        InspironLaptops => !DVD__RWandCD_RWCombo
+        InspironLaptops => !DesktopReplacement
+        InspironLaptops => !IntelAtom
+        InspironLaptops => !Morethan4GB
+        InspironLaptops => !Morethan_1200
+        InspironLaptops => !UbuntuLinux
+        InspironLaptops => !UltraLight
+        InspironLaptops => !WindowsVista64bit
+        InspironLaptops => !WindowsXPHome
+        InspironLaptops => !a120GB
+        InspironLaptops => !a128GBSolidState
+        InspironLaptops => !a1GB
+        InspironLaptops => !a80GB
+        MiniNotebooks => !BluRayDisc
+        MiniNotebooks => !CD_DVD_RW
+        MiniNotebooks => !DVD_ROMDriveandDVD__RW
+        MiniNotebooks => !DVD__RWandCD_RWCombo
+        MiniNotebooks => !DesktopReplacement
+        MiniNotebooks => !IntelCeleron
+        MiniNotebooks => !IntelCore2Duo
+        MiniNotebooks => !IntelPentiumDualcore
+        MiniNotebooks => !Light
+        MiniNotebooks => !Morethan4GB
+        MiniNotebooks => !Morethan_1200
+        MiniNotebooks => !WindowsVista64bit
+        MiniNotebooks => !a128GBSolidState
+        MiniNotebooks => !a250GB
+        MiniNotebooks => !a320GB
+        MiniNotebooks => !a3GB
+        MiniNotebooks => !a4GB
+        MiniNotebooks => !a500GB
+        MiniNotebooks => !x_800__1200
+        StudioLaptops => !IntelAtom
+        StudioLaptops => !IntelCeleron
+        StudioLaptops => !Lessthan_400
+        StudioLaptops => !Morethan4GB
+        StudioLaptops => !Morethan_1200
+        StudioLaptops => !UbuntuLinux
+        StudioLaptops => !WindowsXPHome
+        StudioLaptops => !a120GB
+        StudioLaptops => !a128GBSolidState
+        StudioLaptops => !a160GB
+        StudioLaptops => !a1GB
+        StudioLaptops => !a2GB
+        StudioLaptops => !a80GB
+        StudioXPSLaptops => !BluRayDisc
+        StudioXPSLaptops => !DVD_ROMDriveandDVD__RW
+        StudioXPSLaptops => !DVD__RWandCD_RWCombo
+        StudioXPSLaptops => !DesktopReplacement
+        StudioXPSLaptops => !IntelAtom
+        StudioXPSLaptops => !IntelCeleron
+        StudioXPSLaptops => !IntelPentiumDualcore
+        StudioXPSLaptops => !Lessthan_400
+        StudioXPSLaptops => !Morethan4GB
+        StudioXPSLaptops => !Morethan_1200
+        StudioXPSLaptops => !UbuntuLinux
+        StudioXPSLaptops => !WindowsXPHome
+        StudioXPSLaptops => !a120GB
+        StudioXPSLaptops => !a128GBSolidState
+        StudioXPSLaptops => !a160GB
+        StudioXPSLaptops => !a1GB
+        StudioXPSLaptops => !a250GB
+        StudioXPSLaptops => !a2GB
+        StudioXPSLaptops => !a3GB
+        StudioXPSLaptops => !a80GB
+        StudioXPSLaptops => !x_400__800
+        XPSLaptops => !DVD_ROMDriveandDVD__RW
+        XPSLaptops => !DVD__RWandCD_RWCombo
+        XPSLaptops => !IntelAtom
+        XPSLaptops => !IntelCeleron
+        XPSLaptops => !IntelPentiumDualcore
+        XPSLaptops => !Lessthan_400
+        XPSLaptops => !UbuntuLinux
+        XPSLaptops => !WindowsXPHome
+        XPSLaptops => !a120GB
+        XPSLaptops => !a128GBSolidState
+        XPSLaptops => !a160GB
+        XPSLaptops => !a1GB
+        XPSLaptops => !a2GB
+        XPSLaptops => !a80GB

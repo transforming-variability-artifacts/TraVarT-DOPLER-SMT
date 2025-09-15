@@ -1,0 +1,29 @@
+features
+        STANDARD_MODEL_NAME
+                optional
+                        AJDT
+                        CDT
+                        DeltaJEclipsePlugin
+                        FeatureModeling
+                                optional
+                                        CIDE
+                                        ExtendedFM
+                                        FAMILIAR
+                                        FeatureIDE
+                                                or
+                                                        AHEAD
+                                                        Antenna
+                                                        AspectJ
+                                                        DeltaJ
+                                                        DeltaMontiArc
+                                                        FeatureCpp
+                                                        FeatureHouse
+                                                        Munge
+                                        MoSoPoLiTe
+                        JDT
+
+constraints
+        !(((!AHEAD & !Antenna) & !FeatureHouse) & !Munge) => JDT
+        AspectJ => AJDT
+        DeltaJ => DeltaJEclipsePlugin
+        FeatureCpp => CDT

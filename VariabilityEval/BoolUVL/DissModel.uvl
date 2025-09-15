@@ -1,0 +1,21 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        Gen_Plan_Analysis
+                        Lot
+                                optional
+                                        Gen_Plan_Product
+                        Product
+                alternative
+                        Heat
+                        Sequence
+                optional
+                        Cooling_L2
+                                optional
+                                        Cooling_Segment
+                        Gen_Watchdogs
+                        Mat_Tracking
+                        QA_C
+                                optional
+                                        QA_A
+

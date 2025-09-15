@@ -1,0 +1,23 @@
+features
+        STANDARD_MODEL_NAME
+                or
+                        Categories
+                        OnlineShop
+                        Payment
+                                alternative
+                                        CreditCard
+                                        DebitCard
+                        Search
+                        Sort
+                        UserManagement
+                                or
+                                        Orders
+                                        Payments
+                                        Security
+                                        Wishlist
+
+constraints
+        !Search => Sort
+        Payments => !Security
+        Search => Security
+        Security => !Payments

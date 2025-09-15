@@ -1,0 +1,51 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        DirectedOnlyVertices
+                        DirectedWithEdges
+                        DirectedWithNeighbors
+                        UndirectedOnlyVertices
+                        UndirectedWithEdges
+                        UndirectedWithNeighbors
+                alternative
+                        Directed
+                        Undirected
+                alternative
+                        OnlyVertices
+                        WithEdges
+                        WithNeighbors
+                alternative
+                        Unweighted
+                        Weighted
+                optional
+                        Src
+                                alternative
+                                        BFS
+                                        DFS
+                        WeightedOnlyVertices
+                        WeightedWithEdges
+                        WeightedWithNeighbors
+                or
+                        Connected
+                        Cycle
+                        MSTKruskal
+                        MSTPrim
+                        Number
+                        StrongC
+
+constraints
+        !(!MSTKruskal & !MSTPrim) => Undirected & Weighted
+        !(DirectedOnlyVertices | !OnlyVertices) => !Directed
+        !(DirectedWithEdges | !WithEdges) => !Directed
+        !(DirectedWithNeighbors | !WithNeighbors) => !Directed
+        !(UndirectedOnlyVertices | !OnlyVertices) => !Undirected
+        !(UndirectedWithEdges | !WithEdges) => !Undirected
+        !(UndirectedWithNeighbors | !WithNeighbors) => !Undirected
+        !(WeightedOnlyVertices | !OnlyVertices) => !Weighted
+        !(WeightedWithEdges | !WithEdges) => !Weighted
+        !(WeightedWithNeighbors | !WithNeighbors) => !Weighted
+        Connected => Undirected & Src
+        Cycle => DFS
+        MSTKruskal => !MSTPrim
+        Number => Src
+        StrongC => Directed & DFS

@@ -1,0 +1,21 @@
+features
+        OnlineShop
+                alternative
+                        CreditCard
+                        DebitCard
+                optional
+                        Categories
+                        Search
+                        Sort
+                        UserManagement
+                                or
+                                        Orders
+                                        Payments
+                                        Security
+                                        Wishlist
+
+constraints
+        !Sort => Search
+        Payments => !Security
+        Search => Security
+        Security => !Payments

@@ -1,0 +1,18 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        Big
+                        Normal
+                alternative
+                        Neapolitan
+                        Sicilian
+                optional
+                        CheesyCrust
+                                alternative
+                                        MildCheesy
+                                        SuperCheesy
+                or
+                        Ham
+                        Mozzarella
+                        Salami
+

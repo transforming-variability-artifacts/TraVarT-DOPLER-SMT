@@ -1,0 +1,13 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        Directed
+                        Undirected
+                optional
+                        Algorithms
+                                or
+                                        Cycle
+                                        Number
+
+constraints
+        Cycle => Directed

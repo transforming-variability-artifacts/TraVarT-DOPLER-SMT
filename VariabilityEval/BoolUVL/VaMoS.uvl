@@ -1,0 +1,16 @@
+features
+        STANDARD_MODEL_NAME
+                optional
+                        Camera
+                                alternative
+                                        T21MP
+                                        T31MP
+                                        T5MP
+                        GSM_Protocol_1900
+                        MP3_Recording
+                or
+                        MP3
+                        WAV
+
+constraints
+        MP3_Recording => MP3

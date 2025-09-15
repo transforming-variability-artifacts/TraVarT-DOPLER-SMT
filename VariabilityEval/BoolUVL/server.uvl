@@ -1,0 +1,16 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        Debian
+                        Windows
+                        macOS
+                optional
+                        Logging
+                or
+                        APFS
+                        EXT4
+                        NTFS
+
+constraints
+        Windows => NTFS
+        macOS => APFS

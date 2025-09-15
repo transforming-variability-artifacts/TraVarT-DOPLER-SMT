@@ -1,0 +1,16 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        Basic
+                        Colour
+                        HighResolution
+                optional
+                        GPS
+                        Media
+                                or
+                                        Camera
+                                        MP3
+
+constraints
+        !HighResolution => !Camera
+        GPS => !Basic
