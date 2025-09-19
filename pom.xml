@@ -13,7 +13,7 @@
         <source.disabled>true</source.disabled>
         <checkstyle-maven-plugin.version>3.4.0</checkstyle-maven-plugin.version>
     </properties>
-
+    
     <dependencies>
         <dependency>
             <groupId>io.github.universal-variability-language</groupId>
@@ -32,8 +32,13 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
+		<dependency>
+    		<groupId>org.antlr</groupId>
+    		<artifactId>antlr4-runtime</artifactId>
+    		<version>4.13.2</version>
+		</dependency>
     </dependencies>
-
+    
     <build>
         <resources>
             <resource>

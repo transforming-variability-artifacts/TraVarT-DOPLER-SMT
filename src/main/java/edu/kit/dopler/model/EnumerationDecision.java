@@ -9,12 +9,14 @@
  * Contributors: 
  * 	@author Fabian Eger
  * 	@author Kevin Feichtinger
+ *  @author David Kowal
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import edu.kit.dopler.exceptions.InvalidCardinalityException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
 import java.util.HashSet;
@@ -24,9 +26,9 @@ import java.util.stream.Stream;
 
 public class EnumerationDecision extends Decision<String> {
 
-	private final Enumeration enumeration;
-	private final int minCardinality;
-	private final int maxCardinality;
+	private Enumeration enumeration;
+	private int minCardinality;
+	private int maxCardinality;
 	private final AbstractValue<String> value;
 	private final Set<EnumerationLiteral> disAllowed;
 
@@ -69,6 +71,21 @@ public class EnumerationDecision extends Decision<String> {
 					+ enumerationLiteral.getValue() + "_POST" + " " + "false" + ")");
 		}
 		builder.add(")");
+	}
+	
+	public void setEnumeration(Enumeration enumeration) {
+		this.enumeration = enumeration;
+	}
+	
+	public void setCardinality(int minCardinality, int maxCardinality) throws InvalidCardinalityException {
+		if(minCardinality < 0 ) {
+			throw new InvalidCardinalityException("min cardinality is negative" + minCardinality);
+		} else if ( minCardinality > maxCardinality) {
+			throw new InvalidCardinalityException("min cardinality: " + minCardinality + "is bigger than max cardinality: " + maxCardinality);
+		} else {
+			this.minCardinality = minCardinality;
+			this.maxCardinality = maxCardinality;
+		}
 	}
 
 	private boolean inRange(String value) {
