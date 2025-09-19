@@ -25,7 +25,7 @@ public class Allows extends ValueRestrictionAction {
 
 	private final IValue<?> allowedValue;
 
-	public Allows(IDecision<?> decision, IValue<?> allowedValue) {
+	public Allows(EnumerationDecision decision, IValue<?> allowedValue) {
 		super(decision);
 		this.allowedValue = allowedValue;
 	}

@@ -24,7 +24,7 @@ import edu.kit.dopler.exceptions.ActionExecutionException;
 
 public class EnumEnforce extends Enforce {
 
-	public EnumEnforce(final IDecision<?> decision, final IValue<?> value) {
+	public EnumEnforce(final EnumerationDecision decision, final IValue<?> value) {
 		super(decision, value);
 	}
 

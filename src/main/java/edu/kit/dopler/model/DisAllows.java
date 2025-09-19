@@ -24,7 +24,7 @@ public class DisAllows extends ValueRestrictionAction {
 
 	IValue<?> disAllowValue;
 
-	public DisAllows(IDecision<?> decisionType, IValue<?> disAllowValue) {
+	public DisAllows(EnumerationDecision decisionType, IValue<?> disAllowValue) {
 		super(decisionType);
 		this.disAllowValue = disAllowValue;
 	}

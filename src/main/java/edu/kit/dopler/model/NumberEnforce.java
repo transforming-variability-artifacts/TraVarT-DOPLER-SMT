@@ -24,7 +24,7 @@ import edu.kit.dopler.exceptions.ActionExecutionException;
 
 public class NumberEnforce extends Enforce {
 
-	public NumberEnforce(IDecision<?> decision, IValue<?> value) {
+	public NumberEnforce(NumberDecision decision, IValue<?> value) {
 		super(decision, value);
 	}
 
