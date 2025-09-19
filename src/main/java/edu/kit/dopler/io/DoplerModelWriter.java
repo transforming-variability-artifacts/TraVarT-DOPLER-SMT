@@ -142,12 +142,10 @@ public class DoplerModelWriter {
 	        	NumberDecision numberDecision = (NumberDecision) decision;
 	        	Set<IExpression> validityConditions = numberDecision.getValidityConditions();
 	        	for(IExpression con : validityConditions) {
-	        		if(con instanceof GreatherThan) {
-	        			GreatherThan gt = (GreatherThan) con;
+	        		if(con instanceof GreatherThan gt) {
 	        			DoubleLiteralExpression ngt = (DoubleLiteralExpression) gt.getLeftExpression();
 	        			numberRange = (ngt.getLiteral() + 1) + numberRange;
-	        		} else if (con instanceof LessThan) {
-	        			LessThan lt = (LessThan) con;
+	        		} else if (con instanceof LessThan lt) {
 	        			DoubleLiteralExpression nlt = (DoubleLiteralExpression) lt.getLeftExpression();
 	        			numberRange = numberRange + (nlt.getLiteral() - 1);
 	        		}

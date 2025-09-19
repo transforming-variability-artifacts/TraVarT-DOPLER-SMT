@@ -105,11 +105,6 @@ public class EnumerationDecision extends Decision<String> {
 		disAllowed.remove(literal);
 	}
 
-	@Override
-	void toSMTStreamValidityConditions(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions) {
-
-	}
-
 	public Enumeration getEnumeration() {
 		return enumeration;
 	}

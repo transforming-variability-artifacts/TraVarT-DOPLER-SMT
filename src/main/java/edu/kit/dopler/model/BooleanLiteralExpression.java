@@ -58,8 +58,8 @@ public class BooleanLiteralExpression extends LiteralExpression {
 	 */
 	@Override
 	boolean equalsForLiteralExpressions(IValue<?> value) throws InvalidTypeInLiteralExpressionCheckException {
-		if (value instanceof BooleanValue) {
-			return literal == ((BooleanValue) value).getValue();
+		if (value instanceof BooleanValue bv) {
+			return literal == bv.getValue();
 		} else {
 			throw new InvalidTypeInLiteralExpressionCheckException("Parameter was not of Type Boolean in Equals");
 		}

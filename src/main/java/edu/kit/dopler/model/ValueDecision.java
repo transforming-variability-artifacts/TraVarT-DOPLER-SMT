@@ -25,7 +25,7 @@ public abstract class ValueDecision<T> extends Decision<T> {
 
 	private Set<IExpression> validityConditions = Collections.emptySet();
 
-	public ValueDecision(String displayId, String question, String description, IExpression visibilityCondition,
+	protected ValueDecision(String displayId, String question, String description, IExpression visibilityCondition,
 			Set<Rule> rules, Set<IExpression> validityConditions, DecisionType decisionType) {
 		super(displayId, question, description, visibilityCondition, rules, decisionType);
 		this.validityConditions = validityConditions;
@@ -47,9 +47,9 @@ public abstract class ValueDecision<T> extends Decision<T> {
 		}
 		return true;
 	}
-
+	
 	@Override
-	void toSMTStreamValidityConditions(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions) {
+	void toSMTStreamDecisionSpecific(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions) {
 		if (!getValidityConditions().isEmpty()) {
 			builder.add("(ite ");
 			builder.add("(and");

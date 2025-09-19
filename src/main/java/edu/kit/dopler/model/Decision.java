@@ -53,7 +53,7 @@ public abstract class Decision<T> implements IDecision<T> {
 	private boolean select;
 	private DecisionType decisionType;
 
-	public Decision(String displayId, String question, String description, IExpression visibilityCondition,
+	protected Decision(String displayId, String question, String description, IExpression visibilityCondition,
 			Set<Rule> rules, DecisionType decisionType) {
 		this.id = uid++;
 		this.displayId = displayId;
@@ -156,7 +156,8 @@ public abstract class Decision<T> implements IDecision<T> {
 		if (getVisibilityCondition() instanceof LiteralExpression) {
 
 			toSMTStreamDecisionSpecific(builder, decisions);
-			// if the decision has a literal expression (true or false) as visibility condition we add the decision encoding
+			// if the decision has a literal expression (true or false) as visibility
+			// condition we add the decision encoding
 			// without ite visibility
 		} else {
 			builder.add("(ite ");
@@ -242,24 +243,8 @@ public abstract class Decision<T> implements IDecision<T> {
 		builder.add(")"); // closing and
 	}
 
-	/**
-	 *
-	 * this methode is needed because for the number decision the validity condition
-	 * also need to be added to the encoding the other decisions leave this methode
-	 * empty
-	 */
-	abstract void toSMTStreamValidityConditions(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions);
-
 	void toSMTStreamDecisionSpecific(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions) {
-
-		if (getDecisionType() == DecisionType.NUMBER || getDecisionType() == DecisionType.STRING) {
-
-			toSMTStreamValidityConditions(builder, decisions);
-
-		} else {
-			toSMTStreamRules(builder, decisions);
-		}
-
+		toSMTStreamRules(builder, decisions);
 	}
 
 	/**
