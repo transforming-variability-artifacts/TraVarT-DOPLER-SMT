@@ -1,0 +1,24 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        BTree
+                        Unindexed
+                alternative
+                        InMemory
+                        Persistent
+                                alternative
+                                        Dynamic
+                                        Static
+                                alternative
+                                        LFU
+                                        LRU
+                alternative
+                        NutOS
+                        Win
+                optional
+                        DebugLogging
+                or
+                        delete
+                        get
+                        put
+

@@ -1,0 +1,47 @@
+features
+        WikiMatrix
+                alternative
+                        Commercial
+                        GPL
+                        GPL2
+                        NoLimit
+                optional
+                        Language
+                                alternative
+                                        Java
+                                        PHP
+                                        Perl
+                                        Python
+                        LicenseCostFee
+                                alternative
+                                        Community
+                                        DifferentLicenses
+                                        US
+                        Storage
+                                alternative
+                                        Database
+                                        FileRCS
+                                        Files
+                        Unicode
+
+constraints
+        !LicenseCostFee => Storage
+        Commercial => US
+        Community => FileRCS
+        Database => !Python
+        DifferentLicenses => !GPL
+        FileRCS => Community
+        FileRCS => Perl
+        GPL => Storage
+        GPL2 => PHP
+        Java => US
+        Language => Unicode
+        LicenseCostFee => !Files
+        NoLimit => !DifferentLicenses
+        Perl => FileRCS
+        Storage => Unicode
+        US => Commercial
+        US => Java
+        Unicode => !NoLimit
+        Unicode => Language
+        Unicode => Storage

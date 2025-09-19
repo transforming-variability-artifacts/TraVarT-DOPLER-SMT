@@ -1,0 +1,40 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        High
+                        Standard_1
+                alternative
+                        Private
+                        Retailer
+                optional
+                        Categories
+                        CommunityForum
+                or
+                        Chat
+                        Email
+                        FAQ
+                        Phone_2
+                or
+                        Cheque
+                        CreditCard
+                        Escrow
+                        PayPal
+                        PostalOrder
+                or
+                        PC
+                        Phone
+                                or
+                                        Android_1
+                                        Apple_1
+                                        Windows_1
+                        Tablets
+                                or
+                                        Android
+                                        Apple
+                                        Windows
+                or
+                        Premium
+                        Standard
+
+constraints
+        CreditCard => High

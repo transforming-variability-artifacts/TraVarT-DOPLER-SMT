@@ -1,0 +1,23 @@
+features
+        APL
+                optional
+                        Gui
+                                optional
+                                        guidsl
+                                        me
+                                        mmatrix
+                                        web
+                        Xml
+                                alternative
+                                        xak
+                                        xc
+                        aj
+                        bc
+                        cpp
+                        drc
+                        jedi
+                        reform
+
+constraints
+        bc => mmatrix
+        me => mmatrix

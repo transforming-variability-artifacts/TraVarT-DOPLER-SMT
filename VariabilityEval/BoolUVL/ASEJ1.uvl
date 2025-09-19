@@ -1,0 +1,211 @@
+features
+        STANDARD_MODEL_NAME
+                or
+                        Modes
+                                or
+                                        bottom
+                                        horizontal
+                                        top
+                                        vertical
+                        Strands
+                                alternative
+                                        Strands_1
+                                        Strands_10
+                                        Strands_100
+                                        Strands_11
+                                        Strands_12
+                                        Strands_13
+                                        Strands_14
+                                        Strands_15
+                                        Strands_16
+                                        Strands_17
+                                        Strands_18
+                                        Strands_19
+                                        Strands_2
+                                        Strands_20
+                                        Strands_21
+                                        Strands_22
+                                        Strands_23
+                                        Strands_24
+                                        Strands_25
+                                        Strands_26
+                                        Strands_27
+                                        Strands_28
+                                        Strands_29
+                                        Strands_3
+                                        Strands_30
+                                        Strands_31
+                                        Strands_32
+                                        Strands_33
+                                        Strands_34
+                                        Strands_35
+                                        Strands_36
+                                        Strands_37
+                                        Strands_38
+                                        Strands_39
+                                        Strands_4
+                                        Strands_40
+                                        Strands_41
+                                        Strands_42
+                                        Strands_43
+                                        Strands_44
+                                        Strands_45
+                                        Strands_46
+                                        Strands_47
+                                        Strands_48
+                                        Strands_49
+                                        Strands_5
+                                        Strands_50
+                                        Strands_51
+                                        Strands_52
+                                        Strands_53
+                                        Strands_54
+                                        Strands_55
+                                        Strands_56
+                                        Strands_57
+                                        Strands_58
+                                        Strands_59
+                                        Strands_6
+                                        Strands_60
+                                        Strands_61
+                                        Strands_62
+                                        Strands_63
+                                        Strands_64
+                                        Strands_65
+                                        Strands_66
+                                        Strands_67
+                                        Strands_68
+                                        Strands_69
+                                        Strands_7
+                                        Strands_70
+                                        Strands_71
+                                        Strands_72
+                                        Strands_73
+                                        Strands_74
+                                        Strands_75
+                                        Strands_76
+                                        Strands_77
+                                        Strands_78
+                                        Strands_79
+                                        Strands_8
+                                        Strands_80
+                                        Strands_81
+                                        Strands_82
+                                        Strands_83
+                                        Strands_84
+                                        Strands_85
+                                        Strands_86
+                                        Strands_87
+                                        Strands_88
+                                        Strands_89
+                                        Strands_9
+                                        Strands_90
+                                        Strands_91
+                                        Strands_92
+                                        Strands_93
+                                        Strands_94
+                                        Strands_95
+                                        Strands_96
+                                        Strands_97
+                                        Strands_98
+                                        Strands_99
+                        TopFeeding3D
+                        UI
+
+constraints
+        Strands_10 => !top
+        Strands_100 => !top
+        Strands_11 => !top
+        Strands_12 => !top
+        Strands_13 => !top
+        Strands_14 => !top
+        Strands_15 => !top
+        Strands_16 => !top
+        Strands_17 => !top
+        Strands_18 => !top
+        Strands_19 => !top
+        Strands_20 => !top
+        Strands_21 => !top
+        Strands_22 => !top
+        Strands_23 => !top
+        Strands_24 => !top
+        Strands_25 => !top
+        Strands_26 => !top
+        Strands_27 => !top
+        Strands_28 => !top
+        Strands_29 => !top
+        Strands_30 => !top
+        Strands_31 => !top
+        Strands_32 => !top
+        Strands_33 => !top
+        Strands_34 => !top
+        Strands_35 => !top
+        Strands_36 => !top
+        Strands_37 => !top
+        Strands_38 => !top
+        Strands_39 => !top
+        Strands_40 => !top
+        Strands_41 => !top
+        Strands_42 => !top
+        Strands_43 => !top
+        Strands_44 => !top
+        Strands_45 => !top
+        Strands_46 => !top
+        Strands_47 => !top
+        Strands_48 => !top
+        Strands_49 => !top
+        Strands_5 => !top
+        Strands_50 => !top
+        Strands_51 => !top
+        Strands_52 => !top
+        Strands_53 => !top
+        Strands_54 => !top
+        Strands_55 => !top
+        Strands_56 => !top
+        Strands_57 => !top
+        Strands_58 => !top
+        Strands_59 => !top
+        Strands_6 => !top
+        Strands_60 => !top
+        Strands_61 => !top
+        Strands_62 => !top
+        Strands_63 => !top
+        Strands_64 => !top
+        Strands_65 => !top
+        Strands_66 => !top
+        Strands_67 => !top
+        Strands_68 => !top
+        Strands_69 => !top
+        Strands_7 => !top
+        Strands_70 => !top
+        Strands_71 => !top
+        Strands_72 => !top
+        Strands_73 => !top
+        Strands_74 => !top
+        Strands_75 => !top
+        Strands_76 => !top
+        Strands_77 => !top
+        Strands_78 => !top
+        Strands_79 => !top
+        Strands_8 => !top
+        Strands_80 => !top
+        Strands_81 => !top
+        Strands_82 => !top
+        Strands_83 => !top
+        Strands_84 => !top
+        Strands_85 => !top
+        Strands_86 => !top
+        Strands_87 => !top
+        Strands_88 => !top
+        Strands_89 => !top
+        Strands_9 => !top
+        Strands_90 => !top
+        Strands_91 => !top
+        Strands_92 => !top
+        Strands_93 => !top
+        Strands_94 => !top
+        Strands_95 => !top
+        Strands_96 => !top
+        Strands_97 => !top
+        Strands_98 => !top
+        Strands_99 => !top

@@ -1,0 +1,25 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        Base_onestrip
+                        Base_twostrip
+                alternative
+                        Body_major
+                                alternative
+                                        King_body
+                                        Queen_body
+                        Body_minor
+                                alternative
+                                        Bishop_body
+                                        Knight_body
+                                        Pawn_body
+                                        Rook_body
+                alternative
+                        Rod_long
+                        Rod_short
+
+constraints
+        Body_major => Base_twostrip
+        Body_major => Rod_long
+        Body_minor => Base_onestrip
+        Body_minor => Rod_short

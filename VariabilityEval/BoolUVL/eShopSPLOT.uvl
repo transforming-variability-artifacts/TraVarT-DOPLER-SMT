@@ -1,0 +1,16 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        alta
+                        estandar
+                optional
+                        buscador
+                        reportepublico
+                or
+                        tarjetacredito
+                        transferencias
+
+constraints
+        alta => !reportepublico
+        buscador
+        tarjetacredito => alta

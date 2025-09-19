@@ -1,0 +1,44 @@
+features
+        STANDARD_MODEL_NAME
+                optional
+                        Changeover
+                                optional
+                                        Changeover1
+                                        Changeover2
+                        Crossover
+                        Neutral
+                                optional
+                                        Neutral1_1
+                                        Neutral1_2
+                        Off
+                                optional
+                                        Off1_1
+                                        Off1_2
+                                        Off1_3
+                                        Off1_4
+                        Pole
+                                optional
+                                        Pole1_1
+                                        Pole1_2
+                                        Pole2_1
+                                        Pole2_2
+                        Rocker
+                                optional
+                                        Rocker1_1
+                                        Rocker1_2
+                                        Rocker2_1
+                                        Rocker2_2
+                        Series
+
+constraints
+        Changeover1 => Rocker1_1
+        Changeover2 => Rocker1_1
+        Changeover2 => Rocker1_2
+        Off => Rocker
+        Off1_1 => Rocker1_1
+        Off1_2 => Rocker1_2
+        Rocker => Pole
+        Rocker1_1 => Pole1_1
+        Rocker1_2 => Pole2_1
+        Rocker2_1 => Pole2_1
+        Rocker2_2 => Pole2_2

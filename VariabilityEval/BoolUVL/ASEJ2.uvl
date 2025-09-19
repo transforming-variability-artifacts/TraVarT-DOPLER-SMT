@@ -1,0 +1,12 @@
+features
+        STANDARD_MODEL_NAME
+                optional
+                        Thermal3D
+                        TopFeeding3D
+                        UI
+                or
+                        bottom
+                        horizontal
+                        top
+                        vertical
+

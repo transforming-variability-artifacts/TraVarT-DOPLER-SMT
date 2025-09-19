@@ -1,0 +1,63 @@
+features
+        STANDARD_MODEL_NAME
+                or
+                        VP10_Signs_giving_orders
+                                optional
+                                        V40_Stop_and_give_way
+                                        V41_No_overtaking
+                        VP1_Type_of_vehicle
+                                alternative
+                                        V1_Medium_class_car
+                                        V2_Upper_class_car
+                                        V3_Small_truck_3dot5t
+                                        V4_Big_truck_7dot5t
+                        VP2_Activation
+                                alternative
+                                        V5_Switchable
+                                        V6_Durable
+                        VP3_Comfort_functions
+                                optional
+                                        V10_Hazardous_situation_alarm
+                                        V7_No_stopping_warning
+                                        V8_Overspeed_warning
+                                        V9_Sound_at_warning_signs
+                        VP4_Behaviour_at_warning_signs
+                                alternative
+                                        V11_Show_warning_sign
+                                        V12_Display_and_sound_indication
+                        VP5_Behaviour_at_no_stopping_signs
+                                alternative
+                                        V13_Warn_for_no_stopping_sign
+                                        V14_No_warning
+                        VP6_Behaviour_in_hazardous_situations
+                                optional
+                                        V17_Emergency_break
+                                        VP11_Indication__of_hazardous_situation
+                                                alternative
+                                                        V15_Show_on_display
+                                                        V16_Display_and_sound_indication
+                        VP7_Other_signs
+                                optional
+                                        V18_Road_w_or_right_of_way_start
+                                        V19_City_limit
+                        VP8_Prohibition_signs
+                                optional
+                                        V26_No_vehicles
+                                        V27_No_cars
+                        VP9_Warning_signs
+                                optional
+                                        V34_Danger
+                                        V35_Side_winds
+
+constraints
+        V10_Hazardous_situation_alarm => V16_Display_and_sound_indication
+        V10_Hazardous_situation_alarm => V17_Emergency_break
+        V1_Medium_class_car => V26_No_vehicles
+        V1_Medium_class_car => V27_No_cars
+        V1_Medium_class_car => V41_No_overtaking
+        V4_Big_truck_7dot5t => V6_Durable
+        V7_No_stopping_warning => !V14_No_warning
+        V8_Overspeed_warning => V19_City_limit
+        V9_Sound_at_warning_signs => !V11_Show_warning_sign
+        V9_Sound_at_warning_signs => V12_Display_and_sound_indication
+        V9_Sound_at_warning_signs => V34_Danger

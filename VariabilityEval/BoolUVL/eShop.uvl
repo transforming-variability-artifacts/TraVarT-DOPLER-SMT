@@ -1,0 +1,21 @@
+features
+        STANDARD_MODEL_NAME
+                optional
+                        Categories
+                        Search
+                        Sort
+                or
+                        CreditCard
+                        DebitCard
+                or
+                        Orders
+                        Payments
+                        Security
+                        Wishlist
+
+constraints
+        !Search => Sort
+        !Sort => Search
+        Payments => !Security
+        Search => Security
+        Security => !Payments

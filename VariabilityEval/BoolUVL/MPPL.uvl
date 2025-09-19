@@ -1,0 +1,18 @@
+features
+        STANDARD_MODEL_NAME
+                or
+                        Messaging
+                                or
+                                        MMS
+                                        SMS
+                        OS
+                                alternative
+                                        Symbian
+                                        WinCE
+                        UtilityFeatures
+                                optional
+                                        Calculator
+                                        CurrencyExchange
+
+constraints
+        CurrencyExchange => Calculator

@@ -1,0 +1,77 @@
+features
+        STANDARD_MODEL_NAME
+                or
+                        ALL
+                        CW
+                                optional
+                                        CW_authentication
+                                        CW_autogenerate
+                                        CW_decisionboard
+                                        CW_documenation
+                                        CW_flatfilegenerator
+                                        CW_guidance
+                                                alternative
+                                                        After_first_selection
+                                                        Always
+                                        CW_requirementsView
+                                        CW_resolution
+                                                alternative
+                                                        p1024x768
+                                                        p1280x1024
+                                                        p1400x1050
+                                                        p1600x1200
+                                                        p1900x1080
+                                                        p800x600
+                                        CW_sharepoint
+                                        CW_views
+                                                or
+                                                        Graph_based
+                                                        Table_based
+                                                        Tree_based
+                                        CW_wordgenerator
+                                                optional
+                                                        CW_wordgenerator_wordAddIn
+                        CW_resolution_height
+                                optional
+                                        CW_resolution_height_1024
+                                        CW_resolution_height_1050
+                                        CW_resolution_height_1080
+                                        CW_resolution_height_1200
+                                        CW_resolution_height_600
+                                        CW_resolution_height_768
+                        CW_resolution_width
+                                optional
+                                        CW_resolution_width_1024
+                                        CW_resolution_width_1280
+                                        CW_resolution_width_1400
+                                        CW_resolution_width_1600
+                                        CW_resolution_width_1900
+                                        CW_resolution_width_800
+                        DK
+                                optional
+                                        DK_builder
+                                        DK_merger
+                                        DK_metamodelling
+                                        DK_rulelang_editor
+                        DK_modelconverter
+                        DK_sharepoint
+                        PK
+                        ProprietaryTools
+                        SERVER
+
+constraints
+        ALL => CW
+        ALL => DK
+        ALL => PK
+        p1024x768 => CW_resolution_height_768
+        p1024x768 => CW_resolution_width_1024
+        p1280x1024 => CW_resolution_height_1024
+        p1280x1024 => CW_resolution_width_1280
+        p1400x1050 => CW_resolution_height_1050
+        p1400x1050 => CW_resolution_width_1400
+        p1600x1200 => CW_resolution_height_1200
+        p1600x1200 => CW_resolution_width_1600
+        p1900x1080 => CW_resolution_height_1080
+        p1900x1080 => CW_resolution_width_1900
+        p800x600 => CW_resolution_height_600
+        p800x600 => CW_resolution_width_800

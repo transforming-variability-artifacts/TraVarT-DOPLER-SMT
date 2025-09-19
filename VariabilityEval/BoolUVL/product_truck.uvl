@@ -1,0 +1,8 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        Dumper
+                        OpenTop
+                        StakeBed
+                        Tank
+

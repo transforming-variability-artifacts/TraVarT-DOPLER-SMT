@@ -1,0 +1,67 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        FilterTankSModule
+                                alternative
+                                        CAFilterTankSModule
+                                        CBFilterTankSModule
+                        FilterTankXLModule
+                                alternative
+                                        CAFilterTankXLModule
+                                        CBFilterTankXLModule
+                alternative
+                        FilterTankS
+                        FilterTankXL
+                alternative
+                        FreshwaterTankSModule
+                        FreshwaterTankXLModule
+                alternative
+                        IronFrame
+                        Rack1
+                        Rack2
+                optional
+                        Charcoal
+                                alternative
+                                        CharcoalActive
+                                        CharcoalBone
+                        FreshwaterTank
+                                alternative
+                                        FreshwaterTankS
+                                        FreshwaterTankXL
+                        Nanofilter
+                        Tube3
+                        Valve
+                                optional
+                                        Valve1
+                                        Valve2
+                        WastewaterTankXL
+                        WastewaterTankXLModule
+
+constraints
+        !(!FreshwaterTankS | IronFrame) => Rack1
+        CAFilterTankSModule => CharcoalActive
+        CAFilterTankSModule => FilterTankS
+        CAFilterTankXLModule => CharcoalActive
+        CAFilterTankXLModule => FilterTankXL
+        CBFilterTankSModule => CharcoalBone
+        CBFilterTankSModule => FilterTankS
+        CBFilterTankXLModule => CharcoalBone
+        CBFilterTankXLModule => FilterTankXL
+        FilterTankSModule => FilterTankS
+        FilterTankXL => FreshwaterTankXL & WastewaterTankXL
+        FilterTankXLModule => FilterTankXL
+        FilterTankXLModule => FreshwaterTankXLModule & WastewaterTankXLModule
+        FreshwaterTankSModule => !Tube3
+        FreshwaterTankSModule => !Valve2
+        FreshwaterTankSModule => FreshwaterTankS
+        FreshwaterTankSModule => Valve1
+        FreshwaterTankXL => FilterTankXL & WastewaterTankXL
+        FreshwaterTankXLModule => FilterTankXLModule & WastewaterTankXLModule
+        FreshwaterTankXLModule => Rack2
+        FreshwaterTankXLModule => Tube3
+        FreshwaterTankXLModule => Valve1
+        Nanofilter => !IronFrame
+        WastewaterTankXL => FilterTankXL & FreshwaterTankXL
+        WastewaterTankXLModule => FilterTankXLModule & FreshwaterTankXLModule
+        WastewaterTankXLModule => Valve2
+        WastewaterTankXLModule => WastewaterTankXL

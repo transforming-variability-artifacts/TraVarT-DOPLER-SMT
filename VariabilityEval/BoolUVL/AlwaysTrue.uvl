@@ -1,0 +1,9 @@
+features
+        STANDARD_MODEL_NAME
+                optional
+                        Cheese
+                        Sauce
+                                alternative
+                                        Ketchup
+                                        Mustard
+

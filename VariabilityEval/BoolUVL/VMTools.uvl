@@ -1,0 +1,41 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        DecisionModel
+                        FeatureModel
+                        Orthodonal
+                        Other
+                optional
+                        Cardinality
+                        DomainAnalysis
+                                optional
+                                        RequirementSpecifications
+                        Organizational
+                                optional
+                                        CommunicationSharing
+                                        Guidance
+                                        NotifyingFeedback
+                                        PlanningManagement
+                                        TradeOffAnalysis
+                        Traceability
+                        VariabilityDecision
+                                or
+                                        CompileTime
+                                        Other_2
+                                        Runtime
+                        VariabilityEvolution
+                        VariabilityValidation
+                                optional
+                                        VerificationReports
+                                or
+                                        LogicSolvers
+                                        Other_1
+                                        Reasoners
+                or
+                        Constraints
+                        Dependency
+
+constraints
+        !VariabilityDecision => !VariabilityDecision
+        DomainAnalysis
+        Organizational

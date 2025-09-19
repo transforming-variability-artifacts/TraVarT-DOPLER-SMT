@@ -1,0 +1,15 @@
+features
+        STANDARD_MODEL_NAME
+                alternative
+                        X
+                        Y
+                        Z
+                optional
+                        A
+                        B
+                        C
+                or
+                        G
+                        H
+                        I
+
