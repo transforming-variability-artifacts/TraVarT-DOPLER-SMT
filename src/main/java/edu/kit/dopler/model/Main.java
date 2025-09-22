@@ -34,7 +34,6 @@ import de.ovgu.featureide.fm.core.io.uvl.UVLFeatureModelFormat;
 import de.ovgu.featureide.fm.core.job.LongRunningCore;
 import de.ovgu.featureide.fm.core.job.LongRunningWrapper;
 import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
-import edu.kit.dopler.io.DecisionModelReader;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -63,55 +62,120 @@ import edu.kit.dopler.io.antlr.resources.DoplerParser;
 public class Main {
 
 	public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {		
-		// ANTLR Setup
-		// Input file, JSON or CSV
-		String fileName = "dm_dopler.json";
-		CharStream input = CharStreams.fromFileName(fileName);
-		DoplerLexer lexer = new DoplerLexer(input);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		DoplerParser parser = new DoplerParser(tokens);
-		
-		// Create parse tree
-		ParseTree tree = parser.document();
-		ParseTreeWalker walker = new ParseTreeWalker();
-		
-		// Walk through both listeners, first to create the decisions, second to create the expressions
-		DoplerDecisionCreator decisionCreator = new DoplerDecisionCreator(fileName);
-		walker.walk(decisionCreator, tree);
-		DoplerExpressionParser expressionParser = new DoplerExpressionParser(decisionCreator.getDopler());
-		walker.walk(expressionParser, tree);
-		
-		// Extract Dopler Model
-		Dopler dopler = expressionParser.getDopler();
-		
-		// Write Dopler Model in csv and json
-		DoplerModelWriter dmw = new DoplerModelWriter();
-		dmw.writeCSV(dopler, Paths.get("output_dm_dopler.csv"));
-		dmw.writeJson(dopler, Paths.get("output_dm_dopler.json"));
-		
 
-		dopler.toSMTStream().build().forEach(System.out::println);
-		try {
+		String pathTOFile = "VariabilityEval/BoolNewParser/dm_VaMoS.csv";
+        Dopler dopler = readDOPLERModelFromFile(pathTOFile);
 
-			long startTime = System.nanoTime();
-			final Stream.Builder<String> builder = dopler.toSMTStream();
+        anomalieAnalysisOfAllModels();
 
-			long endTime = System.nanoTime();
-			long duration = (endTime - startTime) / 1000000;
-			System.out.println("SMT DOPLER encoding needed: " + duration+ "ms");  //divide by 1000000 to get milliseconds.
-
-			 startTime = System.nanoTime();
-             getAmountOfConfigs(dopler);
-             checkForAnomalies(dopler);
-			 endTime = System.nanoTime();
-			 duration = (endTime - startTime) / 1000000;
-			System.out.println("SMT DOPLER needed: " + duration  + "ms");  //divide by 1000000 to get milliseconds.
-            
-		} catch (final Exception e) {
-			System.out.println(e);
-		}
+		//dopler.toSMTStream().build().forEach(System.out::println);
+//		try {
+//
+//			long startTime = System.nanoTime();
+//			final Stream.Builder<String> builder = dopler.toSMTStream();
+//
+//			long endTime = System.nanoTime();
+//			long duration = (endTime - startTime) / 1000000;
+//			System.out.println("SMT DOPLER encoding needed: " + duration+ "ms");  //divide by 1000000 to get milliseconds.
+//
+//			 startTime = System.nanoTime();
+//            // getAmountOfConfigs(dopler);
+//             checkForAnomalies(dopler);
+//			 endTime = System.nanoTime();
+//			 duration = (endTime - startTime) / 1000000;
+//			System.out.println("SMT DOPLER Anomalie needed: " + duration  + "ms");  //divide by 1000000 to get milliseconds.
+//
+//            startTime = System.nanoTime();
+//            getAmountOfConfigs(dopler);
+//            //checkForAnomalies(dopler);
+//            endTime = System.nanoTime();
+//            duration = (endTime - startTime) / 1000000;
+//            System.out.println("SMT DOPLER Variants COunting needed: " + duration  + "ms");  //divide by 1000000 to get milliseconds.
+//
+//
+//		} catch (final Exception e) {
+//			System.out.println(e);
+//		}
 
 	}
+
+
+    static void anomalieAnalysisOfAllModels() {
+
+        Path startDirectory = Paths.get(System.getProperty("user.dir") + "/VariabilityEval/BoolNewParser/");
+
+
+        try {
+
+            Files.walk(startDirectory).filter(Files::isRegularFile)
+                    .filter(path -> {
+                String fileName = path.getFileName().toString().toLowerCase();
+                return fileName.endsWith(".json") || fileName.endsWith(".csv");
+            })
+                    .forEach(path -> {
+                System.out.println(path.toString());
+                Dopler dopler = null;
+                try {
+                    dopler = readDOPLERModelFromFile(String.valueOf(path));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                long startTime = System.nanoTime();
+                final Stream.Builder<String> builder = dopler.toSMTStream();
+
+                long endTime = System.nanoTime();
+                long duration = (endTime - startTime) / 1000000;
+
+                startTime = System.nanoTime();
+                // getAmountOfConfigs(dopler);
+                checkForAnomalies(dopler);
+                endTime = System.nanoTime();
+                duration = (endTime - startTime) / 1000000;
+                System.out.println("SMT DOPLER Anomalie needed: " + duration + "ms");  //divide by 1000000 to get milliseconds.
+            });
+        } catch (IOException e) {
+
+
+        }
+
+    }
+
+
+
+    static void writeDoplerToFile(Dopler dopler, String fileName) throws IOException {
+        // Write Dopler Model in csv and json
+        DoplerModelWriter dmw = new DoplerModelWriter();
+        dmw.writeCSV(dopler, Paths.get("output_dm_dopler.csv"));
+        dmw.writeJson(dopler, Paths.get("output_dm_dopler.json"));
+    }
+
+
+    static Dopler readDOPLERModelFromFile(String pathToFile) throws IOException {
+        // ANTLR Setup
+        // TODO check for wrong file formats
+        CharStream input = CharStreams.fromFileName(pathToFile);
+        DoplerLexer lexer = new DoplerLexer(input);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        DoplerParser parser = new DoplerParser(tokens);
+
+        // Create parse tree
+        ParseTree tree = parser.document();
+        ParseTreeWalker walker = new ParseTreeWalker();
+
+        // Walk through both listeners, first to create the decisions, second to create the expressions
+        DoplerDecisionCreator decisionCreator = new DoplerDecisionCreator(pathToFile);
+        walker.walk(decisionCreator, tree);
+        DoplerExpressionParser expressionParser = new DoplerExpressionParser(decisionCreator.getDopler());
+        walker.walk(expressionParser, tree);
+
+        // Extract Dopler Model
+
+        return expressionParser.getDopler();
+
+    }
+
+
 
 	/**
 	 * Gets the smt stream of the dopler model and adds the comment (check-sat) and
@@ -386,7 +450,7 @@ public class Main {
 			}
 			asserts += ")))";
 
-			System.out.println(amount);
+			//System.out.println(amount);
 		} while (true);
 
 	}
