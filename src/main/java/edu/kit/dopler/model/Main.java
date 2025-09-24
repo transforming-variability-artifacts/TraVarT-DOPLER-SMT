@@ -63,10 +63,23 @@ public class Main {
 
 	public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {		
 
-		String pathTOFile = "VariabilityEval/BoolNewParser/dm_VaMoS.csv";
-        Dopler dopler = readDOPLERModelFromFile(pathTOFile);
+		Path dir = Paths.get("modelCSVs/");
+		
+		try (Stream<Path> stream = Files.walk(dir)) {
+            
+			stream.filter(Files::isRegularFile).forEach(file -> {
+                	 System.out.println("Parse file " + file.getFileName().toString());
+					try {
+						readDOPLERModelFromFile(file);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        anomalieAnalysisOfAllModels();
+//        anomalieAnalysisOfAllModels();
 
 		//dopler.toSMTStream().build().forEach(System.out::println);
 //		try {
@@ -116,7 +129,7 @@ public class Main {
                 System.out.println(path.toString());
                 Dopler dopler = null;
                 try {
-                    dopler = readDOPLERModelFromFile(String.valueOf(path));
+                    dopler = readDOPLERModelFromFile(path);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -151,10 +164,10 @@ public class Main {
     }
 
 
-    static Dopler readDOPLERModelFromFile(String pathToFile) throws IOException {
+    static Dopler readDOPLERModelFromFile(Path file) throws IOException {
         // ANTLR Setup
         // TODO check for wrong file formats
-        CharStream input = CharStreams.fromFileName(pathToFile);
+        CharStream input = CharStreams.fromPath(file);
         DoplerLexer lexer = new DoplerLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         DoplerParser parser = new DoplerParser(tokens);
@@ -164,7 +177,7 @@ public class Main {
         ParseTreeWalker walker = new ParseTreeWalker();
 
         // Walk through both listeners, first to create the decisions, second to create the expressions
-        DoplerDecisionCreator decisionCreator = new DoplerDecisionCreator(pathToFile);
+        DoplerDecisionCreator decisionCreator = new DoplerDecisionCreator(file.getFileName().toString());
         walker.walk(decisionCreator, tree);
         DoplerExpressionParser expressionParser = new DoplerExpressionParser(decisionCreator.getDopler());
         walker.walk(expressionParser, tree);
