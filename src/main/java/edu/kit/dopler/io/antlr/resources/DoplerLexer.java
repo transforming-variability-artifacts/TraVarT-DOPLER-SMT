@@ -1,22 +1,5 @@
-/*******************************************************************************
- * SPDX-License-Identifier: MPL-2.0
- *
- * This Source Code Form is subject to the terms of the Mozilla
- * Public License, v. 2.0. If a copy of the MPL was not distributed
- * with this file, You can obtain one at
- * https://mozilla.org/MPL/2.0/.
- *
- * Contributors: 
- * 	@author David Kowal
- * 	@author Kevin Feichtinger
- *
- * Copyright 2024 Karlsruhe Institute of Technology (KIT)
- * KASTEL - Dependability of Software-intensive Systems
- *******************************************************************************/
-
-package edu.kit.dopler.io.antlr.resources;
-
 // Generated from DoplerLexer.g4 by ANTLR 4.13.2
+package edu.kit.dopler.io.antlr.resources;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -271,8 +254,8 @@ public class DoplerLexer extends Lexer {
 		"+\u0016-\u0017/\u00181\u00193\u001a5\u001b7\u001c9\u001d;\u001e=\u001f"+
 		"? A!C\"E#G$I%K&M\'O(Q)S*U+W,Y-[.]/_0a1c2e3g4\u0001\u0000\b\u0005\u0000"+
 		"\n\n\r\r\"\";;??\u0001\u0000  \u0003\u0000\t\n\r\r  \u0001\u000009\b\u0000"+
-		"\t\n\r\r  09;;AZaz||\u0004\u000009AZ__az\u0003\u0000AZ__az\u0003\u0000"+
-		"--AZaz\u01c2\u0000\u0001\u0001\u0000\u0000\u0000\u0000\u0003\u0001\u0000"+
+		"\t\n\r\r  09;;AZaz||\u0005\u0000**09AZ__az\u0004\u0000**AZ__az\u0004\u0000"+
+		"**--AZaz\u01c2\u0000\u0001\u0001\u0000\u0000\u0000\u0000\u0003\u0001\u0000"+
 		"\u0000\u0000\u0000\u0005\u0001\u0000\u0000\u0000\u0000\u0007\u0001\u0000"+
 		"\u0000\u0000\u0000\t\u0001\u0000\u0000\u0000\u0000\u000b\u0001\u0000\u0000"+
 		"\u0000\u0000\r\u0001\u0000\u0000\u0000\u0000\u000f\u0001\u0000\u0000\u0000"+

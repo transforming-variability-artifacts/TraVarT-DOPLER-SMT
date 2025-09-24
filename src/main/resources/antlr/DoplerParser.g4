@@ -44,7 +44,7 @@ jsonPair
     | DQ TYPE_KEY DQ COLON DQ (decisionType | DQ DQ | ) DQ
     | DQ RANGE_KEY DQ COLON DQ (range | DQ DQ | ) DQ
     | DQ CARDINALITY_KEY DQ COLON DQ (cardinality | DQ DQ | ) DQ
-    | DQ CONSTRAINT_RULE_KEY DQ COLON (rule | DQ DQ |  )
+    | DQ CONSTRAINT_RULE_KEY DQ COLON (drule | DQ DQ |  )
     | DQ VISIBLE_RELEVANT_KEY DQ COLON DQ (decisionVisibilityCallExpression | DQ DQ | ) DQ
     ;
 
@@ -61,11 +61,11 @@ hdr
     ;
 
 row
-    : field (SEMICOLON field)* CR? LF 
+    : field (SEMICOLON field)* CR? LF
     ;
 
 field
-    : rule
+    : drule
     | id
     | question
     | decisionType
@@ -230,9 +230,9 @@ decisionType
     ;
 
 // Action and Rule Definitions
-rule
-    : DQ rule DQ
-    | rule rule
+drule
+    : DQ drule DQ
+    | drule drule
     | IF LPAREN? expression RPAREN? LBRACE (action SEMICOLON?)+ RBRACE 
     ;
 

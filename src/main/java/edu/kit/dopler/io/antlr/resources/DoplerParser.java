@@ -1,22 +1,5 @@
-/*******************************************************************************
- * SPDX-License-Identifier: MPL-2.0
- *
- * This Source Code Form is subject to the terms of the Mozilla
- * Public License, v. 2.0. If a copy of the MPL was not distributed
- * with this file, You can obtain one at
- * https://mozilla.org/MPL/2.0/.
- *
- * Contributors: 
- * 	@author David Kowal
- * 	@author Kevin Feichtinger
- *
- * Copyright 2024 Karlsruhe Institute of Technology (KIT)
- * KASTEL - Dependability of Software-intensive Systems
- *******************************************************************************/
-
-package edu.kit.dopler.io.antlr.resources;
-
 // Generated from DoplerParser.g4 by ANTLR 4.13.2
+package edu.kit.dopler.io.antlr.resources;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -56,7 +39,7 @@ public class DoplerParser extends Parser {
 		RULE_greaterEqualsExpression = 29, RULE_lessEqualsExpression = 30, RULE_literalExpression = 31, 
 		RULE_enumerationLiteralExpression = 32, RULE_booleanLiteralExpression = 33, 
 		RULE_stringLiteralExpression = 34, RULE_doubleLiteralExpression = 35, 
-		RULE_decisionType = 36, RULE_rule = 37, RULE_action = 38, RULE_valueRestrictionAction = 39, 
+		RULE_decisionType = 36, RULE_drule = 37, RULE_action = 38, RULE_valueRestrictionAction = 39, 
 		RULE_allows = 40, RULE_disallows = 41, RULE_enForce = 42, RULE_enumEnForce = 43, 
 		RULE_stringEnForce = 44, RULE_booleanEnForce = 45, RULE_doubleEnForce = 46;
 	private static String[] makeRuleNames() {
@@ -69,7 +52,7 @@ public class DoplerParser extends Parser {
 			"equalityExpression", "greaterThanExpression", "lessThanExpression", 
 			"greaterEqualsExpression", "lessEqualsExpression", "literalExpression", 
 			"enumerationLiteralExpression", "booleanLiteralExpression", "stringLiteralExpression", 
-			"doubleLiteralExpression", "decisionType", "rule", "action", "valueRestrictionAction", 
+			"doubleLiteralExpression", "decisionType", "drule", "action", "valueRestrictionAction", 
 			"allows", "disallows", "enForce", "enumEnForce", "stringEnForce", "booleanEnForce", 
 			"doubleEnForce"
 		};
@@ -506,8 +489,8 @@ public class DoplerParser extends Parser {
 			return getRuleContext(CardinalityContext.class,0);
 		}
 		public TerminalNode CONSTRAINT_RULE_KEY() { return getToken(DoplerParser.CONSTRAINT_RULE_KEY, 0); }
-		public RuleContext rule_() {
-			return getRuleContext(RuleContext.class,0);
+		public DruleContext drule() {
+			return getRuleContext(DruleContext.class,0);
 		}
 		public TerminalNode VISIBLE_RELEVANT_KEY() { return getToken(DoplerParser.VISIBLE_RELEVANT_KEY, 0); }
 		public DecisionVisibilityCallExpressionContext decisionVisibilityCallExpression() {
@@ -701,7 +684,7 @@ public class DoplerParser extends Parser {
 				case 1:
 					{
 					setState(193);
-					rule_(0);
+					drule(0);
 					}
 					break;
 				case 2:
@@ -955,8 +938,8 @@ public class DoplerParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class FieldContext extends ParserRuleContext {
-		public RuleContext rule_() {
-			return getRuleContext(RuleContext.class,0);
+		public DruleContext drule() {
+			return getRuleContext(DruleContext.class,0);
 		}
 		public IdContext id() {
 			return getRuleContext(IdContext.class,0);
@@ -1005,7 +988,7 @@ public class DoplerParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(236);
-				rule_(0);
+				drule(0);
 				}
 				break;
 			case 2:
@@ -2823,16 +2806,16 @@ public class DoplerParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class RuleContext extends ParserRuleContext {
+	public static class DruleContext extends ParserRuleContext {
 		public List<TerminalNode> DQ() { return getTokens(DoplerParser.DQ); }
 		public TerminalNode DQ(int i) {
 			return getToken(DoplerParser.DQ, i);
 		}
-		public List<RuleContext> rule_() {
-			return getRuleContexts(RuleContext.class);
+		public List<DruleContext> drule() {
+			return getRuleContexts(DruleContext.class);
 		}
-		public RuleContext rule_(int i) {
-			return getRuleContext(RuleContext.class,i);
+		public DruleContext drule(int i) {
+			return getRuleContext(DruleContext.class,i);
 		}
 		public TerminalNode IF() { return getToken(DoplerParser.IF, 0); }
 		public ExpressionContext expression() {
@@ -2852,31 +2835,31 @@ public class DoplerParser extends Parser {
 		public TerminalNode SEMICOLON(int i) {
 			return getToken(DoplerParser.SEMICOLON, i);
 		}
-		public RuleContext(ParserRuleContext parent, int invokingState) {
+		public DruleContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_rule; }
+		@Override public int getRuleIndex() { return RULE_drule; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof DoplerParserListener ) ((DoplerParserListener)listener).enterRule(this);
+			if ( listener instanceof DoplerParserListener ) ((DoplerParserListener)listener).enterDrule(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof DoplerParserListener ) ((DoplerParserListener)listener).exitRule(this);
+			if ( listener instanceof DoplerParserListener ) ((DoplerParserListener)listener).exitDrule(this);
 		}
 	}
 
-	public final RuleContext rule_() throws RecognitionException {
-		return rule_(0);
+	public final DruleContext drule() throws RecognitionException {
+		return drule(0);
 	}
 
-	private RuleContext rule_(int _p) throws RecognitionException {
+	private DruleContext drule(int _p) throws RecognitionException {
 		ParserRuleContext _parentctx = _ctx;
 		int _parentState = getState();
-		RuleContext _localctx = new RuleContext(_ctx, _parentState);
-		RuleContext _prevctx = _localctx;
+		DruleContext _localctx = new DruleContext(_ctx, _parentState);
+		DruleContext _prevctx = _localctx;
 		int _startState = 74;
-		enterRecursionRule(_localctx, 74, RULE_rule, _p);
+		enterRecursionRule(_localctx, 74, RULE_drule, _p);
 		int _la;
 		try {
 			int _alt;
@@ -2890,7 +2873,7 @@ public class DoplerParser extends Parser {
 				setState(412);
 				match(DQ);
 				setState(413);
-				rule_(0);
+				drule(0);
 				setState(414);
 				match(DQ);
 				}
@@ -2964,12 +2947,12 @@ public class DoplerParser extends Parser {
 					_prevctx = _localctx;
 					{
 					{
-					_localctx = new RuleContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_rule);
+					_localctx = new DruleContext(_parentctx, _parentState);
+					pushNewRecursionContext(_localctx, _startState, RULE_drule);
 					setState(437);
 					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 					setState(438);
-					rule_(3);
+					drule(3);
 					}
 					} 
 				}
@@ -3507,11 +3490,11 @@ public class DoplerParser extends Parser {
 	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
 		case 37:
-			return rule_sempred((RuleContext)_localctx, predIndex);
+			return drule_sempred((DruleContext)_localctx, predIndex);
 		}
 		return true;
 	}
-	private boolean rule_sempred(RuleContext _localctx, int predIndex) {
+	private boolean drule_sempred(DruleContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
 			return precpred(_ctx, 2);

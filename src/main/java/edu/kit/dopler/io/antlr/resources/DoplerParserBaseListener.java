@@ -1,22 +1,5 @@
-/*******************************************************************************
- * SPDX-License-Identifier: MPL-2.0
- *
- * This Source Code Form is subject to the terms of the Mozilla
- * Public License, v. 2.0. If a copy of the MPL was not distributed
- * with this file, You can obtain one at
- * https://mozilla.org/MPL/2.0/.
- *
- * Contributors: 
- * 	@author David Kowal
- * 	@author Kevin Feichtinger
- *
- * Copyright 2024 Karlsruhe Institute of Technology (KIT)
- * KASTEL - Dependability of Software-intensive Systems
- *******************************************************************************/
-
-package edu.kit.dopler.io.antlr.resources;
-
 // Generated from DoplerParser.g4 by ANTLR 4.13.2
+package edu.kit.dopler.io.antlr.resources;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -478,13 +461,13 @@ public class DoplerParserBaseListener implements DoplerParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRule(DoplerParser.RuleContext ctx) { }
+	@Override public void enterDrule(DoplerParser.DruleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRule(DoplerParser.RuleContext ctx) { }
+	@Override public void exitDrule(DoplerParser.DruleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -42,6 +42,7 @@ import edu.kit.dopler.io.antlr.resources.DoplerParser.DecisionVisibilityCallExpr
 import edu.kit.dopler.io.antlr.resources.DoplerParser.DisallowsContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.DoubleEnForceContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.DoubleLiteralExpressionContext;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.DruleContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.EnumEnForceContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.EnumerationLiteralExpressionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.EqualityExpressionContext;
@@ -52,7 +53,6 @@ import edu.kit.dopler.io.antlr.resources.DoplerParser.JsonObjectContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.LessThanExpressionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.OrExpressionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.RowContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.RuleContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.StringLiteralExpressionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.UnaryExpressionContext;
 import edu.kit.dopler.io.antlr.resources.DoplerParser.XorExpressionContext;
@@ -253,13 +253,13 @@ public class DoplerExpressionParser extends DecisionParserBase {
 	}
 
 	@Override
-	public void enterRule(RuleContext ctx) {
+	public void enterDrule(DruleContext ctx) {
 		expressionStack.clear();
 
 	}
 
 	@Override
-	public void exitRule(RuleContext ctx) {
+	public void exitDrule(DruleContext ctx) {
 		if (expressionStack.isEmpty()) {
 			return;
 		}
