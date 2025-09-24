@@ -1,17 +1,8 @@
 ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
-ALL;Do you want all standard Tools?;Boolean;false | true;;"if (ALL) {
-DK = true;
-}
-if (ALL) {
-CW = true;
-}
-if (ALL) {
-PK = true;
-}
-";true
-CW;Do you want Product Derivation and Configuration Support?;Boolean;false | true;;;"!ALL"
-DK;Do you want variability modelling (DecisionKing)?;Boolean;false | true;;;"true"
-PK;Do you want support for derivation and project management (ProjectKing)?;Boolean;false | true;;;"true"
+ALL;Do you want all standard Tools?;Boolean;false | true;;"if (ALL) { DK = true; } if (ALL) { CW = true; } if (ALL) { PK = true; }";true
+CW;Do you want Product Derivation and Configuration Support?;Boolean;false | true;;;!ALL
+DK;Do you want variability modelling (DecisionKing)?;Boolean;false | true;;;true
+PK;Do you want support for derivation and project management (ProjectKing)?;Boolean;false | true;;;true
 SERVER;Include Dopler Server?;Boolean;false | true;;;true
 ProprietaryTools;Include Proprietary Tools?;Boolean;false | true;;;(isTaken(CW) && CW) || (isTaken(DK) && DK)
 DK_builder;Include consistency checking for variability modelling?;Boolean;false | true;;;DK
