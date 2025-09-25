@@ -1,28 +1,9 @@
 package edu.kit.dopler.common;
 
-import de.ovgu.featureide.fm.core.JavaLogger;
-import de.ovgu.featureide.fm.core.Logger;
-import de.ovgu.featureide.fm.core.analysis.cnf.LiteralSet;
-import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
-import de.ovgu.featureide.fm.core.analysis.cnf.generator.configuration.AllConfigurationGenerator;
-import de.ovgu.featureide.fm.core.base.IFeatureModel;
-import de.ovgu.featureide.fm.core.base.impl.CoreFactoryWorkspaceLoader;
-import de.ovgu.featureide.fm.core.base.impl.DefaultFeatureModelFactory;
-import de.ovgu.featureide.fm.core.base.impl.FMFactoryManager;
-import de.ovgu.featureide.fm.core.base.impl.MultiFeatureModelFactory;
-import de.ovgu.featureide.fm.core.cli.CLIFunctionManager;
-import de.ovgu.featureide.fm.core.cli.ConfigurationGenerator;
-import de.ovgu.featureide.fm.core.io.FileSystem;
-import de.ovgu.featureide.fm.core.io.JavaFileSystem;
-import de.ovgu.featureide.fm.core.io.uvl.UVLFeatureModelFormat;
-import de.ovgu.featureide.fm.core.job.LongRunningCore;
-import de.ovgu.featureide.fm.core.job.LongRunningWrapper;
+
 import edu.kit.dopler.model.Dopler;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -44,7 +25,7 @@ public final class SolverUtils {
         // builder.add("(get-model)");
         builder.add("(exit)");
         final Stream<String> stream = builder.build();
-        final Scanner scanner = satSolver(stream);
+        final Scanner scanner = satSolver(stream,true);
         if (scanner == null) {
             throw new Exception();
         }
@@ -59,29 +40,6 @@ public final class SolverUtils {
         }
         throw new Exception();
     }
-
-    public static int getFeatureIDConfigs(Path filePath) throws IOException {
-        FileSystem.INSTANCE = new JavaFileSystem();
-        LongRunningWrapper.INSTANCE = new LongRunningCore();
-        Logger.logger = new JavaLogger();
-
-        FMFactoryManager.getInstance().addExtension(DefaultFeatureModelFactory.getInstance());
-        FMFactoryManager.getInstance().addExtension(MultiFeatureModelFactory.getInstance());
-        FMFactoryManager.getInstance().setWorkspaceLoader(new CoreFactoryWorkspaceLoader());
-
-        CLIFunctionManager.getInstance().addExtension(new ConfigurationGenerator());
-
-        String content = Files.readString(filePath);
-        IFeatureModel featureIdeFm = new MultiFeatureModelFactory().create();
-        UVLFeatureModelFormat format = new UVLFeatureModelFormat();
-        format.read(featureIdeFm, content);
-
-        FeatureModelFormula formula = new FeatureModelFormula(featureIdeFm);
-        List<LiteralSet> configs = LongRunningWrapper.runMethod(new AllConfigurationGenerator(formula.getCNF()));
-        return configs.size();
-
-    }
-
 
     public static int getAmountOfConfigs(final Dopler dopler) {
         final int amount = getAmountOfConfigs(dopler, dopler.toSMTStream());
@@ -119,7 +77,7 @@ public final class SolverUtils {
 
 
         final Stream<String> stream = builder.build();
-        final Scanner scanner = satSolver(stream);
+        final Scanner scanner = satSolver(stream,true);
 
 
         while (true) {
@@ -138,7 +96,7 @@ public final class SolverUtils {
                 builder.add("(check-sat)");
                 builder.add("(get-model)");
                 final Stream<String> deadDecisionStream = builder.build();
-                final Scanner scannerDeadDecision = satSolver(deadDecisionStream);
+                final Scanner scannerDeadDecision = satSolver(deadDecisionStream,true);
                 while (scannerDeadDecision.hasNextLine()) {
                     final String deadDecisionLine = scannerDeadDecision.nextLine();
                     //System.out.println(deadDecisionLine);
@@ -163,7 +121,7 @@ public final class SolverUtils {
 
 
         final Stream<String> stream = builder.build();
-        final Scanner scanner = satSolver(stream);
+        final Scanner scanner = satSolver(stream,true);
 
 
         while (true) {
@@ -184,7 +142,7 @@ public final class SolverUtils {
                 builder.add("(get-model)");
                 final Stream<String> deadDecisionStream = builder.build();
 
-                final Scanner scannerDeadDecision = satSolver(deadDecisionStream);
+                final Scanner scannerDeadDecision = satSolver(deadDecisionStream,true);
                 while (scannerDeadDecision.hasNextLine()) {
                     final String deadDecisionLine = scannerDeadDecision.nextLine();
                     //System.out.println(deadDecisionLine);
@@ -218,7 +176,7 @@ public final class SolverUtils {
             builder.add("(get-model)");
 
             final Stream<String> stream = builder.build();
-            final Scanner scanner = satSolver(stream);
+            final Scanner scanner = satSolver(stream,true);
             builder = Stream.builder();
             builder.add(encoding);
 
@@ -265,7 +223,7 @@ public final class SolverUtils {
 
             dopler.createGetValueOFEndConstants(builder);
             final Stream<String> stream = builder.build();
-            final Scanner scanner = satSolver(stream);
+            final Scanner scanner = satSolver(stream,true);
             builder = dopler.toSMTStream();
 
             while (scanner.hasNextLine()) {
@@ -312,21 +270,26 @@ public final class SolverUtils {
      * @param stream SMT Encoding
      * @return Output of the Solver
      */
-    static Scanner satSolver(final Stream<String> stream) {
+    static Scanner satSolver(final Stream<String> stream, boolean smt2) {
+        final String[] command;
+        if (smt2) {
+            command = new String[]{"../z3/build/z3", "-in", "-smt2"};
+        }else{
+            command = new String[]{"../z3/build/z3"};
+        }
 
-        final String[] command = { "/Documents/z3/z3/build/z3", "-in", "-smt2" };
 
         final ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command("../z3/build/z3", "-in", "-smt2");
+        processBuilder.command(command);
         Process process;
         try {
             process = processBuilder.start();
 
-            final OutputStream stdin = process.getOutputStream(); // <- Eh?
-            final InputStream stdout = process.getInputStream();
+            final OutputStream stdout = process.getOutputStream();
+            final InputStream stdin = process.getInputStream();
 
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
-            final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(stdin));
+            final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdout));
 
             stream.forEach(a -> {
                 try {
@@ -338,7 +301,7 @@ public final class SolverUtils {
             });
             writer.flush();
             writer.close();
-            final Scanner scanner = new Scanner(stdout);
+            final Scanner scanner = new Scanner(stdin);
 
             return scanner;
         } catch (final IOException e1) {
@@ -347,49 +310,4 @@ public final class SolverUtils {
         }
         return null;
     }
-
-
-    /**
-     * Starts a Process of the local Z3 Solver and feeds him the SMT Encoding Stream
-     *
-     * @param stream SMT Encoding
-     * @return Output of the Solver
-     */
-    static Scanner satSolverWithoutSMT(final Stream<String> stream) {
-
-        final String[] command = { "/Documents/z3/z3/build/z3"};
-
-        final ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command("../../z3/z3/build/z3");
-        Process process;
-        try {
-            process = processBuilder.start();
-
-            final OutputStream stdin = process.getOutputStream(); // <- Eh?
-            final InputStream stdout = process.getInputStream();
-
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
-            final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
-
-            stream.forEach(a -> {
-                try {
-                    writer.write(a);
-                    writer.newLine();
-                } catch (final IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            writer.flush();
-            writer.close();
-            final Scanner scanner = new Scanner(stdout);
-
-            return scanner;
-        } catch (final IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        return null;
-    }
-
-
 }
