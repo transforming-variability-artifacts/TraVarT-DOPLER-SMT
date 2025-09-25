@@ -59,27 +59,15 @@ import edu.kit.dopler.io.antlr.DoplerExpressionParser;
 import edu.kit.dopler.io.antlr.resources.DoplerLexer;
 import edu.kit.dopler.io.antlr.resources.DoplerParser;
 
+import static edu.kit.dopler.common.DoplerUtils.readDOPLERModelFromFile;
+
 public class Main {
 
 	public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {		
 
-		Path dir = Paths.get("modelCSVs/");
-		
-		try (Stream<Path> stream = Files.walk(dir)) {
-            
-			stream.filter(Files::isRegularFile).forEach(file -> {
-                	 System.out.println("Parse file " + file.getFileName().toString());
-					try {
-						readDOPLERModelFromFile(file);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				});
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-//        anomalieAnalysisOfAllModels();
+
+        anomalieAnalysisOfAllModels();
 
 		//dopler.toSMTStream().build().forEach(System.out::println);
 //		try {
@@ -115,7 +103,7 @@ public class Main {
 
     static void anomalieAnalysisOfAllModels() {
 
-        Path startDirectory = Paths.get(System.getProperty("user.dir") + "/VariabilityEval/BoolNewParser/");
+        Path startDirectory = Paths.get(System.getProperty("user.dir") + "/VariabilityEval/BoolCSV/");
 
 
         try {
@@ -153,41 +141,6 @@ public class Main {
         }
 
     }
-
-
-
-    static void writeDoplerToFile(Dopler dopler, String fileName) throws IOException {
-        // Write Dopler Model in csv and json
-        DoplerModelWriter dmw = new DoplerModelWriter();
-        dmw.writeCSV(dopler, Paths.get("output_dm_dopler.csv"));
-        dmw.writeJson(dopler, Paths.get("output_dm_dopler.json"));
-    }
-
-
-    static Dopler readDOPLERModelFromFile(Path file) throws IOException {
-        // ANTLR Setup
-        // TODO check for wrong file formats
-        CharStream input = CharStreams.fromPath(file);
-        DoplerLexer lexer = new DoplerLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        DoplerParser parser = new DoplerParser(tokens);
-
-        // Create parse tree
-        ParseTree tree = parser.document();
-        ParseTreeWalker walker = new ParseTreeWalker();
-
-        // Walk through both listeners, first to create the decisions, second to create the expressions
-        DoplerDecisionCreator decisionCreator = new DoplerDecisionCreator(file.getFileName().toString());
-        walker.walk(decisionCreator, tree);
-        DoplerExpressionParser expressionParser = new DoplerExpressionParser(decisionCreator.getDopler());
-        walker.walk(expressionParser, tree);
-
-        // Extract Dopler Model
-
-        return expressionParser.getDopler();
-
-    }
-
 
 
 	/**

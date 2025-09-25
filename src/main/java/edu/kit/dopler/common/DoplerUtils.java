@@ -15,9 +15,17 @@
  *******************************************************************************/
 package edu.kit.dopler.common;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import edu.kit.dopler.io.DoplerModelWriter;
+import edu.kit.dopler.io.antlr.DoplerDecisionCreator;
+import edu.kit.dopler.io.antlr.DoplerExpressionParser;
+import edu.kit.dopler.io.antlr.resources.DoplerLexer;
+import edu.kit.dopler.io.antlr.resources.DoplerParser;
 import edu.kit.dopler.model.Decision;
 import edu.kit.dopler.model.Decision.DecisionType;
 import edu.kit.dopler.model.Dopler;
@@ -25,12 +33,52 @@ import edu.kit.dopler.model.Enumeration;
 import edu.kit.dopler.model.EnumerationLiteral;
 import edu.kit.dopler.model.IDecision;
 import edu.kit.dopler.model.IValue;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 public final class DoplerUtils {
 
 	private DoplerUtils() { }
 
-	@SuppressWarnings("rawtypes")
+
+    static void writeDoplerToFile(Dopler dopler, String fileName) throws IOException {
+        // Write Dopler Model in csv and json
+        DoplerModelWriter dmw = new DoplerModelWriter();
+        dmw.writeCSV(dopler, Paths.get("output_dm_dopler.csv"));
+        dmw.writeJson(dopler, Paths.get("output_dm_dopler.json"));
+    }
+
+
+    public static Dopler readDOPLERModelFromFile(Path file) throws IOException {
+        // ANTLR Setup
+        // TODO check for wrong file formats
+        CharStream input = CharStreams.fromPath(file);
+        DoplerLexer lexer = new DoplerLexer(input);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        DoplerParser parser = new DoplerParser(tokens);
+
+        // Create parse tree
+        ParseTree tree = parser.document();
+        ParseTreeWalker walker = new ParseTreeWalker();
+
+        // Walk through both listeners, first to create the decisions, second to create the expressions
+        DoplerDecisionCreator decisionCreator = new DoplerDecisionCreator(file.getFileName().toString());
+        walker.walk(decisionCreator, tree);
+        DoplerExpressionParser expressionParser = new DoplerExpressionParser(decisionCreator.getDopler());
+        walker.walk(expressionParser, tree);
+
+        // Extract Dopler Model
+
+        return expressionParser.getDopler();
+
+    }
+
+
+
+    @SuppressWarnings("rawtypes")
 	public static EnumerationLiteral getEnumerationliteral(final Dopler dm, final IValue enumString) {
 		for (final Object o : dm.getEnumSet()) {
 			final Enumeration enumeration = (Enumeration) o;
