@@ -3,7 +3,7 @@ AccountType;Which AccountType?;Enumeration;Saving | Current;1:1;;true
 ActivateAccount;ActivateAccount?;Boolean;true | false;;;true
 AddAccountHolder;AddAccountHolder?;Boolean;true | false;;;true
 AddBeneficiary;AddBeneficiary?;Boolean;true | false;;;true
-AddBeneficiary*;Which AddBeneficiary*?;Enumeration;InterBank | IntraBank;1:2;;AddBeneficiary
+AddBeneficiary_;Which AddBeneficiary_?;Enumeration;InterBank | IntraBank;1:2;;AddBeneficiary
 AddPayee;AddPayee?;Boolean;true | false;;;CreditCards
 ApplyBalanceTransfer;ApplyBalanceTransfer?;Boolean;true | false;;;CreditCards
 ApplyChargesForCashWithdrawal;ApplyChargesForCashWithdrawal?;Boolean;true | false;;;CreditCards
@@ -48,7 +48,7 @@ DepositMoney;DepositMoney?;Boolean;true | false;;;true
 Employee;Which Employee?;Enumeration;Cleark | Manager | AssitManager | Accountent;1:1;;true
 FastWithdrawal;FastWithdrawal?;Boolean;true | false;;;true
 FreezeAccount;FreezeAccount?;Boolean;true | false;;;true
-FreezeAccount*;Which FreezeAccount*?;Enumeration;Manual | Automatic;1:2;;FreezeAccount
+FreezeAccount_;Which FreezeAccount_?;Enumeration;Manual | Automatic;1:2;;FreezeAccount
 GenerateOTP;GenerateOTP?;Boolean;true | false;;;CreditCards
 InterBankTransfer;InterBankTransfer?;Boolean;true | false;;;true
 InternationalTransfer;InternationalTransfer?;Boolean;true | false;;;true
@@ -63,7 +63,7 @@ MapChequeBookToAccount;MapChequeBookToAccount?;Boolean;true | false;;;true
 MapDebitCardToAccount;MapDebitCardToAccount?;Boolean;true | false;;;true
 MobileTopUp;MobileTopUp?;Boolean;true | false;;;true
 MoneyExchange;MoneyExchange?;Boolean;true | false;;;true
-Online_1*;Which Online_1*?;Enumeration;NetBanking | DebitCard;1:1;;PaymentChannel.Online_1
+Online_1_;Which Online_1_?;Enumeration;NetBanking | DebitCard;1:1;;PaymentChannel.Online_1
 PayBills;PayBills?;Boolean;true | false;;;true
 PayCreditCardBill;PayCreditCardBill?;Boolean;true | false;;;CreditCards
 PayUtilityBills;PayUtilityBills?;Boolean;true | false;;;CreditCards
