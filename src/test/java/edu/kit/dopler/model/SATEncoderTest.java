@@ -35,6 +35,8 @@ import de.ovgu.featureide.fm.core.job.LongRunningWrapper;
 import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
 import junit.framework.TestCase;
 import static edu.kit.dopler.common.DoplerUtils.readDOPLERModelFromFile;
+import static edu.kit.dopler.common.SolverUtils.checkSat;
+import static edu.kit.dopler.common.SolverUtils.getAmountOfConfigs;
 
 
 import java.io.IOException;
@@ -47,8 +49,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static edu.kit.dopler.model.Main.checkSat;
-import static edu.kit.dopler.model.Main.getAmountOfConfigs;
 
 public class SATEncoderTest extends TestCase {
 
