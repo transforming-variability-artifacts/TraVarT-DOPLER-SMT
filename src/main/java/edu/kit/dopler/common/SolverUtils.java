@@ -5,9 +5,23 @@ import edu.kit.dopler.model.Dopler;
 
 import java.io.*;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class SolverUtils {
+
+    // Path to the Z3 executable. Defaults to "z3" (resolved via PATH) but can be overridden at runtime.
+    private static String z3Executable = "z3";
+
+    /**
+     * Configure the path to the Z3 binary (e.g., /usr/local/bin/z3 or C:\\z3\\bin\\z3.exe).
+     * If not set, defaults to "z3" and relies on your PATH.
+     */
+    public static void setZ3Path(String path) {
+        if (path != null && !path.isBlank()) {
+            z3Executable = path;
+        }
+    }
 
     /**
      * Gets the smt stream of the dopler model and adds the comment (check-sat) and
@@ -65,12 +79,23 @@ public final class SolverUtils {
     }
 
     public static void checkForAnomalies(final Dopler dopler) {
+
+        checkForDeadDecisionValues(dopler);
+        checkForFalseOptionalDecisionValues(dopler);
+
+    }
+
+    public static void checkForFalseOptionalDecisionValues(final Dopler dopler) {
         Stream.Builder<String> builder = dopler.toSMTStream();
-        checkForDeadDecision(dopler, builder);
-        builder = dopler.toSMTStream();
         checkForFalseOptionalDecisions(dopler,builder);
 
     }
+
+    public static void checkForDeadDecisionValues(final Dopler dopler) {
+        Stream.Builder<String> builder = dopler.toSMTStream();
+        checkForDeadDecision(dopler,builder);
+    }
+
     private static void checkForFalseOptionalDecisions(final Dopler doplerModel, Stream.Builder<String> builder){
         builder.add("(check-sat)");
         builder.add("(get-model)");
@@ -91,7 +116,7 @@ public final class SolverUtils {
                 return;
             } else if(line.contains("(define-fun END")){
                 String[] newLine = line.split("\\s+");
-                String nextLine = scanner.nextLine();
+                scanner.nextLine();
                 builder.add("(assert (= " + newLine[2]+ " " + "false" + "))");
                 builder.add("(check-sat)");
                 builder.add("(get-model)");
@@ -121,8 +146,10 @@ public final class SolverUtils {
 
 
         final Stream<String> stream = builder.build();
+
         final Scanner scanner = satSolver(stream,true);
 
+        System.out.println(scanner.hasNextLine());
 
         while (true) {
             builder = doplerModel.toSMTStream();
@@ -135,7 +162,7 @@ public final class SolverUtils {
                 return;
             } else if(line.contains("(define-fun END")){
                 String[] newLine = line.split("\\s+");
-                String nextLine = scanner.nextLine();
+                scanner.nextLine();
                 //System.out.println("Check for Feature: " +  newLine[2]);
                 builder.add("(assert (= " + newLine[2]+ " " + "true" + "))");
                 builder.add("(check-sat)");
@@ -164,8 +191,7 @@ public final class SolverUtils {
 
 
     private static int getAmountOfConfigsUVLSMT(final String encoding, Stream.Builder<String> builder) {
-        int amount = 0;
-        final boolean isSAT = true;
+    int amount = 0;
         String asserts = "";
 
 
@@ -210,8 +236,7 @@ public final class SolverUtils {
 
 
     private static int getAmountOfConfigs(final Dopler dopler, Stream.Builder<String> builder) {
-        int amount = 0;
-        final boolean isSAT = true;
+    int amount = 0;
         String asserts = "";
         // builder.add("(assert (= DECISION_2_TAKEN_POST true))");
         // builder.add("(assert (= DECISION_0_TAKEN_POST true))");
@@ -270,43 +295,70 @@ public final class SolverUtils {
      * @param stream SMT Encoding
      * @return Output of the Solver
      */
-    static Scanner satSolver(final Stream<String> stream, boolean smt2) {
+    public static Scanner satSolver(final Stream<String> stream, boolean smt2) {
         final String[] command;
-        if (smt2) {
-            command = new String[]{"../z3/build/z3", "-in", "-smt2"};
-        }else{
-            command = new String[]{"../z3/build/z3"};
+
+        File file = new File("encoding.smt2");
+
+
+
+        try {
+           final BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+           String input = stream.collect(Collectors.joining("\n"));
+           writer.write(input);
+           writer.close();
+//           stream.forEach(a -> {
+//                try {
+//                    System.out.println(a);
+//                    writer.write(a);
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//
+//           });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
 
-        final ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command(command);
+
+
+        if (smt2) {
+            command = new String[]{z3Executable, "-smt2", "encoding.smt2"};
+        } else {
+            command = new String[]{z3Executable};
+        }
+
+
+        final ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.redirectErrorStream(true);
         Process process;
         try {
             process = processBuilder.start();
 
-            final OutputStream stdout = process.getOutputStream();
-            final InputStream stdin = process.getInputStream();
 
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(stdin));
-            final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdout));
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-            stream.forEach(a -> {
-                try {
-                    writer.write(a);
-                    writer.newLine();
-                } catch (final IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            writer.flush();
-            writer.close();
-            final Scanner scanner = new Scanner(stdin);
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                System.out.println(line);
+//            }
 
-            return scanner;
+//
+//            int exitCode = process.waitFor();
+//            if (exitCode != 0) {
+//                System.out.println("Z3 exited with code: " + exitCode);
+//
+//            }
+
+            return new Scanner(reader);
+
+
         } catch (final IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
         }
         return null;
     }

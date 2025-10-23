@@ -16,62 +16,62 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-import de.ovgu.featureide.fm.core.JavaLogger;
-import de.ovgu.featureide.fm.core.Logger;
-import de.ovgu.featureide.fm.core.analysis.cnf.LiteralSet;
-import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
-import de.ovgu.featureide.fm.core.analysis.cnf.generator.configuration.AllConfigurationGenerator;
-import de.ovgu.featureide.fm.core.base.IFeatureModel;
-import de.ovgu.featureide.fm.core.base.impl.CoreFactoryWorkspaceLoader;
-import de.ovgu.featureide.fm.core.base.impl.DefaultFeatureModelFactory;
-import de.ovgu.featureide.fm.core.base.impl.FMFactoryManager;
-import de.ovgu.featureide.fm.core.base.impl.MultiFeatureModelFactory;
-import de.ovgu.featureide.fm.core.cli.CLIFunctionManager;
-import de.ovgu.featureide.fm.core.cli.ConfigurationGenerator;
-import de.ovgu.featureide.fm.core.io.FileSystem;
-import de.ovgu.featureide.fm.core.io.JavaFileSystem;
-import de.ovgu.featureide.fm.core.io.uvl.UVLFeatureModelFormat;
-import de.ovgu.featureide.fm.core.job.LongRunningCore;
-import de.ovgu.featureide.fm.core.job.LongRunningWrapper;
+
 import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.nio.file.Paths;
-import java.util.Scanner;
-import java.util.Set;
 import java.util.stream.Stream;
 
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
-import edu.kit.dopler.io.DoplerModelWriter;
-import edu.kit.dopler.io.DoplerModelWriter;
-import edu.kit.dopler.io.antlr.DoplerDecisionCreator;
-import edu.kit.dopler.io.antlr.DoplerExpressionParser;
-import edu.kit.dopler.io.antlr.resources.DoplerLexer;
-import edu.kit.dopler.io.antlr.resources.DoplerParser;
 
 import static edu.kit.dopler.common.DoplerUtils.readDOPLERModelFromFile;
-import static edu.kit.dopler.common.SolverUtils.checkForAnomalies;
+import static edu.kit.dopler.common.SolverUtils.*;
 
 public class Main {
 
 	public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {
+        // Configure Z3 path from CLI: first arg as absolute/relative path, or --z3=/path/to/z3
+        String z3Path = null;
+        if (args != null && args.length > 0) {
+            if (args[0].startsWith("--z3=")) {
+                z3Path = args[0].substring("--z3=".length());
+            } else {
+                z3Path = args[0];
+            }
+        } else {
+            // Also allow environment variable fallback
+            z3Path = System.getenv("Z3_PATH");
+        }
+        if (z3Path != null && !z3Path.isBlank()) {
+            setZ3Path(z3Path);
+            System.out.println("Using Z3 at: " + z3Path);
+        } else {
+            System.out.println("No Z3 path provided. Falling back to 'z3' from PATH.\n"
+                    + "Usage: java -jar smt_dopler.jar <path-to-z3>\n"
+                    + "   or: java -jar smt_dopler.jar --z3=/full/path/to/z3\n"
+                    + "   or set env var Z3_PATH=/full/path/to/z3");
+        }
+
+//        Stream.Builder<String> builderString =  Stream.builder();
+//        builderString.add("(assert (= true true)) (check-sat)");
+//        try {
+//            Scanner scanner = satSolver(builderString.build(),true);
+//            System.out.println(scanner.hasNextLine());
+//            System.out.println(scanner.nextLine());
+//
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
         anomalieAnalysisOfAllModels();
 	}
 
 
     static void anomalieAnalysisOfAllModels() {
 
-        Path startDirectory = Paths.get(System.getProperty("user.dir") + "/VariabilityEval/BoolCSV/");
+        Path startDirectory = Paths.get(System.getProperty("user.home") + "/work/VariabilityEval/BoolCSV/");
 
 
         try {
@@ -86,25 +86,52 @@ public class Main {
                 Dopler dopler = null;
                 try {
                     dopler = readDOPLERModelFromFile(path);
+
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
 
                 long startTime = System.nanoTime();
                 final Stream.Builder<String> builder = dopler.toSMTStream();
-
+//                        try {
+//                            System.out.println(checkSat(builder));
+//                        } catch (Exception e) {
+//                            throw new RuntimeException(e);
+//                        }
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime) / 1000000;
+                System.out.println("SMT DOPLER Encoding needed: " + duration + "ms");
 
                 startTime = System.nanoTime();
                 // getAmountOfConfigs(dopler);
-                checkForAnomalies(dopler);
+                checkForFalseOptionalDecisionValues(dopler);
                 endTime = System.nanoTime();
                 duration = (endTime - startTime) / 1000000;
-                System.out.println("SMT DOPLER Anomalie needed: " + duration + "ms");  //divide by 1000000 to get milliseconds.
-            });
+                System.out.println("SMT DOPLER False Optional Anomalie needed: " + duration + "ms");  //divide by 1000000 to get milliseconds
+
+                startTime = System.nanoTime();
+                // getAmountOfConfigs(dopler);
+                checkForDeadDecisionValues(dopler);
+                endTime = System.nanoTime();
+                duration = (endTime - startTime) / 1000000;
+                System.out.println("SMT DOPLER Dead Anomalie needed: " + duration + "ms");  //divide by 1000000 to get milliseconds
+
+                startTime = System.nanoTime();
+
+                try {
+                    checkSat(builder);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                endTime = System.nanoTime();
+                duration = (endTime - startTime) / 1000000;
+                System.out.println("SMT DOPLER one valid config needed: " + duration + "ms");  //divide by 1000000 to get milliseconds
+
+
+                    });
         } catch (IOException e) {
 
+            System.err.println("Error reading file: " + e.getMessage());
 
         }
 
