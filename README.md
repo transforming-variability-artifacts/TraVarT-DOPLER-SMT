@@ -34,3 +34,14 @@ If there is a visibility condition associated with a decision, the user has to f
 ## SMT Encoding
 
 Detailed Explanation of the Encoding you can find [here](SMTEncoding.md)
+
+## CI Pipeline
+
+This project uses a GitHub Actions CI pipeline to automatically build the project and run all tests. The pipeline does this by:
+
+- Downloading the required CSV test data from an external repository.
+- Building the project and running unit tests using the **Maven Wrapper**.
+- Publishing test reports as GitHub checks in pull requests.
+
+The **Maven Wrapper** is used to ensure a consistent Maven version across all environments, making builds reproducible and setup easier.
+
