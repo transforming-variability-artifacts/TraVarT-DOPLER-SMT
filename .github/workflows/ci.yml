@@ -62,7 +62,6 @@ jobs:
       - name: Run Tests
         run: ./mvnw clean verify -fn -B
 
-
       - name: Publish Test Report
         if: always()
         uses: mikepenz/action-junit-report@v4
