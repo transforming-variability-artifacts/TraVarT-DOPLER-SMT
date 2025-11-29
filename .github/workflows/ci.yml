@@ -28,5 +28,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y maven
 
+      - name: Download CSV files from external repo
+        run: |
+          git clone --depth 1 https://github.com/transforming-variability-artifacts/DOPLER-models external-csv
+          rm -rf modelEval
+          mkdir -p modelEval
+          cp -v external-csv/CSVModels/*.csv modelEval/
+
       - name: Build & Test with Maven
         run: mvn clean verify -B
