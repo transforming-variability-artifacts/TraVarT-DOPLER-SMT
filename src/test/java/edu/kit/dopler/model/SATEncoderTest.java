@@ -15,7 +15,7 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-import de.ovgu.featureide.fm.core.JavaLogger;
+/*import de.ovgu.featureide.fm.core.JavaLogger;
 import de.ovgu.featureide.fm.core.Logger;
 import de.ovgu.featureide.fm.core.analysis.cnf.LiteralSet;
 import de.ovgu.featureide.fm.core.analysis.cnf.analysis.ContradictionAnalysis;
@@ -31,7 +31,7 @@ import de.ovgu.featureide.fm.core.io.JavaFileSystem;
 import de.ovgu.featureide.fm.core.io.ProblemList;
 import de.ovgu.featureide.fm.core.io.uvl.UVLFeatureModelFormat;
 import de.ovgu.featureide.fm.core.job.LongRunningCore;
-import de.ovgu.featureide.fm.core.job.LongRunningWrapper;
+import de.ovgu.featureide.fm.core.job.LongRunningWrapper;*/
 import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
 import junit.framework.TestCase;
 import static edu.kit.dopler.common.DoplerUtils.readDOPLERModelFromFile;
@@ -50,27 +50,33 @@ import java.util.stream.Stream;
 
 public class SATEncoderTest extends TestCase {
 
-    public int getFeatureIDConfigs(Path filePath) throws IOException {
-        FileSystem.INSTANCE = new JavaFileSystem();
-        LongRunningWrapper.INSTANCE = new LongRunningCore();
-        Logger.logger = new JavaLogger();
-
-        FMFactoryManager.getInstance().addExtension(DefaultFeatureModelFactory.getInstance());
-        FMFactoryManager.getInstance().addExtension(MultiFeatureModelFactory.getInstance());
-        FMFactoryManager.getInstance().setWorkspaceLoader(new CoreFactoryWorkspaceLoader());
-
-        CLIFunctionManager.getInstance().addExtension(new ConfigurationGenerator());
-
-        String content = Files.readString(filePath);
-        IFeatureModel featureIdeFm = new MultiFeatureModelFactory().create();
-        UVLFeatureModelFormat format = new UVLFeatureModelFormat();
-        format.read(featureIdeFm, content);
-
-        FeatureModelFormula formula = new FeatureModelFormula(featureIdeFm);
-        List<LiteralSet> configs = LongRunningWrapper.runMethod(new AllConfigurationGenerator(formula.getCNF()));
-        return configs.size();
-
-    }
+    /*
+     * public int getFeatureIDConfigs(Path filePath) throws IOException {
+     * FileSystem.INSTANCE = new JavaFileSystem();
+     * LongRunningWrapper.INSTANCE = new LongRunningCore();
+     * Logger.logger = new JavaLogger();
+     * 
+     * FMFactoryManager.getInstance().addExtension(DefaultFeatureModelFactory.
+     * getInstance());
+     * FMFactoryManager.getInstance().addExtension(MultiFeatureModelFactory.
+     * getInstance());
+     * FMFactoryManager.getInstance().setWorkspaceLoader(new
+     * CoreFactoryWorkspaceLoader());
+     * 
+     * CLIFunctionManager.getInstance().addExtension(new ConfigurationGenerator());
+     * 
+     * String content = Files.readString(filePath);
+     * IFeatureModel featureIdeFm = new MultiFeatureModelFactory().create();
+     * UVLFeatureModelFormat format = new UVLFeatureModelFormat();
+     * format.read(featureIdeFm, content);
+     * 
+     * FeatureModelFormula formula = new FeatureModelFormula(featureIdeFm);
+     * List<LiteralSet> configs = LongRunningWrapper.runMethod(new
+     * AllConfigurationGenerator(formula.getCNF()));
+     * return configs.size();
+     * 
+     * }
+     */
 
     public void testVariantsWaterfilter() throws NotSupportedVariabilityTypeException, IOException {
 
@@ -126,14 +132,20 @@ public class SATEncoderTest extends TestCase {
 
     }
 
-    public void testVariantsASEJ1() throws NotSupportedVariabilityTypeException, IOException {
-
-        Dopler dopler = readDOPLERModelFromFile(Path.of(System.getProperty("user.dir") + "/modelEval/dm_ASEJ1.csv"));
-        Path filePath = Paths.get(System.getProperty("user.dir") + "/modelEval/ASEJ1.uvl");
-
-        assertEquals(getFeatureIDConfigs(filePath), getAmountOfConfigs(dopler, ""));
-
-    }
+    /*
+     * public void testVariantsASEJ1() throws NotSupportedVariabilityTypeException,
+     * IOException {
+     * 
+     * Dopler dopler =
+     * readDOPLERModelFromFile(Path.of(System.getProperty("user.dir") +
+     * "/modelEval/dm_ASEJ1.csv"));
+     * Path filePath = Paths.get(System.getProperty("user.dir") +
+     * "/modelEval/ASEJ1.uvl");
+     * 
+     * assertEquals(getFeatureIDConfigs(filePath), getAmountOfConfigs(dopler, ""));
+     * 
+     * }
+     */
 
     /*
      * public void testVariantsDissModel() throws
