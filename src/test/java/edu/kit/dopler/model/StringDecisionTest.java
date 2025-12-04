@@ -42,7 +42,7 @@ public class StringDecisionTest extends TestCase {
 		expressions.add(equals);
 		stringDecision.setValidityConditions(expressions);
 		assertThrows(ValidityConditionException.class, () -> stringDecision.setValue(new StringValue("test2")));
-		assertEquals(new StringValue("null").getValue(), stringDecision.getValue().getValue());
+		assertEquals(new StringValue("").getValue(), stringDecision.getValue().getValue());
 		assertFalse(stringDecision.isTaken());
 	}
 
@@ -60,7 +60,7 @@ public class StringDecisionTest extends TestCase {
 	}
 
 	public void testStandardValue() {
-		assertEquals("null", stringDecision.getStandardValue());
+		assertEquals("", stringDecision.getStandardValue());
 	}
 
 }
