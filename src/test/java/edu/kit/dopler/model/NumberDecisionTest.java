@@ -43,7 +43,7 @@ public class NumberDecisionTest extends TestCase {
 		expressions.add(greatherThan);
 		numberDecision.setValidityConditions(expressions);
 		assertThrows(ValidityConditionException.class, () -> numberDecision.setValue(new DoubleValue(1.0)));
-		assertEquals(new DoubleValue(-1.0).getValue(), numberDecision.getValue().getValue());
+		assertEquals(new DoubleValue(0.0).getValue(), numberDecision.getValue().getValue());
 	}
 
 	public void testSetValueWhichFullFillsValidityCondition() throws ValidityConditionException, EvaluationException {
@@ -62,7 +62,7 @@ public class NumberDecisionTest extends TestCase {
 	}
 
 	public void testStandardValue() {
-		assertEquals(-1.0, numberDecision.getStandardValue());
+		assertEquals(0.0, numberDecision.getStandardValue());
 	}
 
 }
