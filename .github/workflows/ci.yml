@@ -35,5 +35,19 @@ jobs:
           mkdir -p modelEval
           cp -v external-csv/CSVModels/*.csv modelEval/
 
-      - name: Build & Test with Maven
-        run: mvn clean verify -B
+      - name: Build & Generate Reports
+        run: mvn clean verify site -fn
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with: 
+          name: test-report
+          path: target/site/surefire-report.html
+
+      - name: Upload checkstyle report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkstye-report
+          path: target/site/checkstyle.html
