@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -19,5 +19,5 @@ import edu.kit.dopler.exceptions.InvalidTypeInLiteralExpressionCheckException;
 
 public abstract class LiteralExpression extends Expression {
 
-	abstract boolean equalsForLiteralExpressions(IValue<?> value) throws InvalidTypeInLiteralExpressionCheckException;
+    abstract boolean equalsForLiteralExpressions(IValue<?> value) throws InvalidTypeInLiteralExpressionCheckException;
 }

@@ -16,152 +16,139 @@
 
 package edu.kit.dopler.io;
 
+import edu.kit.dopler.model.*;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import edu.kit.dopler.model.Dopler;
-import edu.kit.dopler.model.DoubleLiteralExpression;
-import edu.kit.dopler.model.EnumerationDecision;
-import edu.kit.dopler.model.EnumerationLiteral;
-import edu.kit.dopler.model.GreatherThan;
-import edu.kit.dopler.model.IDecision;
-import edu.kit.dopler.model.IExpression;
-import edu.kit.dopler.model.LessThan;
-import edu.kit.dopler.model.NumberDecision;
-import edu.kit.dopler.model.Rule;
+import java.util.*;
 
 public class DoplerModelWriter {
-	
-	public void writeCSV(Dopler dm, Path path) throws IOException {
-		Objects.requireNonNull(dm);
-		Objects.requireNonNull(path);
-		
-	    try (FileWriter out = new FileWriter(path.toFile(), StandardCharsets.UTF_8)) {
-	        // Write Header
-	        out.write("ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if\n");
 
-	        for (IDecision<?> obj : dm.getDecisions()) {
-	            String rangeString = createRangeString(obj);
-	            String rulesString = createRulesString(obj);
-	            String cardinalityString = createCardinalityString(obj);
+    public void writeCSV(Dopler dm, Path path) throws IOException {
+        Objects.requireNonNull(dm);
+        Objects.requireNonNull(path);
 
-	            // Write lines
-	            String line = obj.getDisplayId() + ";" +
-	                          obj.getQuestion() + ";" +
-	                          obj.getDecisionType() + ";" +
-	                          rangeString + ";" +
-	                          cardinalityString + ";" +
-	                          rulesString + ";" +
-	                          obj.getVisibilityCondition() + "\n";
-	            out.write(line);
-	        }
-	    }
-	}
-	
-	public void writeJson(Dopler dm, Path path) throws IOException {
-		Objects.requireNonNull(dm);
-		Objects.requireNonNull(path);
-		
-		try (FileWriter out = new FileWriter(path.toFile(), StandardCharsets.UTF_8)) {
-			// Write Header
-			out.write("{ \n  \"DOPLER\": {\n");
-			
-			// Write Decisions
-			String space = "      ";
-		    List<IDecision<?>> decisions = new ArrayList<>(dm.getDecisions());
-		    for (int i = 0; i < decisions.size(); i++) {
-		        IDecision<?> obj = decisions.get(i);
-				
-				out.write("    \"" + obj.getDisplayId() + "\": {\n");
-				out.write(space + "\"Question\": \"" + obj.getQuestion() + "\",\n");
-				out.write(space + "\"Type\": \"" + obj.getDecisionType() + "\",\n");
-				out.write(space + "\"Range\": \"" + createRangeString(obj) + "\",\n");
-				if(createCardinalityString(obj).equals("")) {
-				out.write(space + "\"Cardinality\": \"" + "\",\n");
-				} else {
-					out.write(space + "\"Cardinality\": \"" + createCardinalityString(obj) + "\",\n");
-				}
-				if(createRulesString(obj).equals("")) {
-					out.write(space + "\"Constraint/Rule\": \"" + "\",\n");
-				} else {
-					out.write(space + "\"Constraint/Rule\": " + createRulesString(obj) + ",\n");
-				}
-				out.write(space + "\"Visible/relevant if\": \"" + obj.getVisibilityCondition() + "\"\n");
-				
-		        out.write("    }");
-				
-		        if (i < decisions.size() - 1) {
-		            out.write(",");
-		        }
-		        out.write("\n");
-		    }
-			
-			// Write Closing brackets
-			out.write("  }\n}");
-		}
-	}
-	
-	private String createCardinalityString(IDecision<?> decision) {
-	    if (decision instanceof EnumerationDecision enumDecision) {
-	        return enumDecision.getMinCardinality() + ":" + enumDecision.getMaxCardinality();
-	    }
-	    return "";
-	}
+        try (FileWriter out = new FileWriter(path.toFile(), StandardCharsets.UTF_8)) {
+            // Write Header
+            out.write("ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if\n");
 
-	private String createRulesString(IDecision<?> decision) {
-		String rulesString;
-		Set<Rule> rulesSet = decision.getRules();
+            for (IDecision<?> obj : dm.getDecisions()) {
+                String rangeString = createRangeString(obj);
+                String rulesString = createRulesString(obj);
+                String cardinalityString = createCardinalityString(obj);
 
-		if (rulesSet.isEmpty()) {
-			return "";
-		}
+                // Write lines
+                String line = obj.getDisplayId() + ";" +
+                        obj.getQuestion() + ";" +
+                        obj.getDecisionType() + ";" +
+                        rangeString + ";" +
+                        cardinalityString + ";" +
+                        rulesString + ";" +
+                        obj.getVisibilityCondition() + "\n";
+                out.write(line);
+            }
+        }
+    }
 
-		StringBuilder rulesSetBuilder = new StringBuilder("\"");
-		for (Rule rule : rulesSet) {
-			rulesSetBuilder.append(rule);
-		}
-		rulesSetBuilder.append("\"");
-		rulesString = rulesSetBuilder.toString();
-		return rulesString;
-	}
+    public void writeJson(Dopler dm, Path path) throws IOException {
+        Objects.requireNonNull(dm);
+        Objects.requireNonNull(path);
 
-	private String createRangeString(IDecision<?> decision) {
-	    switch (decision.getDecisionType()) {
-	        case BOOLEAN -> {
-	            return "false | true";
-	        }
-	        case NUMBER -> {
-	        	String numberRange = "-";
-	        	NumberDecision numberDecision = (NumberDecision) decision;
-	        	Set<IExpression> validityConditions = numberDecision.getValidityConditions();
-	        	for(IExpression con : validityConditions) {
-	        		if(con instanceof GreatherThan gt) {
-	        			DoubleLiteralExpression ngt = (DoubleLiteralExpression) gt.getLeftExpression();
-	        			numberRange = (ngt.getLiteral() + 1) + numberRange;
-	        		} else if (con instanceof LessThan lt) {
-	        			DoubleLiteralExpression nlt = (DoubleLiteralExpression) lt.getLeftExpression();
-	        			numberRange = numberRange + (nlt.getLiteral() - 1);
-	        		}
-	        	}
-	            return numberRange.equals("-") ? "" : numberRange ;
-	        }
-	        case ENUM -> {
-	            EnumerationDecision enumDecision = (EnumerationDecision) decision;
-	            List<EnumerationLiteral> enumeration =
-	                    new ArrayList<>(enumDecision.getEnumeration().getEnumerationLiterals());
-	            enumeration.sort(Comparator.comparing(EnumerationLiteral::getValue));
-	            return String.join(" | ", enumeration.stream().map(EnumerationLiteral::getValue).toList());
-	        	} 
-	        default -> {
-	        	return "";
-	        	}
-	        }
-	}
+        try (FileWriter out = new FileWriter(path.toFile(), StandardCharsets.UTF_8)) {
+            // Write Header
+            out.write("{ \n  \"DOPLER\": {\n");
+
+            // Write Decisions
+            String space = "      ";
+            List<IDecision<?>> decisions = new ArrayList<>(dm.getDecisions());
+            for (int i = 0; i < decisions.size(); i++) {
+                IDecision<?> obj = decisions.get(i);
+
+                out.write("    \"" + obj.getDisplayId() + "\": {\n");
+                out.write(space + "\"Question\": \"" + obj.getQuestion() + "\",\n");
+                out.write(space + "\"Type\": \"" + obj.getDecisionType() + "\",\n");
+                out.write(space + "\"Range\": \"" + createRangeString(obj) + "\",\n");
+                if (createCardinalityString(obj).equals("")) {
+                    out.write(space + "\"Cardinality\": \"" + "\",\n");
+                } else {
+                    out.write(space + "\"Cardinality\": \"" + createCardinalityString(obj) + "\",\n");
+                }
+                if (createRulesString(obj).equals("")) {
+                    out.write(space + "\"Constraint/Rule\": \"" + "\",\n");
+                } else {
+                    out.write(space + "\"Constraint/Rule\": " + createRulesString(obj) + ",\n");
+                }
+                out.write(space + "\"Visible/relevant if\": \"" + obj.getVisibilityCondition() + "\"\n");
+
+                out.write("    }");
+
+                if (i < decisions.size() - 1) {
+                    out.write(",");
+                }
+                out.write("\n");
+            }
+
+            // Write Closing brackets
+            out.write("  }\n}");
+        }
+    }
+
+    private String createCardinalityString(IDecision<?> decision) {
+        if (decision instanceof EnumerationDecision enumDecision) {
+            return enumDecision.getMinCardinality() + ":" + enumDecision.getMaxCardinality();
+        }
+        return "";
+    }
+
+    private String createRulesString(IDecision<?> decision) {
+        String rulesString;
+        Set<Rule> rulesSet = decision.getRules();
+
+        if (rulesSet.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder rulesSetBuilder = new StringBuilder("\"");
+        for (Rule rule : rulesSet) {
+            rulesSetBuilder.append(rule);
+        }
+        rulesSetBuilder.append("\"");
+        rulesString = rulesSetBuilder.toString();
+        return rulesString;
+    }
+
+    private String createRangeString(IDecision<?> decision) {
+        switch (decision.getDecisionType()) {
+            case BOOLEAN -> {
+                return "false | true";
+            }
+            case NUMBER -> {
+                String numberRange = "-";
+                NumberDecision numberDecision = (NumberDecision) decision;
+                Set<IExpression> validityConditions = numberDecision.getValidityConditions();
+                for (IExpression con : validityConditions) {
+                    if (con instanceof GreatherThan gt) {
+                        DoubleLiteralExpression ngt = (DoubleLiteralExpression) gt.getLeftExpression();
+                        numberRange = (ngt.getLiteral() + 1) + numberRange;
+                    } else if (con instanceof LessThan lt) {
+                        DoubleLiteralExpression nlt = (DoubleLiteralExpression) lt.getLeftExpression();
+                        numberRange = numberRange + (nlt.getLiteral() - 1);
+                    }
+                }
+                return numberRange.equals("-") ? "" : numberRange;
+            }
+            case ENUM -> {
+                EnumerationDecision enumDecision = (EnumerationDecision) decision;
+                List<EnumerationLiteral> enumeration =
+                        new ArrayList<>(enumDecision.getEnumeration().getEnumerationLiterals());
+                enumeration.sort(Comparator.comparing(EnumerationLiteral::getValue));
+                return String.join(" | ", enumeration.stream().map(EnumerationLiteral::getValue).toList());
+            }
+            default -> {
+                return "";
+            }
+        }
+    }
 }

@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -21,51 +21,51 @@ import java.util.stream.Stream;
 
 public class StringLiteralExpression extends LiteralExpression {
 
-	private String literal;
+    private String literal;
 
-	public StringLiteralExpression(String literal) {
-		this.literal = literal;
-	}
+    public StringLiteralExpression(String literal) {
+        this.literal = literal;
+    }
 
-	@Override
-	public boolean evaluate() {
-		return false;
-	}
+    @Override
+    public boolean evaluate() {
+        return false;
+    }
 
-	@Override
-	public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
-		builder.add("\"" + literal + "\"");
-	}
+    @Override
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
+        builder.add("\"" + literal + "\"");
+    }
 
-	public String getLiteral() {
-		return literal;
-	}
+    public String getLiteral() {
+        return literal;
+    }
 
-	public void setLiteral(String literal) {
-		this.literal = literal;
-	}
+    public void setLiteral(String literal) {
+        this.literal = literal;
+    }
 
-	/**
-	 * This methode is implemented for every LiteralExpression to check the equality
-	 * in the EQUALS expression
-	 * 
-	 * @param value the value which need to be compared to the literal
-	 * @return returns a boolean if the values are equal
-	 * @throws InvalidTypeInLiteralExpressionCheckException is thrown when the value
-	 *                                                      is not of type
-	 *                                                      StringValue
-	 */
-	@Override
-	boolean equalsForLiteralExpressions(IValue<?> value) throws InvalidTypeInLiteralExpressionCheckException {
-		if (value instanceof StringValue) {
-			return literal.equals(value.getValue());
-		} else {
-			throw new InvalidTypeInLiteralExpressionCheckException("Parameter was not of Type StringValue in Equals");
-		}
-	}
+    /**
+     * This methode is implemented for every LiteralExpression to check the equality
+     * in the EQUALS expression
+     *
+     * @param value the value which need to be compared to the literal
+     * @return returns a boolean if the values are equal
+     * @throws InvalidTypeInLiteralExpressionCheckException is thrown when the value
+     *                                                      is not of type
+     *                                                      StringValue
+     */
+    @Override
+    boolean equalsForLiteralExpressions(IValue<?> value) throws InvalidTypeInLiteralExpressionCheckException {
+        if (value instanceof StringValue) {
+            return literal.equals(value.getValue());
+        } else {
+            throw new InvalidTypeInLiteralExpressionCheckException("Parameter was not of Type StringValue in Equals");
+        }
+    }
 
-	@Override
-	public String toString() {
-		return String.format("%s", literal);
-	}
+    @Override
+    public String toString() {
+        return String.format("%s", literal);
+    }
 }

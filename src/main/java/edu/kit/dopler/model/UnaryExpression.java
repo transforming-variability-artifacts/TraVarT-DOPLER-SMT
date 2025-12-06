@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -17,17 +17,17 @@ package edu.kit.dopler.model;
 
 public abstract class UnaryExpression extends Expression {
 
-	private IExpression child;
+    private IExpression child;
 
-	public UnaryExpression(IExpression child) {
-		this.child = child;
-	}
+    public UnaryExpression(IExpression child) {
+        this.child = child;
+    }
 
-	public IExpression getOperand() {
-		return child;
-	}
+    public IExpression getOperand() {
+        return child;
+    }
 
-	public void setChild(IExpression child) {
-		this.child = child;
-	}
+    public void setChild(IExpression child) {
+        this.child = child;
+    }
 }

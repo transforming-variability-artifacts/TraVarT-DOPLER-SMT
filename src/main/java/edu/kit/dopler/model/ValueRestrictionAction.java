@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -17,13 +17,13 @@ package edu.kit.dopler.model;
 
 public abstract class ValueRestrictionAction extends Action {
 
-	private final IDecision<?> decision;
+    private final IDecision<?> decision;
 
-	public ValueRestrictionAction(IDecision<?> decision) {
-		this.decision = decision;
-	}
+    public ValueRestrictionAction(IDecision<?> decision) {
+        this.decision = decision;
+    }
 
-	public IDecision<?> getDecision() {
-		return decision;
-	}
+    public IDecision<?> getDecision() {
+        return decision;
+    }
 }

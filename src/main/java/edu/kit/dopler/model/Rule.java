@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -22,50 +22,50 @@ import java.util.Set;
 
 public class Rule {
 
-	private IExpression condition;
-	private Set<IAction> actions;
+    private IExpression condition;
+    private Set<IAction> actions;
 
-	public Rule(IExpression condition, Set<IAction> actions) {
-		this.condition = condition;
-		this.actions = actions;
-	}
+    public Rule(IExpression condition, Set<IAction> actions) {
+        this.condition = condition;
+        this.actions = actions;
+    }
 
-	public IExpression getCondition() {
-		return condition;
-	}
+    public IExpression getCondition() {
+        return condition;
+    }
 
-	public void setCondition(IExpression condition) {
-		this.condition = condition;
-	}
+    public void setCondition(IExpression condition) {
+        this.condition = condition;
+    }
 
-	public Set<IAction> getActions() {
-		return actions;
-	}
+    public Set<IAction> getActions() {
+        return actions;
+    }
 
-	public void setActions(Set<IAction> actions) {
-		this.actions = actions;
-	}
+    public void setActions(Set<IAction> actions) {
+        this.actions = actions;
+    }
 
-	public void executeActions() throws ActionExecutionException, EvaluationException {
+    public void executeActions() throws ActionExecutionException, EvaluationException {
 
-		if (condition.evaluate()) {
-			for (IAction action : actions) {
-				action.execute();
-			}
-		}
-	}
+        if (condition.evaluate()) {
+            for (IAction action : actions) {
+                action.execute();
+            }
+        }
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("if (").append(condition).append(") {");
-		for (IAction action : actions) {
-			if (null == action) {
-				continue;
-			}
-			builder.append(action).append(";");
-		}
-		builder.append("}");
-		return builder.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("if (").append(condition).append(") {");
+        for (IAction action : actions) {
+            if (null == action) {
+                continue;
+            }
+            builder.append(action).append(";");
+        }
+        builder.append("}");
+        return builder.toString();
+    }
 }

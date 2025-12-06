@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -24,24 +24,24 @@ import edu.kit.dopler.exceptions.ActionExecutionException;
 
 public class NumberEnforce extends Enforce {
 
-	public NumberEnforce(NumberDecision decision, IValue<?> value) {
-		super(decision, value);
-	}
+    public NumberEnforce(NumberDecision decision, IValue<?> value) {
+        super(decision, value);
+    }
 
-	@Override
-	public void execute() throws ActionExecutionException {
-		try {
-			NumberDecision numberDecision = (NumberDecision) getDecision();
-			DoubleValue doubleValue = (DoubleValue) getValue();
-			numberDecision.setValue(doubleValue);
-			getDecision().setTaken(true);
-		} catch (Exception e) {
-			throw new ActionExecutionException(e);
-		}
-	}
+    @Override
+    public void execute() throws ActionExecutionException {
+        try {
+            NumberDecision numberDecision = (NumberDecision) getDecision();
+            DoubleValue doubleValue = (DoubleValue) getValue();
+            numberDecision.setValue(doubleValue);
+            getDecision().setTaken(true);
+        } catch (Exception e) {
+            throw new ActionExecutionException(e);
+        }
+    }
 
-	@Override
-	public String toString() {
-		return String.format("%s = %s", getDecision(), getValue());
-	}
+    @Override
+    public String toString() {
+        return String.format("%s = %s", getDecision(), getValue());
+    }
 }

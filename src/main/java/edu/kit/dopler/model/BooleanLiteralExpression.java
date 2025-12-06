@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -21,52 +21,52 @@ import java.util.stream.Stream;
 
 public class BooleanLiteralExpression extends LiteralExpression {
 
-	private boolean literal;
+    private boolean literal;
 
-	public BooleanLiteralExpression(boolean literal) {
-		this.literal = literal;
-	}
+    public BooleanLiteralExpression(boolean literal) {
+        this.literal = literal;
+    }
 
-	@Override
-	public boolean evaluate() {
-		return literal;
-	}
+    @Override
+    public boolean evaluate() {
+        return literal;
+    }
 
-	@Override
-	public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
+    @Override
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
 
-		builder.add(" " + literal + " ");
-	}
+        builder.add(" " + literal + " ");
+    }
 
-	public boolean getLiteral() {
-		return literal;
-	}
+    public boolean getLiteral() {
+        return literal;
+    }
 
-	public void setLiteral(boolean literal) {
-		this.literal = literal;
-	}
+    public void setLiteral(boolean literal) {
+        this.literal = literal;
+    }
 
-	/**
-	 * This methode is implemented for every LiteralExpression to check the equality
-	 * in the EQUALS expression
-	 * 
-	 * @param value the value which need to be compared to the literal
-	 * @return returns a boolean if the values are equal
-	 * @throws InvalidTypeInLiteralExpressionCheckException is thrown when the value
-	 *                                                      is not of type
-	 *                                                      BooleanValue
-	 */
-	@Override
-	boolean equalsForLiteralExpressions(IValue<?> value) throws InvalidTypeInLiteralExpressionCheckException {
-		if (value instanceof BooleanValue bv) {
-			return literal == bv.getValue();
-		} else {
-			throw new InvalidTypeInLiteralExpressionCheckException("Parameter was not of Type Boolean in Equals");
-		}
-	}
-	
-	@Override
-	public String toString() {
-		return String.valueOf(literal);
-	}
+    /**
+     * This methode is implemented for every LiteralExpression to check the equality
+     * in the EQUALS expression
+     *
+     * @param value the value which need to be compared to the literal
+     * @return returns a boolean if the values are equal
+     * @throws InvalidTypeInLiteralExpressionCheckException is thrown when the value
+     *                                                      is not of type
+     *                                                      BooleanValue
+     */
+    @Override
+    boolean equalsForLiteralExpressions(IValue<?> value) throws InvalidTypeInLiteralExpressionCheckException {
+        if (value instanceof BooleanValue bv) {
+            return literal == bv.getValue();
+        } else {
+            throw new InvalidTypeInLiteralExpressionCheckException("Parameter was not of Type Boolean in Equals");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(literal);
+    }
 }

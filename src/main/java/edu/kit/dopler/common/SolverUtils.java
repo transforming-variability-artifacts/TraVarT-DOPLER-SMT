@@ -39,7 +39,7 @@ public final class SolverUtils {
         // builder.add("(get-model)");
         builder.add("(exit)");
         final Stream<String> stream = builder.build();
-        final Scanner scanner = satSolver(stream,true);
+        final Scanner scanner = satSolver(stream, true);
         if (scanner == null) {
             throw new Exception();
         }
@@ -87,22 +87,22 @@ public final class SolverUtils {
 
     public static void checkForFalseOptionalDecisionValues(final Dopler dopler) {
         Stream.Builder<String> builder = dopler.toSMTStream();
-        checkForFalseOptionalDecisions(dopler,builder);
+        checkForFalseOptionalDecisions(dopler, builder);
 
     }
 
     public static void checkForDeadDecisionValues(final Dopler dopler) {
         Stream.Builder<String> builder = dopler.toSMTStream();
-        checkForDeadDecision(dopler,builder);
+        checkForDeadDecision(dopler, builder);
     }
 
-    private static void checkForFalseOptionalDecisions(final Dopler doplerModel, Stream.Builder<String> builder){
+    private static void checkForFalseOptionalDecisions(final Dopler doplerModel, Stream.Builder<String> builder) {
         builder.add("(check-sat)");
         builder.add("(get-model)");
 
 
         final Stream<String> stream = builder.build();
-        final Scanner scanner = satSolver(stream,true);
+        final Scanner scanner = satSolver(stream, true);
 
 
         while (true) {
@@ -114,14 +114,14 @@ public final class SolverUtils {
             if (line.equals("unsat")) {
                 System.out.println("Void DM");
                 return;
-            } else if(line.contains("(define-fun END")){
+            } else if (line.contains("(define-fun END")) {
                 String[] newLine = line.split("\\s+");
                 scanner.nextLine();
-                builder.add("(assert (= " + newLine[2]+ " " + "false" + "))");
+                builder.add("(assert (= " + newLine[2] + " " + "false" + "))");
                 builder.add("(check-sat)");
                 builder.add("(get-model)");
                 final Stream<String> deadDecisionStream = builder.build();
-                final Scanner scannerDeadDecision = satSolver(deadDecisionStream,true);
+                final Scanner scannerDeadDecision = satSolver(deadDecisionStream, true);
                 while (scannerDeadDecision.hasNextLine()) {
                     final String deadDecisionLine = scannerDeadDecision.nextLine();
                     //System.out.println(deadDecisionLine);
@@ -140,14 +140,14 @@ public final class SolverUtils {
 
     }
 
-    private static void checkForDeadDecision(final Dopler doplerModel, Stream.Builder<String> builder){
+    private static void checkForDeadDecision(final Dopler doplerModel, Stream.Builder<String> builder) {
         builder.add("(check-sat)");
         builder.add("(get-model)");
 
 
         final Stream<String> stream = builder.build();
 
-        final Scanner scanner = satSolver(stream,true);
+        final Scanner scanner = satSolver(stream, true);
 
         System.out.println(scanner.hasNextLine());
 
@@ -160,16 +160,16 @@ public final class SolverUtils {
             if (line.equals("unsat")) {
                 System.out.println("Void DM");
                 return;
-            } else if(line.contains("(define-fun END")){
+            } else if (line.contains("(define-fun END")) {
                 String[] newLine = line.split("\\s+");
                 scanner.nextLine();
                 //System.out.println("Check for Feature: " +  newLine[2]);
-                builder.add("(assert (= " + newLine[2]+ " " + "true" + "))");
+                builder.add("(assert (= " + newLine[2] + " " + "true" + "))");
                 builder.add("(check-sat)");
                 builder.add("(get-model)");
                 final Stream<String> deadDecisionStream = builder.build();
 
-                final Scanner scannerDeadDecision = satSolver(deadDecisionStream,true);
+                final Scanner scannerDeadDecision = satSolver(deadDecisionStream, true);
                 while (scannerDeadDecision.hasNextLine()) {
                     final String deadDecisionLine = scannerDeadDecision.nextLine();
                     //System.out.println(deadDecisionLine);
@@ -191,7 +191,7 @@ public final class SolverUtils {
 
 
     private static int getAmountOfConfigsUVLSMT(final String encoding, Stream.Builder<String> builder) {
-    int amount = 0;
+        int amount = 0;
         String asserts = "";
 
 
@@ -202,7 +202,7 @@ public final class SolverUtils {
             builder.add("(get-model)");
 
             final Stream<String> stream = builder.build();
-            final Scanner scanner = satSolver(stream,true);
+            final Scanner scanner = satSolver(stream, true);
             builder = Stream.builder();
             builder.add(encoding);
 
@@ -220,12 +220,12 @@ public final class SolverUtils {
 
                 } else if (line.equals(" ")) {
 
-                } else if(line.contains("(define-fun")){
+                } else if (line.contains("(define-fun")) {
                     String[] newLine = line.split("\\s+");
                     String nextLine = scanner.nextLine();
                     String[] value = nextLine.split("\\)");
                     //System.out.println(newLine[2]);
-                    asserts += "(= " + newLine[2]+ " " + value[0] + ")";
+                    asserts += "(= " + newLine[2] + " " + value[0] + ")";
                 }
             }
             asserts += ")))";
@@ -234,9 +234,8 @@ public final class SolverUtils {
     }
 
 
-
     private static int getAmountOfConfigs(final Dopler dopler, Stream.Builder<String> builder) {
-    int amount = 0;
+        int amount = 0;
         String asserts = "";
         // builder.add("(assert (= DECISION_2_TAKEN_POST true))");
         // builder.add("(assert (= DECISION_0_TAKEN_POST true))");
@@ -248,7 +247,7 @@ public final class SolverUtils {
 
             dopler.createGetValueOFEndConstants(builder);
             final Stream<String> stream = builder.build();
-            final Scanner scanner = satSolver(stream,true);
+            final Scanner scanner = satSolver(stream, true);
             builder = dopler.toSMTStream();
 
             while (scanner.hasNextLine()) {
@@ -301,12 +300,11 @@ public final class SolverUtils {
         File file = new File("encoding.smt2");
 
 
-
         try {
-           final BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-           String input = stream.collect(Collectors.joining("\n"));
-           writer.write(input);
-           writer.close();
+            final BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            String input = stream.collect(Collectors.joining("\n"));
+            writer.write(input);
+            writer.close();
 //           stream.forEach(a -> {
 //                try {
 //                    System.out.println(a);
@@ -319,8 +317,6 @@ public final class SolverUtils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
 
 
         if (smt2) {

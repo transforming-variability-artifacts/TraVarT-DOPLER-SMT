@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *  @author David Kowal
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
@@ -19,20 +19,18 @@ package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
-
-
 
 import static edu.kit.dopler.common.DoplerUtils.readDOPLERModelFromFile;
 import static edu.kit.dopler.common.SolverUtils.*;
 
 public class Main {
 
-	public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {
+    public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {
         // Configure Z3 path from CLI: first arg as absolute/relative path, or --z3=/path/to/z3
         String z3Path = null;
         if (args != null && args.length > 0) {
@@ -66,7 +64,7 @@ public class Main {
 //            throw new RuntimeException(e);
 //        }
         anomalieAnalysisOfAllModels();
-	}
+    }
 
 
     static void anomalieAnalysisOfAllModels() {
@@ -78,54 +76,54 @@ public class Main {
 
             Files.walk(startDirectory).filter(Files::isRegularFile)
                     .filter(path -> {
-                String fileName = path.getFileName().toString().toLowerCase();
-                return fileName.endsWith(".json") || fileName.endsWith(".csv");
-            })
+                        String fileName = path.getFileName().toString().toLowerCase();
+                        return fileName.endsWith(".json") || fileName.endsWith(".csv");
+                    })
                     .forEach(path -> {
-                System.out.println(path.toString());
-                Dopler dopler = null;
-                try {
-                    dopler = readDOPLERModelFromFile(path);
+                        System.out.println(path.toString());
+                        Dopler dopler = null;
+                        try {
+                            dopler = readDOPLERModelFromFile(path);
 
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
 
-                long startTime = System.nanoTime();
-                final Stream.Builder<String> builder = dopler.toSMTStream();
+                        long startTime = System.nanoTime();
+                        final Stream.Builder<String> builder = dopler.toSMTStream();
 //                        try {
 //                            System.out.println(checkSat(builder));
 //                        } catch (Exception e) {
 //                            throw new RuntimeException(e);
 //                        }
-                long endTime = System.nanoTime();
-                long duration = (endTime - startTime) / 1000000;
-                System.out.println("SMT DOPLER Encoding needed: " + duration + "ms");
+                        long endTime = System.nanoTime();
+                        long duration = (endTime - startTime) / 1000000;
+                        System.out.println("SMT DOPLER Encoding needed: " + duration + "ms");
 
-                startTime = System.nanoTime();
-                // getAmountOfConfigs(dopler);
-                checkForFalseOptionalDecisionValues(dopler);
-                endTime = System.nanoTime();
-                duration = (endTime - startTime) / 1000000;
-                System.out.println("SMT DOPLER False Optional Anomalie needed: " + duration + "ms");  //divide by 1000000 to get milliseconds
+                        startTime = System.nanoTime();
+                        // getAmountOfConfigs(dopler);
+                        checkForFalseOptionalDecisionValues(dopler);
+                        endTime = System.nanoTime();
+                        duration = (endTime - startTime) / 1000000;
+                        System.out.println("SMT DOPLER False Optional Anomalie needed: " + duration + "ms");  //divide by 1000000 to get milliseconds
 
-                startTime = System.nanoTime();
-                // getAmountOfConfigs(dopler);
-                checkForDeadDecisionValues(dopler);
-                endTime = System.nanoTime();
-                duration = (endTime - startTime) / 1000000;
-                System.out.println("SMT DOPLER Dead Anomalie needed: " + duration + "ms");  //divide by 1000000 to get milliseconds
+                        startTime = System.nanoTime();
+                        // getAmountOfConfigs(dopler);
+                        checkForDeadDecisionValues(dopler);
+                        endTime = System.nanoTime();
+                        duration = (endTime - startTime) / 1000000;
+                        System.out.println("SMT DOPLER Dead Anomalie needed: " + duration + "ms");  //divide by 1000000 to get milliseconds
 
-                startTime = System.nanoTime();
+                        startTime = System.nanoTime();
 
-                try {
-                    checkSat(builder);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                endTime = System.nanoTime();
-                duration = (endTime - startTime) / 1000000;
-                System.out.println("SMT DOPLER one valid config needed: " + duration + "ms");  //divide by 1000000 to get milliseconds
+                        try {
+                            checkSat(builder);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                        endTime = System.nanoTime();
+                        duration = (endTime - startTime) / 1000000;
+                        System.out.println("SMT DOPLER one valid config needed: " + duration + "ms");  //divide by 1000000 to get milliseconds
 
 
                     });
@@ -136,8 +134,6 @@ public class Main {
         }
 
     }
-
-
 
 
 }

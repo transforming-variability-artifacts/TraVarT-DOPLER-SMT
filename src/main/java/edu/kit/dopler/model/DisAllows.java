@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -16,47 +16,48 @@
 package edu.kit.dopler.model;
 
 import edu.kit.dopler.exceptions.ActionExecutionException;
+
 import java.util.stream.Stream;
 
 public class DisAllows extends ValueRestrictionAction {
 
-	public static final String FUNCTION_NAME = "disAllow";
+    public static final String FUNCTION_NAME = "disAllow";
 
-	IValue<?> disAllowValue;
+    IValue<?> disAllowValue;
 
-	public DisAllows(EnumerationDecision decisionType, IValue<?> disAllowValue) {
-		super(decisionType);
-		this.disAllowValue = disAllowValue;
-	}
+    public DisAllows(EnumerationDecision decisionType, IValue<?> disAllowValue) {
+        super(decisionType);
+        this.disAllowValue = disAllowValue;
+    }
 
-	@Override
-	public void execute() throws ActionExecutionException {
+    @Override
+    public void execute() throws ActionExecutionException {
 
-		if (getDecision().getDecisionType() == Decision.DecisionType.ENUM) {
-			EnumerationDecision decision = (EnumerationDecision) getDecision();
-			decision.addDissallowed(new EnumerationLiteral((String) disAllowValue.getValue()));
+        if (getDecision().getDecisionType() == Decision.DecisionType.ENUM) {
+            EnumerationDecision decision = (EnumerationDecision) getDecision();
+            decision.addDissallowed(new EnumerationLiteral((String) disAllowValue.getValue()));
 
-		} else {
-			throw new ActionExecutionException("Action only possible for EnumDecisions");
-		}
+        } else {
+            throw new ActionExecutionException("Action only possible for EnumDecisions");
+        }
 
-	}
+    }
 
-	@Override
-	public void toSMTStream(Stream.Builder<String> builder, String selectedDecisionString) {
-		builder.add("(distinct ");
-		builder.add(selectedDecisionString + "_" + getDecision().toStringConstforSMT() + "_" + disAllowValue.getValue()
-				+ "_POST");
-		builder.add("true");
-		builder.add(")");
-	}
-	
-	@Override
-	public String toString() {
-		return String.format("%s(%s.%s)", FUNCTION_NAME, getDecision().getDisplayId(),disAllowValue);
-	}
+    @Override
+    public void toSMTStream(Stream.Builder<String> builder, String selectedDecisionString) {
+        builder.add("(distinct ");
+        builder.add(selectedDecisionString + "_" + getDecision().toStringConstforSMT() + "_" + disAllowValue.getValue()
+                + "_POST");
+        builder.add("true");
+        builder.add(")");
+    }
 
-	public IValue<?> getDisAllowValue() {
-		return disAllowValue;
-	}
+    @Override
+    public String toString() {
+        return String.format("%s(%s.%s)", FUNCTION_NAME, getDecision().getDisplayId(), disAllowValue);
+    }
+
+    public IValue<?> getDisAllowValue() {
+        return disAllowValue;
+    }
 }

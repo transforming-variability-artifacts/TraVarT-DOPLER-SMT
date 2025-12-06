@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -23,46 +23,46 @@ import java.util.stream.Stream;
 
 public abstract class ValueDecision<T> extends Decision<T> {
 
-	private Set<IExpression> validityConditions = Collections.emptySet();
+    private Set<IExpression> validityConditions = Collections.emptySet();
 
-	protected ValueDecision(String displayId, String question, String description, IExpression visibilityCondition,
-			Set<Rule> rules, Set<IExpression> validityConditions, DecisionType decisionType) {
-		super(displayId, question, description, visibilityCondition, rules, decisionType);
-		this.validityConditions = validityConditions;
-	}
+    protected ValueDecision(String displayId, String question, String description, IExpression visibilityCondition,
+                            Set<Rule> rules, Set<IExpression> validityConditions, DecisionType decisionType) {
+        super(displayId, question, description, visibilityCondition, rules, decisionType);
+        this.validityConditions = validityConditions;
+    }
 
-	public Set<IExpression> getValidityConditions() {
-		return validityConditions;
-	}
+    public Set<IExpression> getValidityConditions() {
+        return validityConditions;
+    }
 
-	public void setValidityConditions(Set<IExpression> validityConditions) {
-		this.validityConditions = validityConditions;
-	}
+    public void setValidityConditions(Set<IExpression> validityConditions) {
+        this.validityConditions = validityConditions;
+    }
 
-	public boolean checkValidity() throws EvaluationException {
-		for (IExpression expression : validityConditions) {
-			if (!expression.evaluate()) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	@Override
-	void toSMTStreamDecisionSpecific(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions) {
-		if (!getValidityConditions().isEmpty()) {
-			builder.add("(ite ");
-			builder.add("(and");
-			for (IExpression expression : getValidityConditions()) {
-				expression.toSMTStream(builder, toStringConstforSMT());
-			}
-			builder.add(")"); // closing and of the ValidityExpressions
-			toSMTStreamRules(builder, decisions); // if part
-			mapPreToPostConstants(builder, decisions); // else part
-			builder.add(")"); // closing the ite of validityConditions
+    public boolean checkValidity() throws EvaluationException {
+        for (IExpression expression : validityConditions) {
+            if (!expression.evaluate()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-		} else {
-			toSMTStreamRules(builder, decisions);
-		}
-	}
+    @Override
+    void toSMTStreamDecisionSpecific(Stream.Builder<String> builder, Set<? super IDecision<?>> decisions) {
+        if (!getValidityConditions().isEmpty()) {
+            builder.add("(ite ");
+            builder.add("(and");
+            for (IExpression expression : getValidityConditions()) {
+                expression.toSMTStream(builder, toStringConstforSMT());
+            }
+            builder.add(")"); // closing and of the ValidityExpressions
+            toSMTStreamRules(builder, decisions); // if part
+            mapPreToPostConstants(builder, decisions); // else part
+            builder.add(")"); // closing the ite of validityConditions
+
+        } else {
+            toSMTStreamRules(builder, decisions);
+        }
+    }
 }

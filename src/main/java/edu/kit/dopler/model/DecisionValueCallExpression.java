@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -19,26 +19,26 @@ import java.util.stream.Stream;
 
 public class DecisionValueCallExpression extends DecisionCallExpression {
 
-	public DecisionValueCallExpression(final IDecision<?> decision) {
-		super(decision);
-	}
+    public DecisionValueCallExpression(final IDecision<?> decision) {
+        super(decision);
+    }
 
-	@Override
-	public boolean evaluate() {
-		return getDecision().isTaken();
-	}
+    @Override
+    public boolean evaluate() {
+        return getDecision().isTaken();
+    }
 
-	public IValue<?> getValue() {
-		return getDecision().getValue();
-	}
+    public IValue<?> getValue() {
+        return getDecision().getValue();
+    }
 
-	@Override
-	public void toSMTStream(final Stream.Builder<String> builder, final String callingDecisionConst) {
-		builder.add(" " + callingDecisionConst + "_" + getDecision().toStringConstforSMT() + "_PRE ");
-	}
+    @Override
+    public void toSMTStream(final Stream.Builder<String> builder, final String callingDecisionConst) {
+        builder.add(" " + callingDecisionConst + "_" + getDecision().toStringConstforSMT() + "_PRE ");
+    }
 
-	@Override
-	public String toString() {
-		return String.format("getValue(%s)", getDecision());
-	}
+    @Override
+    public String toString() {
+        return String.format("getValue(%s)", getDecision());
+    }
 }

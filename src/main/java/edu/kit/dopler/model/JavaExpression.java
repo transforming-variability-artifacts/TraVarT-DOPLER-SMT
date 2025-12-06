@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -19,18 +19,18 @@ import java.util.stream.Stream;
 
 public class JavaExpression extends Expression {
 
-	@Override
-	public boolean evaluate() {
-		return false;
-	}
+    @Override
+    public boolean evaluate() {
+        return false;
+    }
 
-	@Override
-	public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
-		// not yet implemented
-	}
-	
-	@Override
-	public String toString() {
-		return "not yet implemented";
-	}
+    @Override
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
+        // not yet implemented
+    }
+
+    @Override
+    public String toString() {
+        return "not yet implemented";
+    }
 }

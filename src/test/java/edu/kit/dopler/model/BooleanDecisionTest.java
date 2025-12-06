@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -27,36 +27,36 @@ import static org.junit.Assert.*;
 public class BooleanDecisionTest {
 
     @Test
-    public void setValueTest(){
+    public void setValueTest() {
         IValue<Boolean> value = BooleanValue.getTrue();
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, Collections.emptySet());
+        BooleanDecision decision = new BooleanDecision("test", "test", "test", expression, Collections.emptySet());
         decision.setValue(value);
         assertTrue(decision.isTaken());
         assertSame(decision.getValue().getValue(), value.getValue());
     }
 
     @Test
-    public void testDecisionType(){
+    public void testDecisionType() {
 
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, Collections.emptySet());
+        BooleanDecision decision = new BooleanDecision("test", "test", "test", expression, Collections.emptySet());
         assertSame(decision.getDecisionType(), Decision.DecisionType.BOOLEAN);
 
     }
 
 
     @Test
-    public void testStandardValue(){
+    public void testStandardValue() {
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, Collections.emptySet());
-        assertSame(decision.getStandardValue(),BooleanValue.getFalse().getValue());
+        BooleanDecision decision = new BooleanDecision("test", "test", "test", expression, Collections.emptySet());
+        assertSame(decision.getStandardValue(), BooleanValue.getFalse().getValue());
     }
 
     @Test
-    public void testSetTaken(){
+    public void testSetTaken() {
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, Collections.emptySet());
+        BooleanDecision decision = new BooleanDecision("test", "test", "test", expression, Collections.emptySet());
         decision.setTaken(true);
 
         assertTrue(decision.isTaken());
@@ -65,31 +65,31 @@ public class BooleanDecisionTest {
     @Test
     public void checkVisibilityWithTrueVisibilityCond() throws EvaluationException {
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, Collections.emptySet());
+        BooleanDecision decision = new BooleanDecision("test", "test", "test", expression, Collections.emptySet());
         assertTrue(decision.isVisible());
     }
 
     @Test
     public void checkVisibilityWithFalseVisibilityCond() throws EvaluationException {
         IExpression expression = new BooleanLiteralExpression(false);
-        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, Collections.emptySet());
+        BooleanDecision decision = new BooleanDecision("test", "test", "test", expression, Collections.emptySet());
         assertFalse(decision.isVisible());
     }
 
 
     @Test
-    public void BooleanEnforceActionTest(){
+    public void BooleanEnforceActionTest() {
         IValue<Boolean> value = BooleanValue.getTrue();
         IExpression expression = new BooleanLiteralExpression(true);
-        BooleanDecision decision = new BooleanDecision("test", "test","test", expression, new HashSet<>());
-        BooleanDecision decision2 = new BooleanDecision("test", "test","test", expression, new HashSet<>());
+        BooleanDecision decision = new BooleanDecision("test", "test", "test", expression, new HashSet<>());
+        BooleanDecision decision2 = new BooleanDecision("test", "test", "test", expression, new HashSet<>());
 
         assertFalse(decision2.isTaken());
         assertFalse(decision2.getValue().getValue());
 
-        Rule rule = new Rule(expression,Collections.emptySet());
+        Rule rule = new Rule(expression, Collections.emptySet());
         Set<IAction> set = new HashSet<>();
-        IAction action = new BooleanEnforce(decision2,value);
+        IAction action = new BooleanEnforce(decision2, value);
         set.add(action);
         rule.setActions(set);
         decision.addRule(rule);
@@ -97,7 +97,7 @@ public class BooleanDecisionTest {
         try {
             decision.executeRules();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
 
@@ -105,8 +105,6 @@ public class BooleanDecisionTest {
         assertTrue(decision2.getValue().getValue());
 
     }
-
-
 
 
 }

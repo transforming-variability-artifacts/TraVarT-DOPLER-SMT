@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -22,47 +22,47 @@ import java.util.stream.Stream;
 
 public class EnumeratorLiteralExpression extends LiteralExpression {
 
-	private EnumerationLiteral enumerationLiteral;
+    private EnumerationLiteral enumerationLiteral;
 
-	public EnumeratorLiteralExpression(EnumerationLiteral literal) {
-		this.enumerationLiteral = literal;
-	}
+    public EnumeratorLiteralExpression(EnumerationLiteral literal) {
+        this.enumerationLiteral = literal;
+    }
 
-	@Override
-	public boolean evaluate() {
-		return false;
-	}
+    @Override
+    public boolean evaluate() {
+        return false;
+    }
 
-	@Override
-	public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
-		builder.add(" " + enumerationLiteral.getValue() + " ");
-	}
+    @Override
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
+        builder.add(" " + enumerationLiteral.getValue() + " ");
+    }
 
-	/**
-	 * This methode is implemented for every LiteralExpression to check the equality
-	 * in the EQUALS expression
-	 * 
-	 * @param value the value which need to be compared to the literal
-	 * @return returns a boolean if the values are equal
-	 * @throws InvalidTypeInLiteralExpressionCheckException is thrown when the value
-	 *                                                      is not of type
-	 *                                                      EnumerationLiteral
-	 */
-	@Override
-	boolean equalsForLiteralExpressions(IValue<?> value) throws InvalidTypeInLiteralExpressionCheckException {
-		if (value instanceof EnumerationLiteral) {
-			return Objects.equals(enumerationLiteral.getValue(), ((EnumerationLiteral) value).getValue());
-		} else {
-			throw new InvalidTypeInLiteralExpressionCheckException("Parameter was not of Type StringValue in Equals");
-		}
-	}
+    /**
+     * This methode is implemented for every LiteralExpression to check the equality
+     * in the EQUALS expression
+     *
+     * @param value the value which need to be compared to the literal
+     * @return returns a boolean if the values are equal
+     * @throws InvalidTypeInLiteralExpressionCheckException is thrown when the value
+     *                                                      is not of type
+     *                                                      EnumerationLiteral
+     */
+    @Override
+    boolean equalsForLiteralExpressions(IValue<?> value) throws InvalidTypeInLiteralExpressionCheckException {
+        if (value instanceof EnumerationLiteral) {
+            return Objects.equals(enumerationLiteral.getValue(), ((EnumerationLiteral) value).getValue());
+        } else {
+            throw new InvalidTypeInLiteralExpressionCheckException("Parameter was not of Type StringValue in Equals");
+        }
+    }
 
-	public EnumerationLiteral getEnumerationLiteral() {
-		return enumerationLiteral;
-	}
+    public EnumerationLiteral getEnumerationLiteral() {
+        return enumerationLiteral;
+    }
 
-	@Override
-	public String toString() {
-		return enumerationLiteral.getValue();
-	}
+    @Override
+    public String toString() {
+        return enumerationLiteral.getValue();
+    }
 }

@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -24,5 +24,5 @@ public interface IExpression {
     boolean evaluate() throws EvaluationException;
 
     void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst);
-    
+
 }
