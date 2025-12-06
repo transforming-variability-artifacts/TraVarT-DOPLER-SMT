@@ -9,14 +9,19 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.ActionExecutionException;
 
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class DisAllows extends ValueRestrictionAction {
@@ -41,6 +46,20 @@ public class DisAllows extends ValueRestrictionAction {
             throw new ActionExecutionException("Action only possible for EnumDecisions");
         }
 
+    }
+
+    @Override
+    public void executeAsCP(CpModel model, Literal conditionLiteral) {
+        System.out.println("disallow action");
+
+        String dissallowString = this.getDecision().getDisplayId() + "_" + this.disAllowValue.getValue().toString(); //here I always assume an enum
+
+        ArrayList<IntVar> cpVars = this.getDecision().getCPVars();
+        for (IntVar cpVar : cpVars) {
+            if (cpVar.getName().equals(dissallowString)) {
+                model.addEquality(cpVar, model.falseLiteral()).onlyEnforceIf(conditionLiteral);
+            }
+        }
     }
 
     @Override

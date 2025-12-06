@@ -9,14 +9,19 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.EvaluationException;
 
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class DecisionVisibilityCallExpression extends DecisionCallExpression {
@@ -45,6 +50,11 @@ public class DecisionVisibilityCallExpression extends DecisionCallExpression {
         } else {
             getDecision().getVisibilityCondition().toSMTStream(builder, callingDecisionConst);
         }
+    }
+
+    @Override
+    public Literal toCPLiteral(CpModel model) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

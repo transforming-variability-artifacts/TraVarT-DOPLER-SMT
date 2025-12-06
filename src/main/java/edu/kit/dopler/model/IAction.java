@@ -9,14 +9,19 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.ActionExecutionException;
 
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public interface IAction {
@@ -24,4 +29,7 @@ public interface IAction {
     void execute() throws ActionExecutionException;
 
     void toSMTStream(Stream.Builder<String> builder, String selectedDecisionString);
+
+    void executeAsCP(CpModel model, Literal conditionLiteral);
+
 }

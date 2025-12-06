@@ -9,14 +9,19 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.InvalidTypeInLiteralExpressionCheckException;
 
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class BooleanLiteralExpression extends LiteralExpression {
@@ -36,6 +41,11 @@ public class BooleanLiteralExpression extends LiteralExpression {
     public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
 
         builder.add(" " + literal + " ");
+    }
+
+    @Override
+    public Literal toCPLiteral(CpModel model) {
+        return this.literal ? model.trueLiteral() : model.falseLiteral();
     }
 
     public boolean getLiteral() {

@@ -9,14 +9,19 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.EvaluationException;
 
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class NOT extends UnaryExpression {
@@ -37,6 +42,11 @@ public class NOT extends UnaryExpression {
         builder.add("(not ");
         getOperand().toSMTStream(builder, callingDecisionConst);
         builder.add(")");
+    }
+
+    @Override
+    public Literal toCPLiteral(CpModel model) {
+        return this.getOperand().toCPLiteral(model).not();
     }
 
     @Override

@@ -9,13 +9,19 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.ActionExecutionException;
+
+import java.util.ArrayList;
 
 public class BooleanEnforce extends Enforce {
 
@@ -33,6 +39,16 @@ public class BooleanEnforce extends Enforce {
         } catch (Exception e) {
             throw new ActionExecutionException(e);
         }
+    }
+
+    @Override
+    public void executeAsCP(CpModel model, Literal conditionLiteral) {
+        System.out.println("bool enforce");
+        //val to enforce= this.getValue()
+        //val to be enforced= this.getDecision().getCPVars().getFirst()
+        model.addEquality(this.getDecision().getCPVars().getFirst(), this.getValue().getCPValue(model)).onlyEnforceIf(conditionLiteral);
+
+        this.getDecision().setTakenInCP(conditionLiteral); //ich brauche das, weil ich isTaken nicht nutzen kann, da ich nicht weiß ob conditionLiteral ture oder false ist... TODO bei allen actions nutzen!
     }
 
     @Override

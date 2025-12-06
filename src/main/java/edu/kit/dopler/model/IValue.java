@@ -9,11 +9,15 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
+
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.LinearArgument;
 
 public interface IValue<T> {
 
@@ -22,4 +26,6 @@ public interface IValue<T> {
     void setValue(T value);
 
     T getSMTValue();
+
+    LinearArgument getCPValue(CpModel model);
 }

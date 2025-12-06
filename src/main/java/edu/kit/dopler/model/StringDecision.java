@@ -9,15 +9,19 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
 import edu.kit.dopler.exceptions.EvaluationException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -64,5 +68,10 @@ public class StringDecision extends ValueDecision<String> {
     public void setDefaultValueInSMT(Stream.Builder<String> builder) {
         builder.add(
                 "(= " + toStringConstforSMT() + "_" + toStringConstforSMT() + "_POST" + " " + getStandardValue() + ")");
+    }
+
+    @Override
+    public void createCPVariables(CpModel model, ArrayList<IntVar> variables) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

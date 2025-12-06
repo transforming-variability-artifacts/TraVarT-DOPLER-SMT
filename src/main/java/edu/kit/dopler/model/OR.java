@@ -9,14 +9,20 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.BoolVar;
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.EvaluationException;
 
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class OR extends BinaryExpression {
@@ -60,6 +66,24 @@ public class OR extends BinaryExpression {
         getRightExpression().toSMTStream(builder, callingDecision);
         builder.add(")");
 
+    }
+
+    @Override
+    public Literal toCPLiteral(CpModel model) {
+        Literal leftLiteral = this.getLeftExpression().toCPLiteral(model);
+        Literal rightLiteral = this.getRightExpression().toCPLiteral(model);
+
+        BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
+
+        //assure that: equivalentLiteral <=> (leftLiteral or rightLiteral)
+        // =>
+        model.addBoolOr(new Literal[]{equivalentLiteral.not(), leftLiteral, rightLiteral});
+
+        // <=
+        model.addImplication(leftLiteral, equivalentLiteral);
+        model.addImplication(rightLiteral, equivalentLiteral);
+
+        return equivalentLiteral;
     }
 
     @Override

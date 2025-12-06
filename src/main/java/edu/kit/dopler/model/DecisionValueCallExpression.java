@@ -9,12 +9,19 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.BoolVar;
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
+
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class DecisionValueCallExpression extends DecisionCallExpression {
@@ -35,6 +42,11 @@ public class DecisionValueCallExpression extends DecisionCallExpression {
     @Override
     public void toSMTStream(final Stream.Builder<String> builder, final String callingDecisionConst) {
         builder.add(" " + callingDecisionConst + "_" + getDecision().toStringConstforSMT() + "_PRE ");
+    }
+
+    @Override
+    public Literal toCPLiteral(CpModel model) {
+        return (BoolVar) this.getDecision().getCPVars().getFirst();
     }
 
     @Override

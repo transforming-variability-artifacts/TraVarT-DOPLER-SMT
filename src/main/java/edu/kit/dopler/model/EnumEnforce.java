@@ -9,6 +9,7 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -20,7 +21,12 @@
  */
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.ActionExecutionException;
+
+import java.util.ArrayList;
 
 public class EnumEnforce extends Enforce {
 
@@ -38,6 +44,15 @@ public class EnumEnforce extends Enforce {
         } catch (final Exception e) {
             throw new ActionExecutionException(e);
         }
+    }
+
+    @Override
+    public void executeAsCP(CpModel model, Literal conditionLiteral) {
+        System.out.println("enum enforce - not implemented!");
+        throw new UnsupportedOperationException("Not supported yet.");
+        //val to enforce= this.getValue()
+        //val to be enforced= this.getDecision().getCPVars().getFirst()
+        //model.addEquality(this.getDecision().getCPVars().getFirst(), this.getValue().getCPValue(model));
     }
 
     @Override

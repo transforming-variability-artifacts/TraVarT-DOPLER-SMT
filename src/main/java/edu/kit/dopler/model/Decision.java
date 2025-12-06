@@ -9,15 +9,21 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.ActionExecutionException;
 import edu.kit.dopler.exceptions.EvaluationException;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -26,6 +32,8 @@ public abstract class Decision<T> implements IDecision<T> {
     private static int uid = 0;
     private final int id;
     private final Set<Rule> rules;
+    protected ArrayList<IntVar> cpVars; //todo das ist nicht das schönste design denke ich...
+    protected Literal takenInCP;
     private String displayId;
     private String question;
     private String description;
@@ -44,6 +52,23 @@ public abstract class Decision<T> implements IDecision<T> {
         this.taken = false;
         this.rules = rules;
         this.decisionType = decisionType;
+
+        this.cpVars = new ArrayList<>();
+    }
+
+    @Override
+    public ArrayList<IntVar> getCPVars() {
+        return this.cpVars;
+    }
+
+    @Override
+    public @Nullable Literal getTakenInCP() {
+        return this.takenInCP;
+    }
+
+    @Override
+    public void setTakenInCP(Literal takenLiteral) {
+        this.takenInCP = takenLiteral;
     }
 
     @Override
@@ -161,6 +186,30 @@ public abstract class Decision<T> implements IDecision<T> {
 //				builder.add(")");
             builder.add(")"); // closing the ite of the visibilityDecision
         }
+    }
+
+    @Override
+    public void mapRulesToCP(CpModel model) {
+        Literal decisionVisibleLiteral = this.visibilityCondition.toCPLiteral(model);
+
+        for (Rule rule : this.rules) {
+            Literal ruleCondtionLiteral = rule.getCondition().toCPLiteral(model);
+
+            Literal l = model.newBoolVar("decisionVisible_AND_ruleCondition"); //todo in action.executeAsCP(model, l); kann man auch ein verundetes Literal array geben dann spart man sich das folgende...
+            // assure that: l <=> (decisionVisibleLiteral and ruleCondtionLiteral) //todo die funktionalität kann man noch iwan auslagern... (wird zb auch bei AND gebraucht)
+            // =>
+            model.addImplication(l, decisionVisibleLiteral);
+            model.addImplication(l, ruleCondtionLiteral);
+            // <=
+            model.addBoolOr(new Literal[]{decisionVisibleLiteral.not(), ruleCondtionLiteral.not(), l});
+
+            for (IAction action : rule.getActions()) {
+                action.executeAsCP(model, l);
+            }
+
+        }
+
+        //TODO add: !decisionVisibleLiteral => enforce std value    [as I did in BoolenDecision... then delet mapRulesToCP method there]
     }
 
     /**

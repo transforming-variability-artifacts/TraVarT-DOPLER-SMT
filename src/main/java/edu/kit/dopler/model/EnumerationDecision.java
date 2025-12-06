@@ -9,16 +9,22 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
- *  @author David Kowal
+ *    @author David Kowal
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.BoolVar;
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.LinearExpr;
 import edu.kit.dopler.exceptions.InvalidCardinalityException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -71,6 +77,24 @@ public class EnumerationDecision extends Decision<String> {
                     + enumerationLiteral.getValue() + "_POST" + " " + "false" + ")");
         }
         builder.add(")");
+    }
+
+    @Override
+    public void createCPVariables(CpModel model, ArrayList<IntVar> variables) {
+        Set<EnumerationLiteral> enumerationLiterals = this.getEnumeration().getEnumerationLiterals();
+
+        //create and add variables
+        ArrayList<BoolVar> enumVars = new ArrayList<>();
+        for (EnumerationLiteral el : enumerationLiterals) {
+            enumVars.add(model.newBoolVar(this.getDisplayId() + "_" + el.getValue()));
+        }
+        variables.addAll(enumVars);
+        this.cpVars = new ArrayList<>(enumVars);
+
+        //add cardinality constraints
+        LinearExpr sum = LinearExpr.sum(enumVars.toArray(new BoolVar[0]));
+        model.addGreaterOrEqual(sum, this.getMinCardinality());
+        model.addLessOrEqual(sum, this.getMaxCardinality());
     }
 
     public void setCardinality(int minCardinality, int maxCardinality) throws InvalidCardinalityException {

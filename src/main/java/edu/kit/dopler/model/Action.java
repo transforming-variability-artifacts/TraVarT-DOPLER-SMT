@@ -9,11 +9,23 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
+
+import java.util.ArrayList;
+
 public abstract class Action implements IAction {
+    @Override
+    public void executeAsCP(CpModel model, Literal conditionLiteral) {
+        //TODO in allen concrete action classes gescheit impl! das hier ist gerade nur zum compile error unterdrücken
+    }
+
 }
