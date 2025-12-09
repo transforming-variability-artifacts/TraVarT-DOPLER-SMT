@@ -28,6 +28,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y maven
 
+      - name: Install Z3 Solver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y z3
+          z3 --version
+
       - name: Download CSV files from external repo
         run: |
           git clone --depth 1 https://github.com/transforming-variability-artifacts/DOPLER-models external-csv
