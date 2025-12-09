@@ -1,7 +1,6 @@
 name: Basic CI pipeline
 
 on:
-  push: 
   pull_request:
     branches: [main]
     types: [opened, reopened, synchronize]
