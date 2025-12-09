@@ -53,12 +53,24 @@ public class Equals extends BinaryExpression {
 	public void toSMTStreamEquals(Stream.Builder<String> builder, String callingDecision, IDecision<?> decision,
 			IExpression expression) {
 		if (decision.getDecisionType() == Decision.DecisionType.ENUM) {
-			EnumeratorLiteralExpression enumeratorLiteralExpression = (EnumeratorLiteralExpression) expression;
-			builder.add("(= ");
-			builder.add(" " + callingDecision + "_" + decision.toStringConstforSMT() + "_"
-					+ enumeratorLiteralExpression.getEnumerationLiteral().getValue() + "_PRE");
-			builder.add("true");
-			builder.add(")");
+            if(expression instanceof LiteralExpression) {
+                EnumeratorLiteralExpression enumeratorLiteralExpression = (EnumeratorLiteralExpression) expression;
+                builder.add("(= ");
+                builder.add(" " + callingDecision + "_" + decision.toStringConstforSMT() + "_"
+                        + enumeratorLiteralExpression.getEnumerationLiteral().getValue() + "_PRE");
+                builder.add("true");
+                builder.add(")");
+            }else{
+                Equals equals = (Equals) expression;
+                EnumeratorLiteralExpression enumeratorLiteralExpression = (EnumeratorLiteralExpression) equals.getRightExpression();
+
+                builder.add("(= ");
+                builder.add(" " + callingDecision + "_" + decision.toStringConstforSMT() + "_"
+                        + enumeratorLiteralExpression.getEnumerationLiteral().getValue() + "_PRE");
+                builder.add("true");
+                builder.add(")");
+            }
+
 		} else {
 			builder.add("(= ");
 			getLeftExpression().toSMTStream(builder, callingDecision);

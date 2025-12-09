@@ -1,5 +1,18 @@
 # SMT based Analysis for Decision Models
 
+## Run
+This tool invokes the Z3 SMT solver. You can now pass the path to your Z3 binary when starting the program:
+
+- As first argument: `java -jar smt_dopler-2.0.0.jar /full/path/to/z3`
+- Or with flags: `java -jar smt_dopler-2.0.0.jar --z3=/full/path/to/z3` or `-z /full/path/to/z3`
+- Or via environment variable: `Z3_PATH=/full/path/to/z3 java -jar smt_dopler-2.0.0.jar`
+
+Help:
+
+- `java -jar smt_dopler-2.0.0.jar --help`
+
+If no path is provided, the program will try to execute `z3` from your PATH.
+
 ## DOPLER Decision Parser
 The DOPLER parser is ANTLR-based with separate lexer and parser grammars and processes an input file (JSON or CSV) in two consecutive listener passes — first to create the Decision objects, second to parse and attach expressions (constraints / visibility conditions) to those previously created decisions. 
 
