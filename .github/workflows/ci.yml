@@ -41,6 +41,7 @@ jobs:
           name: workspace
           path: .
           retention-days: 1
+          overwrite: true
 
   fetch-remote-test-data:
       runs-on: ubuntu-latest
