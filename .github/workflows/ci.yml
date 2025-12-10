@@ -69,7 +69,9 @@ jobs:
         with:
           report_paths: 'target/surefire-reports/*.xml'
           check_name: 'JUnit Tests Summary'
-          fail_on_failure: true # Markiert den Step als rot, wenn Tests fehlschlagen
+          fail_on_failure: true 
+          detailed_summary: true 
+          include_passed: false
 
       
       - name: Publish Checkstyle Report
