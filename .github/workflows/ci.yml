@@ -66,24 +66,16 @@ jobs:
           ./mvnw surefire-report:report-only
           ./mvnw checkstyle:checkstyle
 
-      # only for debbuging
-      - name: List target directory structure
-        if: always()
-        run: |
-          echo "=== INHALT VON TARGET ==="
-          ls -R target || echo "Target folder not found"
-          echo "========================="
-
       - name: Upload Test Report
         if: always() 
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: target/site/surefire-report.html
+          path: target/reports/surefire-report.html
 
       - name: Upload Checkstyle Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: checkstyle-report
-          path: target/site/checkstyle.html
+          path: target/reports/checkstyle.html
