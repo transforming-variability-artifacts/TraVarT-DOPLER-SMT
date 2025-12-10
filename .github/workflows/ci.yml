@@ -57,11 +57,11 @@ jobs:
         run: chmod +x mvnw
 
       # only tests
-      - name: Run Tests
-        run: ./mvnw clean verify -fn -B
+      #- name: Run Tests
+      #  run: ./mvnw clean verify -fn -B
 
-      #- name: Run Tests and Checkstyle
-      #  run: ./mvnw clean verify checkstyle:checkstyle -fn -B
+      - name: Run Tests and Checkstyle
+        run: ./mvnw clean verify checkstyle:checkstyle -fn -B
 
       - name: Publish Test Report
         if: always() # Auch wenn Tests fehlschlagen
@@ -72,15 +72,6 @@ jobs:
           fail_on_failure: true 
           detailed_summary: true 
           include_passed: false
-
-      
-      - name: Publish Checkstyle Report
-        if: always()
-        uses: jwgmeligmeyling/checkstyle-github-action@master
-        with:
-          path: 'target/checkstyle-result.xml' # EXAKTER PFAD aus deinem Log
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: 'Checkstyle Violations'
 
       - name: Generate Reports
         if: always() 
