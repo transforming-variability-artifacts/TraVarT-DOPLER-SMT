@@ -1,6 +1,0 @@
-ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
-GSM_Protocol_1900;Support GSM 1900 protocol?;Boolean;false | true;;;true
-Audio_Formats;Which audio formats shall be supported?;Enumeration;WAV | MP3;1:2;;true
-Camera;Support for taking photos?;Boolean;false | true;;;true
-Camera_Resolution;Required camera resolution?;Enumeration;2.1_MP | 5_MP | 3.1_MP;1:1;;Camera == true
-MP3_Recording;Support for recording MP3 audio?;Boolean;false | true;;"if (MP3_Recording) { Audio_Formats = MP3; } ";true

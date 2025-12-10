@@ -1,6 +1,0 @@
-ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
-Strands;How many strands shall the caster have?;Boolean;false | true;;;true
-Modes;Which feeding modes shall be supported?;Enumeration;top | horizontal | bottom | vertical;1:4;;true
-UI;Shall the standard UI be deployed?;Boolean;false | true;;;true
-TopFeeding3D;Do you require 3D visualization of Top Feeding?;Boolean;false | true;;;Modes == top || Thermal3D
-Thermal3D; Do you require 3D visualization of Thermal information?;Boolean;false | true;;;
