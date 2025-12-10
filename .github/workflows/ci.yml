@@ -56,9 +56,20 @@ jobs:
       - name: Make mvnw executable
         run: chmod +x mvnw
 
-      - name: Build & Generate Reports
-        # Hier nutzen wir jetzt ./mvnw
-        run: ./mvnw clean verify site -fn -B
+      # only tests
+      - name: Run Tests
+        run: ./mvnw clean verify -fn -B
+
+      - name: Generate Reports
+        if: always() 
+        run: |
+          ./mvnw surefire-report:report-only
+          ./mvnw checkstyle:checkstyle
+
+      # only for debbuging
+      - name: List target directory
+        if: always()
+        run: ls -R target/site
 
       - name: Upload Test Report
         if: always() 
