@@ -57,8 +57,28 @@ jobs:
         run: chmod +x mvnw
 
       # only tests
-      - name: Run Tests
-        run: ./mvnw clean verify -fn -B
+      # - name: Run Tests
+      #   run: ./mvnw clean verify -fn -B
+
+      - name: Run Tests and Checkstyle
+        run: ./mvnw clean verify checkstyle:checkstyle -fn -B
+
+      - name: Publish Test Report
+        if: always() # Auch wenn Tests fehlschlagen
+        uses: mikepenz/action-junit-report@v4
+        with:
+          report_paths: 'target/surefire-reports/*.xml'
+          check_name: 'JUnit Tests Summary'
+          fail_on_failure: true # Markiert den Step als rot, wenn Tests fehlschlagen
+
+      
+      - name: Publish Checkstyle Report
+        if: always()
+        uses: jwgmeligmeyling/checkstyle-github-action@master
+        with:
+          path: 'target/checkstyle-result.xml' # EXAKTER PFAD aus deinem Log
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: 'Checkstyle Violations'
 
       - name: Generate Reports
         if: always() 
