@@ -67,9 +67,12 @@ jobs:
           ./mvnw checkstyle:checkstyle
 
       # only for debbuging
-      - name: List target directory
+      - name: List target directory structure
         if: always()
-        run: ls -R target/site
+        run: |
+          echo "=== INHALT VON TARGET ==="
+          ls -R target || echo "Target folder not found"
+          echo "========================="
 
       - name: Upload Test Report
         if: always() 
