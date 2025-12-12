@@ -72,23 +72,3 @@ jobs:
           fail_on_failure: true 
           detailed_summary: true 
           include_passed: false
-
-      - name: Generate Reports
-        if: always() 
-        run: |
-          ./mvnw surefire-report:report-only
-          ./mvnw checkstyle:checkstyle
-
-      - name: Upload Test Report
-        if: always() 
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: target/reports/surefire.html
-
-      - name: Upload Checkstyle Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: checkstyle-report
-          path: target/reports/checkstyle.html
