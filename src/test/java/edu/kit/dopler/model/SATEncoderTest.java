@@ -15,23 +15,6 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-/*import de.ovgu.featureide.fm.core.JavaLogger;
-import de.ovgu.featureide.fm.core.Logger;
-import de.ovgu.featureide.fm.core.analysis.cnf.LiteralSet;
-import de.ovgu.featureide.fm.core.analysis.cnf.analysis.ContradictionAnalysis;
-import de.ovgu.featureide.fm.core.analysis.cnf.formula.FeatureModelFormula;
-import de.ovgu.featureide.fm.core.analysis.cnf.generator.configuration.AllConfigurationGenerator;
-import de.ovgu.featureide.fm.core.analysis.cnf.generator.configuration.twise.TWiseConfigurationGenerator;
-import de.ovgu.featureide.fm.core.base.IFeatureModel;
-import de.ovgu.featureide.fm.core.base.impl.*;
-import de.ovgu.featureide.fm.core.cli.CLIFunctionManager;
-import de.ovgu.featureide.fm.core.cli.ConfigurationGenerator;
-import de.ovgu.featureide.fm.core.io.FileSystem;
-import de.ovgu.featureide.fm.core.io.JavaFileSystem;
-import de.ovgu.featureide.fm.core.io.ProblemList;
-import de.ovgu.featureide.fm.core.io.uvl.UVLFeatureModelFormat;
-import de.ovgu.featureide.fm.core.job.LongRunningCore;
-import de.ovgu.featureide.fm.core.job.LongRunningWrapper;*/
 import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
 import junit.framework.TestCase;
 import static edu.kit.dopler.common.DoplerUtils.readDOPLERModelFromFile;
@@ -39,44 +22,11 @@ import static edu.kit.dopler.common.SolverUtils.checkSat;
 import static edu.kit.dopler.common.SolverUtils.getAmountOfConfigs;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 public class SATEncoderTest extends TestCase {
-
-    /*
-     * public int getFeatureIDConfigs(Path filePath) throws IOException {
-     * FileSystem.INSTANCE = new JavaFileSystem();
-     * LongRunningWrapper.INSTANCE = new LongRunningCore();
-     * Logger.logger = new JavaLogger();
-     * 
-     * FMFactoryManager.getInstance().addExtension(DefaultFeatureModelFactory.
-     * getInstance());
-     * FMFactoryManager.getInstance().addExtension(MultiFeatureModelFactory.
-     * getInstance());
-     * FMFactoryManager.getInstance().setWorkspaceLoader(new
-     * CoreFactoryWorkspaceLoader());
-     * 
-     * CLIFunctionManager.getInstance().addExtension(new ConfigurationGenerator());
-     * 
-     * String content = Files.readString(filePath);
-     * IFeatureModel featureIdeFm = new MultiFeatureModelFactory().create();
-     * UVLFeatureModelFormat format = new UVLFeatureModelFormat();
-     * format.read(featureIdeFm, content);
-     * 
-     * FeatureModelFormula formula = new FeatureModelFormula(featureIdeFm);
-     * List<LiteralSet> configs = LongRunningWrapper.runMethod(new
-     * AllConfigurationGenerator(formula.getCNF()));
-     * return configs.size();
-     * 
-     * }
-     */
 
     public void testVariantsWaterfilter() throws NotSupportedVariabilityTypeException, IOException {
 
@@ -132,55 +82,6 @@ public class SATEncoderTest extends TestCase {
 
     }
 
-    /*
-     * public void testVariantsASEJ1() throws NotSupportedVariabilityTypeException,
-     * IOException {
-     * 
-     * Dopler dopler =
-     * readDOPLERModelFromFile(Path.of(System.getProperty("user.dir") +
-     * "/modelEval/dm_ASEJ1.csv"));
-     * Path filePath = Paths.get(System.getProperty("user.dir") +
-     * "/modelEval/ASEJ1.uvl");
-     * 
-     * assertEquals(getFeatureIDConfigs(filePath), getAmountOfConfigs(dopler, ""));
-     * 
-     * }
-     */
-
-    /*
-     * public void testVariantsDissModel() throws
-     * NotSupportedVariabilityTypeException, IOException {
-     * 
-     * Dopler dopler = readDOPLERModelFromFile(
-     * Path.of(System.getProperty("user.dir") + "/modelEval/dm_DissModel.csv"));
-     * Path filePath = Paths.get(System.getProperty("user.dir") +
-     * "/modelEval/dm_DissModel.uvl");
-     * assertEquals(getFeatureIDConfigs(filePath), getAmountOfConfigs(dopler, ""));
-     * 
-     * }
-     */
-
-    /*
-     * public void testVariantsPizzas() throws NotSupportedVariabilityTypeException,
-     * IOException {
-     * 
-     * Dopler dopler = readDOPLERModelFromFile(Path.of(
-     * System.getProperty("user.dir") +"/modelEval/Pizzas.csv"));
-     * Path filePath = Paths.get(System.getProperty("user.dir") +
-     * "/modelEval/pizza.uvl");
-     * assertEquals(getFeatureIDConfigs(filePath),getAmountOfConfigs(dopler,""));
-     * 
-     * }
-     */
-
-    /*
-     * public void testPerformanceFeatureIde() throws IOException {
-     * Path filePath = Paths.get(System.getProperty("user.dir") +
-     * "/modelEval/dm_DissModel.uvl");
-     * System.out.println(getFeatureIDConfigs(filePath));
-     * }
-     */
-
     public void testPerformanceSMT() throws IOException, NotSupportedVariabilityTypeException {
 
         Dopler dopler = readDOPLERModelFromFile(
@@ -229,11 +130,6 @@ public class SATEncoderTest extends TestCase {
                 Path.of(System.getProperty("user.dir") + "/modelCSVs/dm_DOPLERTools.csv"));
         dopler.toSMTStream().build().forEach(System.out::println);
         assertTrue(checkSat(dopler.toSMTStream()));
-        /**
-         * Stream.Builder<String> builder = dopler.toSMTStream();
-         * builder.add("(assert (= END_DECISION_2_Sicilian true))");
-         * assertTrue(checkSat(builder));
-         **/
     }
 
     public void testEShopModelwithUnsatAsserts() throws Exception {
