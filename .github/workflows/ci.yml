@@ -59,12 +59,9 @@ jobs:
       - name: Make mvnw executable
         run: chmod +x mvnw
 
-      # only tests
       - name: Run Tests
         run: ./mvnw clean verify -fn -B
 
-      #- name: Run Tests and Checkstyle
-      #  run: ./mvnw clean verify checkstyle:checkstyle -fn -B
 
       - name: Publish Test Report
         if: always() # Auch wenn Tests fehlschlagen
