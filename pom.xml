@@ -13,7 +13,7 @@
         <source.disabled>true</source.disabled>
         <checkstyle-maven-plugin.version>3.4.0</checkstyle-maven-plugin.version>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.google.ortools</groupId>
@@ -37,13 +37,26 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
-		<dependency>
-    		<groupId>org.antlr</groupId>
-    		<artifactId>antlr4-runtime</artifactId>
-    		<version>4.13.2</version>
-		</dependency>
+        <!-- Vintage engine so JUnit 5 platform can run JUnit 4 tests -->
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>5.13.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.13.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.13.2</version>
+        </dependency>
     </dependencies>
-    
+
     <build>
         <resources>
             <resource>

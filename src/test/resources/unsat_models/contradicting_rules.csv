@@ -1,0 +1,3 @@
+ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
+Cheese;Cheese?;Boolean;true | false;;"if (true) {Sauce = true;}";true
+Sauce;Sauce?;Boolean;true | false;;"if (true) {Sauce = false;}";true
