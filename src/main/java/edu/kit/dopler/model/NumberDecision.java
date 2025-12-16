@@ -21,7 +21,8 @@ import com.google.ortools.sat.IntVar;
 import edu.kit.dopler.exceptions.EvaluationException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -38,11 +39,9 @@ public class NumberDecision extends ValueDecision<Double> {
     }
 
     @Override
-    public void createCPVariables(CpModel model, ArrayList<IntVar> variables) {
+    public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
         throw new UnsupportedOperationException("Not supported yet.");
-        //variables.add(model.newIntVar(1,1,this.getDisplayId()));
         //PROBLEM: keine double unterstützung von CP solver...
-        //super.mapToCP(model, variables);
     }
 
     @Override

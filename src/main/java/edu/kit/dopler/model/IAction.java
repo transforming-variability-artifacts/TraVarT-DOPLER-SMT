@@ -21,7 +21,8 @@ import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.ActionExecutionException;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public interface IAction {
@@ -30,6 +31,6 @@ public interface IAction {
 
     void toSMTStream(Stream.Builder<String> builder, String selectedDecisionString);
 
-    void executeAsCP(CpModel model, Literal conditionLiteral);
+    void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars);
 
 }

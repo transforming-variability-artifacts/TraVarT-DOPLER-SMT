@@ -22,7 +22,8 @@ import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.EvaluationException;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class OR extends BinaryExpression {
@@ -69,9 +70,9 @@ public class OR extends BinaryExpression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model) {
-        Literal leftLiteral = this.getLeftExpression().toCPLiteral(model);
-        Literal rightLiteral = this.getRightExpression().toCPLiteral(model);
+    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
+        Literal leftLiteral = this.getLeftExpression().toCPLiteral(model, cpVars);
+        Literal rightLiteral = this.getRightExpression().toCPLiteral(model, cpVars);
 
         BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 

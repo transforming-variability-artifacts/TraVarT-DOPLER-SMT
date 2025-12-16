@@ -15,10 +15,13 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import com.google.ortools.Loader;
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
+import org.antlr.v4.runtime.misc.Pair;
+
+import java.util.*;
 import java.util.stream.Stream;
 
 public class Dopler {
@@ -77,6 +80,33 @@ public class Dopler {
 
     public void addEnum(Enumeration e) {
         this.enumSet.add(e);
+    }
+
+    /**
+     * Creates a CP encoding of the DOPLER model.
+     *
+     * @return A pair containing the generated {@link CpModel} instance and an {@link List} of {@link IntVar}
+     * representing the decision variables in the CP model. //TODO Frage: Passt das mit dem Pair so? (oooder: eigenen output Datentyp erstellen?)
+     */
+    public Pair<CpModel, List<IntVar>> toCPModel() {
+        Loader.loadNativeLibraries();
+        CpModel model = new CpModel();
+        Map<IDecision<?>, List<IntVar>> cpVars = new HashMap<>();
+        Map<IDecision<?>, Literal> isTakenVars = new HashMap<>();
+
+
+        //iterate over all decisions and create the variables and rules (two separate loops, because the rules can only be created if all decision variables exist!)
+        this.decisions.forEach(decision -> {
+            decision.createCPVariables(model, cpVars);
+        });
+        this.decisions.forEach(decision -> {
+            decision.mapRulesToCP(model, cpVars, isTakenVars);
+        });
+        this.decisions.forEach(decision -> {
+            decision.enforceStandardValueInCP(model, cpVars, isTakenVars);
+        });
+
+        return new Pair<>(model, cpVars.values().stream().flatMap(List::stream).toList());
     }
 
     /**

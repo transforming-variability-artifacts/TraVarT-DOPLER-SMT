@@ -26,7 +26,8 @@ import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.ActionExecutionException;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class EnumEnforce extends Enforce {
 
@@ -47,7 +48,7 @@ public class EnumEnforce extends Enforce {
     }
 
     @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral) {
+    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
         System.out.println("enum enforce - not implemented!");
         throw new UnsupportedOperationException("Not supported yet.");
         //val to enforce= this.getValue()

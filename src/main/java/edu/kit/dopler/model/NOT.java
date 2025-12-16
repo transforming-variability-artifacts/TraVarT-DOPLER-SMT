@@ -21,7 +21,8 @@ import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.EvaluationException;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class NOT extends UnaryExpression {
@@ -45,8 +46,8 @@ public class NOT extends UnaryExpression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model) {
-        return this.getOperand().toCPLiteral(model).not();
+    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
+        return this.getOperand().toCPLiteral(model, cpVars).not();
     }
 
     @Override

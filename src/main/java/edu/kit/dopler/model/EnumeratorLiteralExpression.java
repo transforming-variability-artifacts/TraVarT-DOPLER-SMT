@@ -21,7 +21,8 @@ import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.InvalidTypeInLiteralExpressionCheckException;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -44,7 +45,7 @@ public class EnumeratorLiteralExpression extends LiteralExpression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model) {
+    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

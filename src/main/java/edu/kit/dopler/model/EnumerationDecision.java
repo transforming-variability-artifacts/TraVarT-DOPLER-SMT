@@ -17,17 +17,13 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-import com.google.ortools.sat.BoolVar;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.LinearExpr;
 import edu.kit.dopler.exceptions.InvalidCardinalityException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class EnumerationDecision extends Decision<String> {
@@ -80,19 +76,21 @@ public class EnumerationDecision extends Decision<String> {
     }
 
     @Override
-    public void createCPVariables(CpModel model, ArrayList<IntVar> variables) {
+    public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
         Set<EnumerationLiteral> enumerationLiterals = this.getEnumeration().getEnumerationLiterals();
 
         //create and add variables
-        ArrayList<BoolVar> enumVars = new ArrayList<>();
+        List<IntVar> enumVars = new ArrayList<>();
         for (EnumerationLiteral el : enumerationLiterals) {
             enumVars.add(model.newBoolVar(this.getDisplayId() + "_" + el.getValue()));
         }
-        variables.addAll(enumVars);
-        this.cpVars = new ArrayList<>(enumVars);
+
+        cpVars.put(this, enumVars);
+
+        //this.cpVars = new ArrayList<>(enumVars);old
 
         //add cardinality constraints
-        LinearExpr sum = LinearExpr.sum(enumVars.toArray(new BoolVar[0]));
+        LinearExpr sum = LinearExpr.sum(enumVars.toArray(new IntVar[0]));
         model.addGreaterOrEqual(sum, this.getMinCardinality());
         model.addLessOrEqual(sum, this.getMaxCardinality());
     }

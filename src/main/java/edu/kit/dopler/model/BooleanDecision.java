@@ -20,9 +20,10 @@ import com.google.ortools.sat.BoolVar;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -39,38 +40,23 @@ public class BooleanDecision extends Decision<Boolean> {
     }
 
     @Override
-    public void createCPVariables(CpModel model, ArrayList<IntVar> variables) {
+    public void createCPVariables(CpModel model, @MonotonicNonNull Map<IDecision<?>, List<IntVar>> cpVars) {
         BoolVar boolVar = model.newBoolVar(this.getDisplayId());
 
-        variables.add(boolVar);
-        this.cpVars = new ArrayList<>(Collections.singleton(boolVar));
+        cpVars.put(this, List.of(boolVar));
+
+        //this.cpVars = new ArrayList<>(Collections.singleton(boolVar));old
     }
 
     @Override
-    public void mapRulesToCP(CpModel model) { //TODO nur temporär hier zum austesten!!!! -> Frage: wie macht man das generell bei anderen concrete decisions bzw dann in der Decision class?
-        Literal decisionVisibleLiteral = this.getVisibilityCondition().toCPLiteral(model);
+    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
+        Literal decisionVisibleLiteral = this.getVisibilityCondition().toCPLiteral(model, cpVars);
 
-        for (Rule rule : this.getRules()) {
-            Literal ruleCondtionLiteral = rule.getCondition().toCPLiteral(model);
+        //model.addEquality(this.getCPVars().getFirst(), this.getStandardValue() ? model.trueLiteral() : model.falseLiteral()).onlyEnforceIf(new Literal[]{decisionVisibleLiteral.not(), this.getTakenInCP() != null ? this.getTakenInCP().not() : model.trueLiteral()}); old
 
-            Literal l = model.newBoolVar("decisionVisible_AND_ruleCondition");
-            // assure that: l <=> (decisionVisibleLiteral and ruleCondtionLiteral)
-            // =>
-            model.addImplication(l, decisionVisibleLiteral);
-            model.addImplication(l, ruleCondtionLiteral);
-            // <=
-            model.addBoolOr(new Literal[]{decisionVisibleLiteral.not(), ruleCondtionLiteral.not(), l});
-
-            for (IAction action : rule.getActions()) {
-                action.executeAsCP(model, l);
-            }
-
-        }
-
-        //TODO das ist grad das wichtige hier:
-        //only enforce std value if dec is not visible and was not already enforced by a rule-action
-        model.addEquality(this.getCPVars().getFirst(), this.getStandardValue() ? model.trueLiteral() : model.falseLiteral())
-                .onlyEnforceIf(new Literal[]{decisionVisibleLiteral.not(), this.getTakenInCP() != null ? this.getTakenInCP().not() : model.trueLiteral()});
+        //only enforce std value if dec is not visible and was not enforced by a rule-action (from another decision, of course)
+        model.addEquality(cpVars.get(this).getFirst(), this.getStandardValue() ? model.trueLiteral() : model.falseLiteral())
+                .onlyEnforceIf(new Literal[]{decisionVisibleLiteral.not(), isTakenVars.get(this) != null ? isTakenVars.get(this).not() : model.trueLiteral()});
     }
 
     @Override

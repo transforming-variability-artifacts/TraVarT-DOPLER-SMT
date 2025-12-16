@@ -21,7 +21,8 @@ import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.ActionExecutionException;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class DisAllows extends ValueRestrictionAction {
@@ -49,15 +50,15 @@ public class DisAllows extends ValueRestrictionAction {
     }
 
     @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral) {
+    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
         System.out.println("disallow action");
 
         String dissallowString = this.getDecision().getDisplayId() + "_" + this.disAllowValue.getValue().toString(); //here I always assume an enum
 
-        ArrayList<IntVar> cpVars = this.getDecision().getCPVars();
-        for (IntVar cpVar : cpVars) {
+        for (IntVar cpVar : cpVars.get(this.getDecision())) {
             if (cpVar.getName().equals(dissallowString)) {
                 model.addEquality(cpVar, model.falseLiteral()).onlyEnforceIf(conditionLiteral);
+                //TODO istaken angemessen nutzen
             }
         }
     }

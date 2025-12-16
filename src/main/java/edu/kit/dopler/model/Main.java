@@ -17,7 +17,6 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-import com.google.ortools.Loader;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.CpSolver;
 import com.google.ortools.sat.CpSolverStatus;
@@ -38,7 +37,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static edu.kit.dopler.common.DoplerUtils.readDOPLERModelFromFile;
@@ -48,7 +47,7 @@ public class Main {
 
     public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {
 
-        String fileName = "modelCSVs/AlwaysTrueTest.csv";
+        String fileName = "modelCSVs/AlwaysTrueTestOG.csv";
         CharStream input = CharStreams.fromFileName(fileName);
         DoplerLexer lexer = new DoplerLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -61,19 +60,9 @@ public class Main {
         walker.walk(expressionParser, tree);
         Dopler dopler = expressionParser.getDopler();
 
-        //Google OR CP solver:
-        Loader.loadNativeLibraries();
-        CpModel model = new CpModel();
-        ArrayList<IntVar> variables = new ArrayList<>();
-
-        //iterate over all decisions and create the variables and rules (two separate loops, because the rules can only be created if all decision variables exist!)
-        dopler.decisions.forEach(decision -> {
-            decision.createCPVariables(model, variables);
-        });
-        dopler.decisions.forEach(decision -> {
-            decision.mapRulesToCP(model);
-        });
-
+        var p = dopler.toCPModel();
+        CpModel model = p.a;
+        List<IntVar> variables = p.b;
 
         System.out.println("----------------------------------");
         // Create a solver and solve the model.

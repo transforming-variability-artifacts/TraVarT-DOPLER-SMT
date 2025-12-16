@@ -21,7 +21,8 @@ import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class DecisionValueCallExpression extends DecisionCallExpression {
@@ -45,8 +46,9 @@ public class DecisionValueCallExpression extends DecisionCallExpression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model) {
-        return (BoolVar) this.getDecision().getCPVars().getFirst();
+    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
+        //return (BoolVar) this.getDecision().getCPVars().getFirst(); old
+        return (BoolVar) cpVars.get(this.getDecision()).getFirst();
     }
 
     @Override

@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,11 +52,12 @@ public class CPEncoderTest {
     @ParameterizedTest
     @MethodSource("getSATFileNames")
     void testSATModels(Path csvFile) {
+        System.out.println("Testing: " + csvFile.getFileName().toString());
         Dopler dopler = assertDoesNotThrow(() -> loadDoplerFromCsv(csvFile), "DOPLER model creation failed!");
 
         var p = dopler.toCPModel();
         CpModel model = p.a;
-        ArrayList<IntVar> variables = p.b;
+        List<IntVar> variables = p.b;
 
         CpSolver solver = new CpSolver();
         CpSolverStatus status = solver.solve(model);
@@ -67,11 +68,12 @@ public class CPEncoderTest {
     @ParameterizedTest
     @MethodSource("getUNSATFileNames")
     void testUNSATModels(Path csvFile) {
+        System.out.println("Testing: " + csvFile.getFileName().toString());
         Dopler dopler = assertDoesNotThrow(() -> loadDoplerFromCsv(csvFile), "DOPLER model creation failed!");
 
         var p = dopler.toCPModel();
         CpModel model = p.a;
-        ArrayList<IntVar> variables = p.b;
+        List<IntVar> variables = p.b;
 
         CpSolver solver = new CpSolver();
         CpSolverStatus status = solver.solve(model);

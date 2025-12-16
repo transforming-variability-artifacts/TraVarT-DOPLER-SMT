@@ -20,7 +20,8 @@ import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class JavaExpression extends Expression {
@@ -36,7 +37,7 @@ public class JavaExpression extends Expression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model) {
+    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
         throw new UnsupportedOperationException("Not supported in the current CP-approach.");
     }
 

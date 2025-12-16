@@ -23,7 +23,8 @@ import edu.kit.dopler.exceptions.ActionExecutionException;
 import edu.kit.dopler.exceptions.EvaluationException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -79,13 +80,9 @@ public interface IDecision<T> {
 
     Decision.DecisionType getDecisionType();
 
-    void createCPVariables(CpModel model, ArrayList<IntVar> variables);
+    void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars);
 
-    void mapRulesToCP(CpModel model);
+    void mapRulesToCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars);
 
-    ArrayList<IntVar> getCPVars();
-
-    void setTakenInCP(Literal takenLiteral);
-
-    Literal getTakenInCP();
+    void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars);
 }

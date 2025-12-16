@@ -21,7 +21,8 @@ import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.EvaluationException;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public interface IExpression {
@@ -30,5 +31,5 @@ public interface IExpression {
 
     void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst);
 
-    Literal toCPLiteral(CpModel model);
+    Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars);
 }
