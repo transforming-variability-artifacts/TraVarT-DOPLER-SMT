@@ -18,10 +18,7 @@
 package edu.kit.dopler.model;
 
 import com.google.ortools.sat.CpModel;
-import com.google.ortools.sat.CpSolver;
-import com.google.ortools.sat.CpSolverStatus;
 import com.google.ortools.sat.IntVar;
-import edu.kit.dopler.common.VarArraySolutionPrinter;
 import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
 import edu.kit.dopler.io.antlr.DoplerDecisionCreator;
 import edu.kit.dopler.io.antlr.DoplerExpressionParser;
@@ -65,34 +62,7 @@ public class Main {
         List<IntVar> variables = p.b;
 
         System.out.println("----------------------------------");
-        // Create a solver and solve the model.
-        boolean findAllSolutions = true;
-
-        if (findAllSolutions) { //to get all solutions:
-
-            CpSolver solver = new CpSolver();
-            VarArraySolutionPrinter printer = new VarArraySolutionPrinter(variables);
-            solver.getParameters().setEnumerateAllSolutions(true);
-
-            CpSolverStatus status = solver.solve(model, printer);
-            System.out.println("#solutions: " + printer.getSolutionCount());
-
-        } else { //to get one solution:
-
-            CpSolver solver = new CpSolver();
-            CpSolverStatus status = solver.solve(model);
-
-            if (status == CpSolverStatus.OPTIMAL || status == CpSolverStatus.FEASIBLE) {
-                System.out.println("Found solution :)");
-                for (IntVar var : variables) {
-                    System.out.println(var.getName() + " = " + solver.value(var));
-                }
-            } else {
-                System.out.println("No solution found.");
-            }
-
-        }
-
+        printAllConfigs(model, variables);
 
         /*System.out.println("\n\n--------------------------------"); //call z3 (SMT):
         System.out.println("--------------------------------");
