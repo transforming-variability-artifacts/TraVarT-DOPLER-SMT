@@ -37,6 +37,6 @@ Detailed Explanation of the Encoding you can find [here](SMTEncoding.md)
 
 ## CI Pipeline
 
-Information about the CI pipleine see [here](CIPipeline.md)
+Information about the CI pipeline see [here](CIPipeline.md)
 
 
