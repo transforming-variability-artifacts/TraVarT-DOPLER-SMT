@@ -34,3 +34,9 @@ If there is a visibility condition associated with a decision, the user has to f
 ## SMT Encoding
 
 Detailed Explanation of the Encoding you can find [here](SMTEncoding.md)
+
+## CI Pipeline
+
+Information about the CI pipeline see [here](CIPipeline.md)
+
+
