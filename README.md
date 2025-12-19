@@ -39,4 +39,6 @@ Detailed Explanation of the Encoding you can find [here](SMTEncoding.md)
 
 Information about the CI pipeline see [here](CIPipeline.md)
 
+## Checksytle
 
+Information about the checkstyle restictions see [here](Checkstyle.md)
