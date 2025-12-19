@@ -92,12 +92,20 @@ public class DoplerDecisionCreator extends DecisionParserBase {
                     for (int i = 0; i < AllExpressions.size(); i += 2) {
                         TerminalNode left = ctx.DoubleLiteralExpression(i);
                         TerminalNode right = ctx.DoubleLiteralExpression(i + 1);
-                        currentValidityConditions
-                                .add(new GreatherThan(new DoubleLiteralExpression(Double.parseDouble(left.getText()) - 1),
-                                        new DecisionValueCallExpression(currentDecision)));
-                        currentValidityConditions
-                                .add(new LessThan(new DoubleLiteralExpression(Double.parseDouble(right.getText()) + 1),
-                                        new DecisionValueCallExpression(currentDecision)));
+                        currentValidityConditions.add(new OR(
+                                new LessThan(
+                                        new DoubleLiteralExpression(Double.parseDouble(left.getText())),
+                                        new DecisionValueCallExpression(currentDecision)),
+                                new Equals(
+                                        new DoubleLiteralExpression(Double.parseDouble(left.getText())),
+                                        new DecisionValueCallExpression(currentDecision))));
+                        currentValidityConditions.add(new OR(
+                                new GreatherThan(
+                                        new DoubleLiteralExpression(Double.parseDouble(right.getText())),
+                                        new DecisionValueCallExpression(currentDecision)),
+                                new Equals(
+                                        new DoubleLiteralExpression(Double.parseDouble(right.getText())),
+                                        new DecisionValueCallExpression(currentDecision))));
                     }
                 }
                 numberDecision.setValidityConditions(currentValidityConditions);
