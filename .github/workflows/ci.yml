@@ -71,3 +71,9 @@ jobs:
           fail_on_failure: true 
           detailed_summary: true 
           include_passed: false
+
+      - name: Publish Checkstyle Annotations
+        if: always()
+        uses: jwgmeligmeyling/checkstyle-github-action@v1
+        with:
+          path: target/checkstyle-result.xml
