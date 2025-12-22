@@ -5,16 +5,8 @@ import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.CpSolver;
 import com.google.ortools.sat.CpSolverStatus;
 import com.google.ortools.sat.IntVar;
-import edu.kit.dopler.io.antlr.DoplerDecisionCreator;
-import edu.kit.dopler.io.antlr.DoplerExpressionParser;
-import edu.kit.dopler.io.antlr.resources.DoplerLexer;
-import edu.kit.dopler.io.antlr.resources.DoplerParser;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -25,10 +17,12 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static edu.kit.dopler.common.DoplerUtils.readDOPLERModelFromFile;
+import static edu.kit.dopler.common.SolverUtils.printAllConfigs;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class CPEncoderTest {
+class CPEncoderTest {
 
     @BeforeAll
     public static void beforeClass() throws Exception {
@@ -49,11 +43,29 @@ public class CPEncoderTest {
         }
     }
 
+    @Test
+    void testSpecificModel() {
+        Path csvFile = Path.of("src/test/resources/sat_models/greaterThan_test.csv"); //specify model csv here
+
+        System.out.println("Testing: " + csvFile.getFileName().toString());
+        Dopler dopler = assertDoesNotThrow(() -> readDOPLERModelFromFile(csvFile), "DOPLER model creation failed!");
+
+        var p = dopler.toCPModel();
+        CpModel model = p.a;
+        List<IntVar> variables = p.b;
+
+        printAllConfigs(model, variables); //only for debugging reasons
+
+        CpSolver solver = new CpSolver();
+        CpSolverStatus status = solver.solve(model);
+        assertTrue(status == CpSolverStatus.FEASIBLE || status == CpSolverStatus.OPTIMAL, "Expected SAT for: " + csvFile.getFileName().toString());
+    }
+
     @ParameterizedTest
     @MethodSource("getSATFileNames")
     void testSATModels(Path csvFile) {
         System.out.println("Testing: " + csvFile.getFileName().toString());
-        Dopler dopler = assertDoesNotThrow(() -> loadDoplerFromCsv(csvFile), "DOPLER model creation failed!");
+        Dopler dopler = assertDoesNotThrow(() -> readDOPLERModelFromFile(csvFile), "DOPLER model creation failed!");
 
         var p = dopler.toCPModel();
         CpModel model = p.a;
@@ -69,7 +81,7 @@ public class CPEncoderTest {
     @MethodSource("getUNSATFileNames")
     void testUNSATModels(Path csvFile) {
         System.out.println("Testing: " + csvFile.getFileName().toString());
-        Dopler dopler = assertDoesNotThrow(() -> loadDoplerFromCsv(csvFile), "DOPLER model creation failed!");
+        Dopler dopler = assertDoesNotThrow(() -> readDOPLERModelFromFile(csvFile), "DOPLER model creation failed!");
 
         var p = dopler.toCPModel();
         CpModel model = p.a;
@@ -79,20 +91,6 @@ public class CPEncoderTest {
         CpSolverStatus status = solver.solve(model);
 
         assertSame(CpSolverStatus.INFEASIBLE, status, "Expected UNSAT for: " + csvFile.getFileName().toString());
-    }
-
-    private Dopler loadDoplerFromCsv(Path csvPath) throws IOException {
-        CharStream input = CharStreams.fromFileName(csvPath.toString());
-        DoplerLexer lexer = new DoplerLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        DoplerParser parser = new DoplerParser(tokens);
-        ParseTree tree = parser.document();
-        ParseTreeWalker walker = new ParseTreeWalker();
-        DoplerDecisionCreator decisionCreator = new DoplerDecisionCreator(csvPath.toString());
-        walker.walk(decisionCreator, tree);
-        DoplerExpressionParser expressionParser = new DoplerExpressionParser(decisionCreator.getDopler());
-        walker.walk(expressionParser, tree);
-        return expressionParser.getDopler();
     }
 
 }
