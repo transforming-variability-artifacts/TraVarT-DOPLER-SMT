@@ -27,10 +27,10 @@ import java.util.stream.Collectors;
  */
 public final class CpEncodingResult {
     /**
-     * CP does not support double values (only int).
-     * We use integers scaled with {@value CP_DOUBLES_SCALING_FACTOR} to emulate double values.
+     * CP does not support floating point values (only integers).
+     * We use integers scaled with {@value CP_DOUBLES_SCALING_FACTOR} to emulate floating point values.
      */
-    public static final Double CP_DOUBLES_SCALING_FACTOR = 0.0001;
+    private static final Double CP_DOUBLES_SCALING_FACTOR = 0.0001;
 
     private final CpModel model;
     private final List<List<IntVar>> variables;
@@ -45,6 +45,20 @@ public final class CpEncodingResult {
     public CpEncodingResult(CpModel model, List<List<IntVar>> variables) {
         this.model = Objects.requireNonNull(model);
         this.variables = List.copyOf(variables);
+    }
+
+    /**
+     * Scales a double value to a long value that can be used by the CP solver.
+     *
+     * @param value The double value to be scaled.
+     * @return The resulting long value after scaling and rounding.
+     */
+    public static Long scaleDoubleToCp(double value) {
+        return Math.round(value / CP_DOUBLES_SCALING_FACTOR);
+    }
+
+    private Double scaleCpToDouble(Long value) {
+        return value * CP_DOUBLES_SCALING_FACTOR;
     }
 
     public CpModel getModel() {
@@ -155,12 +169,13 @@ public final class CpEncodingResult {
 
         if (vars.size() == 1) {
             IntVar variable = vars.getFirst();
+            long value = getValue.applyAsLong(variable);
             if (variable instanceof BoolVar) {
                 //bool:
-                System.out.printf("  %s = %s%n", variable.getName(), getValue.applyAsLong(variable) == 1 ? "true" : "false");
+                System.out.printf("  %s = %s%n", variable.getName(), value == 1 ? "true" : "false");
             } else {
                 //number:
-                System.out.printf("  %s = %f%n", variable.getName(), getValue.applyAsLong(variable) * CP_DOUBLES_SCALING_FACTOR);
+                System.out.printf("  %s = %f%n", variable.getName(), scaleCpToDouble(value));
             }
         } else {
             //enum:

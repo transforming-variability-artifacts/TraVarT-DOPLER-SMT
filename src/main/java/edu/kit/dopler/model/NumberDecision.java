@@ -18,6 +18,8 @@ package edu.kit.dopler.model;
 
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
+import edu.kit.dopler.common.CpEncodingResult;
 import edu.kit.dopler.exceptions.EvaluationException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
@@ -40,8 +42,23 @@ public class NumberDecision extends ValueDecision<Double> {
 
     @Override
     public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
-        throw new UnsupportedOperationException("Not supported yet.");
-        //PROBLEM: keine double unterstützung von CP solver...
+        IntVar intVar = model.newIntVar(0, 120000, this.getDisplayId()); //TODO eig müsste hier Long min und max rein aber damit kann der solver nicht umgehen... - desshalb grad magic numbers - bessere überlegen: Besser gehts nur wenn man den unteren todo umsetzt
+
+        cpVars.put(this, List.of(intVar));
+
+        for (IExpression expression : this.getValidityConditions()) { //the range is encoded in the validityConditions
+            //todo later: hier könnte man wenn man die range hat auch ganz easy model.addLinearConstraint() nutzen ohne extra overhead (vor allem da bei der range immer konkrete variablen genutzt werden) - aber wsh nicht umsetzbar wegen dem dopler metamodell
+            model.addEquality(expression.toCPLiteral(model, cpVars), 1);
+        }
+    }
+
+    @Override
+    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
+        Literal decisionVisibleLiteral = this.getVisibilityCondition().toCPLiteral(model, cpVars);
+
+        //only enforce std value if dec is not visible and was not enforced by a rule-action (from another decision, of course)
+        model.addEquality(cpVars.get(this).getFirst(), model.newConstant(CpEncodingResult.scaleDoubleToCp(this.standardValue))) //todo later es ist design mäßig evtl. nicht so schön, dass dass CpEncodingResult diese scaling funktionalität static anbietet... ggf auslagern(?)
+                .onlyEnforceIf(new Literal[]{decisionVisibleLiteral.not(), isTakenVars.get(this) != null ? isTakenVars.get(this).not() : model.trueLiteral()});
     }
 
     @Override
