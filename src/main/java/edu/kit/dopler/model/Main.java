@@ -17,24 +17,15 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-import com.google.ortools.sat.CpModel;
-import com.google.ortools.sat.IntVar;
+import com.google.ortools.Loader;
+import edu.kit.dopler.common.CpEncodingResult;
+import edu.kit.dopler.common.DoplerUtils;
 import edu.kit.dopler.exceptions.NotSupportedVariabilityTypeException;
-import edu.kit.dopler.io.antlr.DoplerDecisionCreator;
-import edu.kit.dopler.io.antlr.DoplerExpressionParser;
-import edu.kit.dopler.io.antlr.resources.DoplerLexer;
-import edu.kit.dopler.io.antlr.resources.DoplerParser;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.stream.Stream;
 
 import static edu.kit.dopler.common.DoplerUtils.readDOPLERModelFromFile;
@@ -43,54 +34,15 @@ import static edu.kit.dopler.common.SolverUtils.*;
 public class Main {
 
     public static void main(final String[] args) throws NotSupportedVariabilityTypeException, IOException {
+        //exemplary usage of the CP-Solver:
+        Loader.loadNativeLibraries();
+        String fileName = "modelCSVs/example.csv";
+        Dopler dopler = DoplerUtils.readDOPLERModelFromFile(Path.of(fileName));
 
-        String fileName = "modelCSVs/AlwaysTrueTestOG.csv";
-        CharStream input = CharStreams.fromFileName(fileName);
-        DoplerLexer lexer = new DoplerLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        DoplerParser parser = new DoplerParser(tokens);
-        ParseTree tree = parser.document();
-        ParseTreeWalker walker = new ParseTreeWalker();
-        DoplerDecisionCreator decisionCreator = new DoplerDecisionCreator(fileName);
-        walker.walk(decisionCreator, tree);
-        DoplerExpressionParser expressionParser = new DoplerExpressionParser(decisionCreator.getDopler());
-        walker.walk(expressionParser, tree);
-        Dopler dopler = expressionParser.getDopler();
+        CpEncodingResult cpEncoding = dopler.toCPModel();
 
-        var p = dopler.toCPModel();
-        CpModel model = p.a;
-        List<IntVar> variables = p.b;
-
-        System.out.println("----------------------------------");
-        printAllConfigs(model, variables);
-
-        /*System.out.println("\n\n--------------------------------"); //call z3 (SMT):
-        System.out.println("--------------------------------");
-        var smt = dopler.toSMTStream().build().collect(Collectors.joining("\n"));
-
-        // Optional configuration
-        java.util.HashMap<String, String> cfg = new java.util.HashMap<>();
-        // e.g. cfg.put("model", "true");
-        try (Context ctx = new Context(cfg)) {
-            // Parse SMT-LIB2 string into Boolean expressions
-            BoolExpr[] formulas = ctx.parseSMTLIB2String(
-                    smt,
-                    null, null,   // no custom sorts
-                    null, null    // no pre-declared functions
-            );
-
-            Solver solverz = ctx.mkSolver();
-            for (BoolExpr f : formulas) {
-                solverz.add(f);
-            }
-
-            Status st = solverz.check();
-            System.out.println("Result: " + st);
-            if (st == Status.SATISFIABLE) {
-                Model m = solverz.getModel();
-                System.out.println("Model: " + m);
-            }
-        }*/
+        cpEncoding.printAllConfigs();
+        cpEncoding.printAnomalies();
     }
 
 

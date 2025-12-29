@@ -1,11 +1,9 @@
 package edu.kit.dopler.common;
 
 
-import com.google.ortools.sat.*;
 import edu.kit.dopler.model.Dopler;
 
 import java.io.*;
-import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,109 +21,6 @@ public final class SolverUtils {
         if (path != null && !path.isBlank()) {
             z3Executable = path;
         }
-    }
-
-    /**
-     * Determines the satisfiability of a given constraint programming model.
-     *
-     * @param model The constraint programming model representing the DOPLER MODEL which should be fed into the solver.
-     * @return True if the model is satisfiable (has feasible or optimal solutions), false otherwise.
-     */
-    public static boolean checkSat(CpModel model) {
-        CpSolver solver = new CpSolver();
-        CpSolverStatus status = solver.solve(model);
-
-        return status == CpSolverStatus.FEASIBLE || status == CpSolverStatus.OPTIMAL;
-    }
-
-    /**
-     * Calculates the total number of configurations (solutions) for the given constraint programming model.
-     * Note: This operation may take a significant amount of time for large models!
-     *
-     * @param model The constraint programming model representing the DOPLER MODEL which should be fed into the solver.
-     * @return The total number of solutions found for the given model.
-     */
-    public static int getAmountOfConfigs(CpModel model) {
-        CpSolver solver = new CpSolver();
-        solver.getParameters().setEnumerateAllSolutions(true);
-
-        // Local callback that simply counts each solution visited by the solver.
-        class SolutionCounter extends CpSolverSolutionCallback {
-            private int solutionCount = 0;
-
-            @Override
-            public void onSolutionCallback() {
-                solutionCount++;
-            }
-
-            int getSolutionCount() {
-                return solutionCount;
-            }
-        }
-
-        SolutionCounter counter = new SolutionCounter();
-        solver.solve(model, counter);
-        return counter.getSolutionCount();
-    }
-
-    /**
-     * Solves the given constraint programming model and prints one satisfiable configuration, if available.
-     *
-     * @param model     The constraint programming model representing the DOPLER MODEL which should be fed into the solver.
-     * @param variables A list of variables whose values will be printed if a solution is found.
-     */
-    public static void printOneConfig(CpModel model, List<IntVar> variables) {
-        CpSolver solver = new CpSolver();
-        CpSolverStatus status = solver.solve(model);
-
-        if (status == CpSolverStatus.OPTIMAL || status == CpSolverStatus.FEASIBLE) {
-            System.out.printf("Solution found, time = %.2f s%n", solver.wallTime());
-            for (IntVar var : variables) {
-                System.out.printf("  %s = %d%n", var.getName(), solver.value(var));
-            }
-        } else {
-            System.out.println("No solution found.");
-        }
-    }
-
-
-    /**
-     * Solves the given constraint programming model and prints all possible configurations.
-     * Note: This operation may take a significant amount of time for large models!
-     *
-     * @param model     The constraint programming model representing the DOPLER MODEL which should be fed into the solver.
-     * @param variables A list of variables whose values will be printed if a solution is found.
-     */
-    public static void printAllConfigs(CpModel model, List<IntVar> variables) {
-        CpSolver solver = new CpSolver();
-
-        // Local callback that prints each solution visited by the solver.
-        class VarArraySolutionPrinter extends CpSolverSolutionCallback {
-            private final List<IntVar> vars;
-            private int solutionCount = 0;
-
-            public VarArraySolutionPrinter(List<IntVar> vars) {
-                this.vars = vars;
-            }
-
-            @Override
-            public void onSolutionCallback() {
-                System.out.printf("Solution #%d, time = %.2f s%n", solutionCount, wallTime());
-                for (IntVar v : vars) {
-                    System.out.printf("  %s = %d%n", v.getName(), value(v));
-                }
-                solutionCount++;
-            }
-
-            public int getSolutionCount() {
-                return solutionCount;
-            }
-        }
-
-        VarArraySolutionPrinter printer = new VarArraySolutionPrinter(variables);
-        solver.getParameters().setEnumerateAllSolutions(true);
-        solver.solve(model, printer);
-        System.out.println("#solutions: " + printer.getSolutionCount());
     }
 
     /**

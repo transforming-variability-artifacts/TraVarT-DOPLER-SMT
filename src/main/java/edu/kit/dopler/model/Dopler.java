@@ -9,17 +9,17 @@
  * Contributors: 
  *    @author Fabian Eger
  *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-import com.google.ortools.Loader;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
-import org.antlr.v4.runtime.misc.Pair;
+import edu.kit.dopler.common.CpEncodingResult;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -85,11 +85,9 @@ public class Dopler {
     /**
      * Creates a CP encoding of the DOPLER model.
      *
-     * @return A pair containing the generated {@link CpModel} instance and an {@link List} of {@link IntVar}
-     * representing the decision variables in the CP model. //TODO Frage: Passt das mit dem Pair so? (oooder: eigenen output Datentyp erstellen?)
+     * @return A CpEncodingResult object containing the generated CP model and the variables associated with each decision.
      */
-    public Pair<CpModel, List<IntVar>> toCPModel() {
-        Loader.loadNativeLibraries();
+    public CpEncodingResult toCPModel() {
         CpModel model = new CpModel();
         Map<IDecision<?>, List<IntVar>> cpVars = new HashMap<>();
         Map<IDecision<?>, Literal> isTakenVars = new HashMap<>();
@@ -106,7 +104,7 @@ public class Dopler {
             decision.enforceStandardValueInCP(model, cpVars, isTakenVars);
         });
 
-        return new Pair<>(model, cpVars.values().stream().flatMap(List::stream).toList());
+        return new CpEncodingResult(model, cpVars.values().stream().toList());
     }
 
     /**
