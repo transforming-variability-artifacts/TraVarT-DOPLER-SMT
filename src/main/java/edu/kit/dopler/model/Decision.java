@@ -297,7 +297,7 @@ public abstract class Decision<T> implements IDecision<T> {
     }
 
     @Override
-    public boolean equals(Object o) { //TODO Frage: passt das so? -> displayID ist ja per def eindeutig... und ich brauche das hier für meine map
+    public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Decision<?> decision = (Decision<?>) o;
         return Objects.equals(this.displayId, decision.displayId);

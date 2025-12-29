@@ -20,7 +20,6 @@ import com.google.ortools.sat.BoolVar;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +39,7 @@ public class BooleanDecision extends Decision<Boolean> {
     }
 
     @Override
-    public void createCPVariables(CpModel model, @MonotonicNonNull Map<IDecision<?>, List<IntVar>> cpVars) {
+    public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
         BoolVar boolVar = model.newBoolVar(this.getDisplayId());
 
         cpVars.put(this, List.of(boolVar));

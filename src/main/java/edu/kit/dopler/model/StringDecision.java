@@ -73,6 +73,6 @@ public class StringDecision extends ValueDecision<String> {
 
     @Override
     public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported in the current CP-approach.");
     }
 }
