@@ -77,12 +77,12 @@ public class OR extends BinaryExpression {
         BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
         //assure that: equivalentLiteral <=> (leftLiteral or rightLiteral)
-        // =>
+        // "=>" as CNF
         model.addBoolOr(new Literal[]{equivalentLiteral.not(), leftLiteral, rightLiteral});
 
-        // <=
-        model.addImplication(leftLiteral, equivalentLiteral);
-        model.addImplication(rightLiteral, equivalentLiteral);
+        // "<=" as CNF
+        model.addBoolOr(new Literal[]{leftLiteral.not(), equivalentLiteral});
+        model.addBoolOr(new Literal[]{rightLiteral.not(), equivalentLiteral});
 
         return equivalentLiteral;
     }

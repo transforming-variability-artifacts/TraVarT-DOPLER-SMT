@@ -55,7 +55,8 @@ public class DecisionVisibilityCallExpression extends DecisionCallExpression {
 
     @Override
     public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.getDecision().getVisibilityCondition().toCPLiteral(model, cpVars);
+
     }
 
     @Override

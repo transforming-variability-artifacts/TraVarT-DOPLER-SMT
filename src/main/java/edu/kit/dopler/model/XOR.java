@@ -16,6 +16,7 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.BoolVar;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
@@ -35,7 +36,21 @@ public class XOR extends BinaryExpression {
 
     @Override
     public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Literal leftLiteral = this.getLeftExpression().toCPLiteral(model, cpVars);
+        Literal rightLiteral = this.getRightExpression().toCPLiteral(model, cpVars);
+
+        BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
+
+        //assure that: equivalentLiteral <=> (leftLiteral xor rightLiteral)
+        // "=>" as CNF
+        model.addBoolOr(new Literal[]{equivalentLiteral.not(), leftLiteral, rightLiteral});
+        model.addBoolOr(new Literal[]{equivalentLiteral.not(), leftLiteral.not(), rightLiteral.not()});
+
+        // "<=" as CNF
+        model.addBoolOr(new Literal[]{equivalentLiteral, leftLiteral, rightLiteral.not()});
+        model.addBoolOr(new Literal[]{equivalentLiteral, leftLiteral.not(), rightLiteral});
+
+        return equivalentLiteral;
     }
 
     @Override

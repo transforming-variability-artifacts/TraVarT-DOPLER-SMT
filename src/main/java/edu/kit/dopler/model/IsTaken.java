@@ -48,7 +48,10 @@ public class IsTaken extends DecisionCallExpression {
 
     @Override
     public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        /*  for the CP encoding we assume: a decision is/must/"will be" be taken if it is visible (we ignore cases where a decision is enforced via a rule-action)
+            otherwise we would need the isTakenVars map here, but this would lead to wierd special cases, for example (is the rule "if(!isTaken(Cheese)){Cheese=true;}" valid?)
+            we don't care about this here because apparently "isTaken()" is not used in real world DOPLER-models... */
+        return this.getDecision().getVisibilityCondition().toCPLiteral(model, cpVars);
     }
 
     @Override

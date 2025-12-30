@@ -19,6 +19,7 @@ package edu.kit.dopler.model;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
+import edu.kit.dopler.common.CpEncodingResult;
 import edu.kit.dopler.exceptions.InvalidTypeInLiteralExpressionCheckException;
 
 import java.util.List;
@@ -45,7 +46,11 @@ public class DoubleLiteralExpression extends LiteralExpression {
 
     @Override
     public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported. In the CP solver a Literal can only be a boolean variable => use toCPIntVar() for DoubleLiteralExpression."); //todo later das ist nicht schönes design, geht aber aufgrund der vorgegebenen DOPLER struktur leider nicht anders (zumindest soweit ich das grad sehe...)
+    }
+
+    public long getLiteralAsScaledLong() {
+        return CpEncodingResult.scaleDoubleToCp(this.literal);
     }
 
     public double getLiteral() {

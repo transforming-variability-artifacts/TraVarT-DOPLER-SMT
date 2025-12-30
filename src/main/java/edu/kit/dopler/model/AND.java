@@ -83,11 +83,11 @@ public class AND extends BinaryExpression {
         BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
         //assure that: equivalentLiteral <=> (leftLiteral and rightLiteral)
-        // =>
-        model.addImplication(equivalentLiteral, leftLiteral);
-        model.addImplication(equivalentLiteral, rightLiteral);
+        // "=>" as CNF
+        model.addBoolOr(new Literal[]{equivalentLiteral.not(), leftLiteral});
+        model.addBoolOr(new Literal[]{equivalentLiteral.not(), rightLiteral});
 
-        // <=
+        // "<=" as CNF
         model.addBoolOr(new Literal[]{leftLiteral.not(), rightLiteral.not(), equivalentLiteral});
 
         return equivalentLiteral;

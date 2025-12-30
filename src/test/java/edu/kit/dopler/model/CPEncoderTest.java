@@ -1,24 +1,22 @@
 package edu.kit.dopler.model;
 
 import com.google.ortools.Loader;
-import com.google.ortools.sat.CpModel;
-import com.google.ortools.sat.CpSolver;
-import com.google.ortools.sat.CpSolverStatus;
-import com.google.ortools.sat.IntVar;
+import edu.kit.dopler.common.CpEncodingResult;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static edu.kit.dopler.common.DoplerUtils.readDOPLERModelFromFile;
-import static edu.kit.dopler.common.SolverUtils.printAllConfigs;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -36,6 +34,22 @@ class CPEncoderTest {
         }
     }
 
+    static Stream<Arguments> getSATFileNamesConfigCount() throws IOException {
+        Path dir = Paths.get("src/test/resources/sat_models_config_count");
+        try (Stream<Path> files = Files.list(dir)) {
+            return files.filter(Files::isRegularFile).map(Path::toAbsolutePath).map(path -> Arguments.of(path, extractConfigCount(path))).toList().stream();
+        }
+    }
+
+    private static int extractConfigCount(Path path) {
+        String fileName = path.getFileName().toString(); // e.g. "foo_c42.csv"
+        Matcher m = Pattern.compile(".*_c(\\d+)\\.csv").matcher(fileName);
+        if (!m.find()) {
+            throw new IllegalArgumentException("No config count found in file name: " + fileName + " (format must be: *_c<configCount>.csv)");
+        }
+        return Integer.parseInt(m.group(1));
+    }
+
     static Stream<Path> getUNSATFileNames() throws IOException {
         Path dir = Paths.get("src/test/resources/unsat_models");
         try (Stream<Path> files = Files.list(dir)) {
@@ -45,20 +59,15 @@ class CPEncoderTest {
 
     @Test
     void testSpecificModel() {
-        Path csvFile = Path.of("src/test/resources/sat_models/greaterThan_test.csv"); //specify model csv here
+        Path csvFile = Path.of("src/test/resources/sat_models/visibility_test_1.csv"); //specify model csv here
 
         System.out.println("Testing: " + csvFile.getFileName().toString());
         Dopler dopler = assertDoesNotThrow(() -> readDOPLERModelFromFile(csvFile), "DOPLER model creation failed!");
 
-        var p = dopler.toCPModel();
-        CpModel model = p.a;
-        List<IntVar> variables = p.b;
+        CpEncodingResult cpEncoding = dopler.toCPModel();
+        cpEncoding.printAllConfigs();
 
-        printAllConfigs(model, variables); //only for debugging reasons
-
-        CpSolver solver = new CpSolver();
-        CpSolverStatus status = solver.solve(model);
-        assertTrue(status == CpSolverStatus.FEASIBLE || status == CpSolverStatus.OPTIMAL, "Expected SAT for: " + csvFile.getFileName().toString());
+        assertTrue(cpEncoding.checkSat(), "Expected SAT for: " + csvFile.getFileName().toString());
     }
 
     @ParameterizedTest
@@ -67,14 +76,27 @@ class CPEncoderTest {
         System.out.println("Testing: " + csvFile.getFileName().toString());
         Dopler dopler = assertDoesNotThrow(() -> readDOPLERModelFromFile(csvFile), "DOPLER model creation failed!");
 
-        var p = dopler.toCPModel();
-        CpModel model = p.a;
-        List<IntVar> variables = p.b;
+        CpEncodingResult cpEncoding = dopler.toCPModel();
 
-        CpSolver solver = new CpSolver();
-        CpSolverStatus status = solver.solve(model);
+        assertTrue(cpEncoding.checkSat(), "Expected SAT for: " + csvFile.getFileName().toString());
+    }
 
-        assertTrue(status == CpSolverStatus.FEASIBLE || status == CpSolverStatus.OPTIMAL, "Expected SAT for: " + csvFile.getFileName().toString());
+    @ParameterizedTest
+    @MethodSource("getSATFileNamesConfigCount")
+    void testSATModelsConfigCount(Path csvFile, int expectedConfigCount) {
+        System.out.println("Testing: " + csvFile.getFileName().toString());
+        Dopler dopler = assertDoesNotThrow(() -> readDOPLERModelFromFile(csvFile), "DOPLER model creation failed!");
+
+        CpEncodingResult cpEncoding = dopler.toCPModel();
+
+        if (expectedConfigCount == 0) {
+            assertFalse(cpEncoding.checkSat(), "Expected UNSAT for: " + csvFile.getFileName().toString());
+        } else {
+            assertTrue(cpEncoding.checkSat(), "Expected SAT for: " + csvFile.getFileName().toString());
+        }
+
+        int configCount = cpEncoding.getAmountOfConfigs();
+        assertEquals(expectedConfigCount, configCount, "Expected " + expectedConfigCount + " config(s) for: " + csvFile.getFileName().toString() + ", got " + configCount);
     }
 
     @ParameterizedTest
@@ -83,14 +105,9 @@ class CPEncoderTest {
         System.out.println("Testing: " + csvFile.getFileName().toString());
         Dopler dopler = assertDoesNotThrow(() -> readDOPLERModelFromFile(csvFile), "DOPLER model creation failed!");
 
-        var p = dopler.toCPModel();
-        CpModel model = p.a;
-        List<IntVar> variables = p.b;
+        CpEncodingResult cpEncoding = dopler.toCPModel();
 
-        CpSolver solver = new CpSolver();
-        CpSolverStatus status = solver.solve(model);
-
-        assertSame(CpSolverStatus.INFEASIBLE, status, "Expected UNSAT for: " + csvFile.getFileName().toString());
+        assertFalse(cpEncoding.checkSat(), "Expected UNSAT for: " + csvFile.getFileName().toString());
     }
 
 }

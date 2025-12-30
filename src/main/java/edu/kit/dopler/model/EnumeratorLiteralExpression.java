@@ -46,7 +46,9 @@ public class EnumeratorLiteralExpression extends LiteralExpression {
 
     @Override
     public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // todo later currently EnumeratorLiteralExpression is only used by Equals and there I dont need the Literal/ cant get it from this class because it does not know the parent decision...
+        // I could use this method here if i would change the enum var naming from "decisionName_enumLiteral" to just "enumLiteral" -> then I could search the cpVars here and return th right one
+        throw new UnsupportedOperationException("Not supported.");
     }
 
 
