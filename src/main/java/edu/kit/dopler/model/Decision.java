@@ -177,8 +177,8 @@ public abstract class Decision<T> implements IDecision<T> {
         for (Rule rule : this.rules) {
             Literal ruleCondtionLiteral = rule.getCondition().toCPLiteral(model, cpVars);
 
-            Literal l = model.newBoolVar("decisionVisible_AND_ruleCondition"); //todo later in action.executeAsCP(model, l); kann man auch ein verundetes Literal array geben dann spart man sich das folgende...
-            // assure that: l <=> (decisionVisibleLiteral and ruleCondtionLiteral) //todo later die funktionalität kann man noch iwan auslagern... (wird zb auch bei AND gebraucht)
+            Literal l = model.newBoolVar("decisionVisible_AND_ruleCondition");
+            // assure that: l <=> (decisionVisibleLiteral and ruleCondtionLiteral)
             // =>
             model.addImplication(l, decisionVisibleLiteral);
             model.addImplication(l, ruleCondtionLiteral);
@@ -190,12 +190,6 @@ public abstract class Decision<T> implements IDecision<T> {
             }
 
         }
-    }
-
-    @Override
-    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
-        System.out.println("todo implement! enforceStandardValueInCP in Decision.java");
-        //TODO so wie in der boolDec in allen anderen concrete decisions umsetzen
     }
 
     /**

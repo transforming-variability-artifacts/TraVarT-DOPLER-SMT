@@ -20,6 +20,7 @@ package edu.kit.dopler.model;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.LinearExpr;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.InvalidCardinalityException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
@@ -87,12 +88,30 @@ public class EnumerationDecision extends Decision<String> {
 
         cpVars.put(this, enumVars);
 
-        //this.cpVars = new ArrayList<>(enumVars);old
-
         //add cardinality constraints
         LinearExpr sum = LinearExpr.sum(enumVars.toArray(new IntVar[0]));
         model.addGreaterOrEqual(sum, this.getMinCardinality());
         model.addLessOrEqual(sum, this.getMaxCardinality());
+    }
+
+    @Override
+    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
+        System.out.println("todo frage"); //TODO Frage: was ist das gewünschte Verhalten? -> logisch wäre mmn dass cardinality.min elemente auf true und der rest auf false gesetzt werden...
+        //TODO Achtung! so habe ich es jetzt umgesetzt -> ohne sortierung von enumVars (wie ich es jetzt habe) sorgt das aber ggf für indeterministisches Verhalten
+
+        Literal decisionVisibleLiteral = this.getVisibilityCondition().toCPLiteral(model, cpVars);
+
+        //only enforce std value if dec is not visible and was not enforced by a rule-action (from another decision, of course):
+        Literal[] enforceIf = new Literal[]{decisionVisibleLiteral.not(), isTakenVars.get(this) != null ? isTakenVars.get(this).not() : model.trueLiteral()};
+
+        List<IntVar> enumVars = cpVars.get(this);
+        for (int i = 0; i < enumVars.size(); i++) {
+            if (i < this.getMinCardinality()) {
+                model.addEquality(enumVars.get(i), model.trueLiteral()).onlyEnforceIf(enforceIf);
+            } else {
+                model.addEquality(enumVars.get(i), model.falseLiteral()).onlyEnforceIf(enforceIf);
+            }
+        }
     }
 
     public void setCardinality(int minCardinality, int maxCardinality) throws InvalidCardinalityException {

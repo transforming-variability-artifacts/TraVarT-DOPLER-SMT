@@ -42,12 +42,12 @@ public class NumberDecision extends ValueDecision<Double> {
 
     @Override
     public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
-        IntVar intVar = model.newIntVar(0, 120000, this.getDisplayId()); //TODO eig müsste hier Long min und max rein aber damit kann der solver nicht umgehen... - desshalb grad magic numbers - bessere überlegen: Besser gehts nur wenn man den unteren todo umsetzt
+        IntVar intVar = model.newIntVar(0, 120000, this.getDisplayId()); //todo later eig müsste hier Long min und max rein aber damit kann der solver nicht umgehen... - desshalb grad magic numbers -> bessere überlegen: Besser gehts nur wenn man den unteren todo umsetzt
 
         cpVars.put(this, List.of(intVar));
 
         for (IExpression expression : this.getValidityConditions()) { //the range is encoded in the validityConditions
-            //todo later: hier könnte man wenn man die range hat auch ganz easy model.addLinearConstraint() nutzen ohne extra overhead (vor allem da bei der range immer konkrete variablen genutzt werden) - aber wsh nicht umsetzbar wegen dem dopler metamodell
+            //todo later: hier könnte man wenn man für die range halt auch ganz easy model.addLinearConstraint() nutzen ohne extra overhead (vor allem da bei der range immer konkrete variablen genutzt werden) -> aber wsh nicht umsetzbar wegen dem dopler metamodell... (?)
             model.addEquality(expression.toCPLiteral(model, cpVars), 1);
         }
     }

@@ -18,6 +18,7 @@ package edu.kit.dopler.model;
 
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.EvaluationException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
@@ -73,6 +74,11 @@ public class StringDecision extends ValueDecision<String> {
 
     @Override
     public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
+        throw new UnsupportedOperationException("Not supported in the current CP-approach.");
+    }
+
+    @Override
+    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
         throw new UnsupportedOperationException("Not supported in the current CP-approach.");
     }
 }
