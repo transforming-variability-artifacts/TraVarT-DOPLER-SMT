@@ -1,0 +1,2 @@
+ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
+MyEnum1;nothing;Enumeration;A | B | C | D;3:3;;true

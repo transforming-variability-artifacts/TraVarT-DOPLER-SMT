@@ -1,0 +1,4 @@
+ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
+MyEnum;nothing;Enumeration;A | B | C | D;3:4;;true
+Sauce;nothing;Boolean;true | false;;"if(true){disAllow(MyEnum.A);}";true
+Test;nothing;Boolean;true | false;;;MyEnum==A

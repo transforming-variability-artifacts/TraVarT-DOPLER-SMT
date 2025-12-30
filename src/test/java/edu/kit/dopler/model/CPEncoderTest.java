@@ -59,7 +59,7 @@ class CPEncoderTest {
 
     @Test
     void testSpecificModel() {
-        Path csvFile = Path.of("src/test/resources/sat_models/visibility_test_1.csv"); //specify model csv here
+        Path csvFile = Path.of("src/test/resources/sat_models/enumeration_decision_test2.csv"); //specify model csv here
 
         System.out.println("Testing: " + csvFile.getFileName().toString());
         Dopler dopler = assertDoesNotThrow(() -> readDOPLERModelFromFile(csvFile), "DOPLER model creation failed!");
