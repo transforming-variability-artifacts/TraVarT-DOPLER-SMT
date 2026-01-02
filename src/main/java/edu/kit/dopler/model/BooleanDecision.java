@@ -46,12 +46,9 @@ public class BooleanDecision extends Decision<Boolean> {
     }
 
     @Override
-    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
-        Literal decisionVisibleLiteral = this.getVisibilityCondition().toCPLiteral(model, cpVars);
-
-        //only enforce std value if dec is not visible and was not enforced by a rule-action (from another decision, of course)
+    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
         model.addEquality(cpVars.get(this).getFirst(), this.getStandardValue() ? model.trueLiteral() : model.falseLiteral())
-                .onlyEnforceIf(new Literal[]{decisionVisibleLiteral.not(), isTakenVars.get(this) != null ? isTakenVars.get(this).not() : model.trueLiteral()});
+                .onlyEnforceIf(getEnforceStandardValueConditionLiterals(model, cpVars, isTakenVars));
     }
 
     @Override

@@ -16,17 +16,16 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.BoolVar;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
 import edu.kit.dopler.common.CpEncodingResult;
 import edu.kit.dopler.exceptions.EvaluationException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class NumberDecision extends ValueDecision<Double> {
@@ -53,12 +52,10 @@ public class NumberDecision extends ValueDecision<Double> {
     }
 
     @Override
-    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
-        Literal decisionVisibleLiteral = this.getVisibilityCondition().toCPLiteral(model, cpVars);
-
+    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, @MonotonicNonNull Map<IDecision<?>, List<Literal>> isTakenVars) {
         //only enforce std value if dec is not visible and was not enforced by a rule-action (from another decision, of course)
         model.addEquality(cpVars.get(this).getFirst(), model.newConstant(CpEncodingResult.scaleDoubleToCp(this.standardValue))) //todo later es ist design mäßig evtl. nicht so schön, dass dass CpEncodingResult diese scaling funktionalität static anbietet... ggf auslagern(?)
-                .onlyEnforceIf(new Literal[]{decisionVisibleLiteral.not(), isTakenVars.get(this) != null ? isTakenVars.get(this).not() : model.trueLiteral()});
+                .onlyEnforceIf(getEnforceStandardValueConditionLiterals(model, cpVars, isTakenVars));
     }
 
     @Override

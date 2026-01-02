@@ -17,12 +17,10 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-import com.google.ortools.sat.CpModel;
-import com.google.ortools.sat.IntVar;
-import com.google.ortools.sat.LinearExpr;
-import com.google.ortools.sat.Literal;
+import com.google.ortools.sat.*;
 import edu.kit.dopler.exceptions.InvalidCardinalityException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -95,21 +93,18 @@ public class EnumerationDecision extends Decision<String> {
     }
 
     @Override
-    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
+    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, @MonotonicNonNull Map<IDecision<?>, List<Literal>> isTakenVars) {
         System.out.println("todo frage"); //TODO Frage: was ist das gewünschte Verhalten? -> logisch wäre mmn dass cardinality.min elemente auf true und der rest auf false gesetzt werden...
         //TODO Achtung! so habe ich es jetzt umgesetzt -> ohne sortierung von enumVars (wie ich es jetzt habe) sorgt das aber ggf für indeterministisches Verhalten
 
-        Literal decisionVisibleLiteral = this.getVisibilityCondition().toCPLiteral(model, cpVars);
-
-        //only enforce std value if dec is not visible and was not enforced by a rule-action (from another decision, of course):
-        Literal[] enforceIf = new Literal[]{decisionVisibleLiteral.not(), isTakenVars.get(this) != null ? isTakenVars.get(this).not() : model.trueLiteral()};
+        Literal[] conditionLiterals = getEnforceStandardValueConditionLiterals(model, cpVars, isTakenVars);
 
         List<IntVar> enumVars = cpVars.get(this);
         for (int i = 0; i < enumVars.size(); i++) {
             if (i < this.getMinCardinality()) {
-                model.addEquality(enumVars.get(i), model.trueLiteral()).onlyEnforceIf(enforceIf);
+                model.addEquality(enumVars.get(i), model.trueLiteral()).onlyEnforceIf(conditionLiterals);
             } else {
-                model.addEquality(enumVars.get(i), model.falseLiteral()).onlyEnforceIf(enforceIf);
+                model.addEquality(enumVars.get(i), model.falseLiteral()).onlyEnforceIf(conditionLiterals);
             }
         }
     }

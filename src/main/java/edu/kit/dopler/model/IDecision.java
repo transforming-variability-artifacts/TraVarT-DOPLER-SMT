@@ -82,7 +82,7 @@ public interface IDecision<T> {
 
     void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars);
 
-    void mapRulesToCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars);
+    void mapRulesToCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars);
 
-    void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars);
+    void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars);
 }

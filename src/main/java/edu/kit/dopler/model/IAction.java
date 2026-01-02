@@ -31,6 +31,6 @@ public interface IAction {
 
     void toSMTStream(Stream.Builder<String> builder, String selectedDecisionString);
 
-    void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars);
+    void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars);
 
 }

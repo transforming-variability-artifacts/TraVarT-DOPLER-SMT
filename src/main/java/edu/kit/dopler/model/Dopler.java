@@ -90,12 +90,13 @@ public class Dopler {
     public CpEncodingResult toCPModel() {
         CpModel model = new CpModel();
         Map<IDecision<?>, List<IntVar>> cpVars = new HashMap<>();
-        Map<IDecision<?>, Literal> isTakenVars = new HashMap<>();
+        Map<IDecision<?>, List<Literal>> isTakenVars = new HashMap<>();
 
 
         //iterate over all decisions and create the variables and rules (two separate loops, because the rules can only be created if all decision variables exist!)
         this.decisions.forEach(decision -> {
             decision.createCPVariables(model, cpVars);
+            isTakenVars.put(decision, new ArrayList<>());
         });
         this.decisions.forEach(decision -> {
             decision.mapRulesToCP(model, cpVars, isTakenVars);
