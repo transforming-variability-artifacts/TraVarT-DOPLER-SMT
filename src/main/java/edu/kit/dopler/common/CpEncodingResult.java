@@ -197,7 +197,7 @@ public final class CpEncodingResult {
      * @return True if at least one anomaly was found, false otherwise.
      */
     public boolean printAnomalies() {
-        return printDeadDecisionValues() || printFalseOptionalDecisionValues();
+        return printDeadDecisionValues() | printFalseOptionalDecisionValues();
     }
 
     /**
