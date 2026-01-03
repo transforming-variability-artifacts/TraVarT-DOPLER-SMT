@@ -58,7 +58,7 @@ public class Allows extends ValueRestrictionAction {
 
     @Override
     public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
-        throw new UnsupportedOperationException("should not be called in CP-approach");
+        //nothing to do here
     }
 
     @Override
