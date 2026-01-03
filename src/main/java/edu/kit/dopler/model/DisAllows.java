@@ -50,15 +50,17 @@ public class DisAllows extends ValueRestrictionAction {
     }
 
     @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
-        System.out.println("disallow action");
+    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
+        //dissallow can only be called on enum literals:
 
-        String dissallowString = this.getDecision().getDisplayId() + "_" + this.disAllowValue.getValue().toString(); //here I always assume an enum
+        String dissallowString = this.getDecision().getDisplayId() + "_" + this.disAllowValue.getValue().toString(); //this is the naming convention I use for the CP variables of enum decisions
 
         for (IntVar cpVar : cpVars.get(this.getDecision())) {
             if (cpVar.getName().equals(dissallowString)) {
-                model.addEquality(cpVar, model.falseLiteral()).onlyEnforceIf(conditionLiteral);
-                //TODO istaken angemessen nutzen
+                model.addEquality(cpVar, model.falseLiteral())
+                        .onlyEnforceIf(conditionLiteral);
+
+                isTakenVars.get(this.getDecision()).add(conditionLiteral);
             }
         }
     }

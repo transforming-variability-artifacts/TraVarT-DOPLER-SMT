@@ -20,6 +20,7 @@ import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.ActionExecutionException;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.List;
 import java.util.Map;
@@ -43,17 +44,13 @@ public class BooleanEnforce extends Enforce {
     }
 
     @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
-        System.out.println("bool enforce");
-        //val to enforce= this.getValue()
-        //val to be enforced= this.getDecision().getCPVars().getFirst()
+    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, @MonotonicNonNull Map<IDecision<?>, List<Literal>> isTakenVars) {
+        //val to enforce = this.getValue()
+        //val to be enforced = cpVars.get(this.getDecision())
+        model.addEquality(cpVars.get(this.getDecision()).getFirst(), this.getValue().getCPValue(model))
+                .onlyEnforceIf(conditionLiteral);
 
-        //model.addEquality(this.getDecision().getCPVars().getFirst(), this.getValue().getCPValue(model)).onlyEnforceIf(conditionLiteral); old
-        model.addEquality(cpVars.get(this.getDecision()).getFirst(), this.getValue().getCPValue(model)).onlyEnforceIf(conditionLiteral);
-
-        //TODO bei allen actions nutzen!:
-        //this.getDecision().setTakenInCP(conditionLiteral); //old... ich brauche das, weil ich isTaken nicht nutzen kann, da ich nicht weiß ob conditionLiteral ture oder false ist...
-        isTakenVars.put(this.getDecision(), conditionLiteral); //TODO achtung, hier wird einfach überschreiben bei meheren zugriffen- wsh muss man eher verodern (entweder mit hilfsliteral oder indem man isTakenVars eine liste an literals geben kann und appended) -> erstmal testen dann ändern
+        isTakenVars.get(this.getDecision()).add(conditionLiteral);
     }
 
     @Override

@@ -20,7 +20,13 @@
  */
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.ActionExecutionException;
+
+import java.util.List;
+import java.util.Map;
 
 public class StringEnforce extends Enforce {
 
@@ -38,6 +44,11 @@ public class StringEnforce extends Enforce {
         } catch (Exception e) {
             throw new ActionExecutionException(e);
         }
+    }
+
+    @Override
+    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
+        throw new UnsupportedOperationException("Not supported in the current CP-approach.");
     }
 
     @Override

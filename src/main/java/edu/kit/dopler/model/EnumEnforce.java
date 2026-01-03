@@ -48,12 +48,17 @@ public class EnumEnforce extends Enforce {
     }
 
     @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
-        System.out.println("enum enforce - not implemented!");
-        throw new UnsupportedOperationException("Not supported yet.");
-        //val to enforce= this.getValue()
-        //val to be enforced= this.getDecision().getCPVars().getFirst()
-        //model.addEquality(this.getDecision().getCPVars().getFirst(), this.getValue().getCPValue(model));
+    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
+        String enforceString = this.getDecision().getDisplayId() + "_" + this.getValue().toString(); //this is the naming convention I use for the CP variables of enum decisions
+
+        for (IntVar cpVar : cpVars.get(this.getDecision())) {
+            if (cpVar.getName().equals(enforceString)) {
+                model.addEquality(cpVar, model.trueLiteral())
+                        .onlyEnforceIf(conditionLiteral);
+
+                isTakenVars.get(this.getDecision()).add(conditionLiteral);
+            }
+        }
     }
 
     @Override

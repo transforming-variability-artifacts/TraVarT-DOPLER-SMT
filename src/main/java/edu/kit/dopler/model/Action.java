@@ -16,17 +16,6 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-import com.google.ortools.sat.CpModel;
-import com.google.ortools.sat.IntVar;
-import com.google.ortools.sat.Literal;
-
-import java.util.List;
-import java.util.Map;
-
 public abstract class Action implements IAction {
-    @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
-        //TODO in allen concrete action classes gescheit impl! das hier ist gerade nur zum compile error unterdrücken
-    }
 
 }
