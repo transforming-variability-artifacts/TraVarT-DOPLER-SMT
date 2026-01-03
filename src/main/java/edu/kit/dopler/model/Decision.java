@@ -171,7 +171,7 @@ public abstract class Decision<T> implements IDecision<T> {
     }
 
     @Override
-    public void mapRulesToCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, Literal> isTakenVars) {
+    public void mapRulesToCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
         Literal decisionVisibleLiteral = this.visibilityCondition.toCPLiteral(model, cpVars);
 
         for (Rule rule : this.rules) {
@@ -190,6 +190,32 @@ public abstract class Decision<T> implements IDecision<T> {
             }
 
         }
+    }
+
+    protected Literal[] getEnforceStandardValueConditionLiterals(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
+        Literal decisionVisibleLiteral = this.getVisibilityCondition().toCPLiteral(model, cpVars);
+
+        ArrayList<Literal> literals = new ArrayList<>(); //only enforce std value if dec is not visible (1) and was not enforced/taken by a rule-action (from another decision, of course) (2)
+
+        literals.add(decisionVisibleLiteral.not()); //(1)
+
+        if (isTakenVars.get(this).isEmpty()) { //(2)
+            literals.add(model.trueLiteral());
+        } else { //(2)
+            BoolVar isTakenVar = model.newBoolVar("isTakenVar");
+
+            //assure that: isTakenVar <=> or(isTakenVars)
+            // "=>" as CNF
+            model.addBoolOr(isTakenVars.get(this)).onlyEnforceIf(isTakenVar);
+
+            // "<=" as CNF
+            isTakenVars.get(this).forEach(var -> model.addBoolOr(new Literal[]{var.not(), isTakenVar}));
+
+
+            literals.add(isTakenVar.not());
+        }
+
+        return literals.toArray(Literal[]::new);
     }
 
     /**
