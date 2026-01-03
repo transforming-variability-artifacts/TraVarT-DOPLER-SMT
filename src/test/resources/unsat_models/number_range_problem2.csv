@@ -1,0 +1,3 @@
+ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
+x;none;Double;1.1-3.399;;;true
+y;none;Boolean;true | false;;"if (true) {x=0.5;}";true
