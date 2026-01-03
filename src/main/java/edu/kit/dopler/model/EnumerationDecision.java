@@ -17,10 +17,12 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-import com.google.ortools.sat.*;
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.LinearExpr;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.InvalidCardinalityException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -93,7 +95,7 @@ public class EnumerationDecision extends Decision<String> {
     }
 
     @Override
-    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, @MonotonicNonNull Map<IDecision<?>, List<Literal>> isTakenVars) {
+    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
         System.out.println("todo frage"); //TODO Frage: was ist das gewünschte Verhalten? -> logisch wäre mmn dass cardinality.min elemente auf true und der rest auf false gesetzt werden...
         //TODO Achtung! so habe ich es jetzt umgesetzt -> ohne sortierung von enumVars (wie ich es jetzt habe) sorgt das aber ggf für indeterministisches Verhalten
 

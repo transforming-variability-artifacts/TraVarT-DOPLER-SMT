@@ -196,7 +196,7 @@ public final class CpEncodingResult {
      *
      * @return True if at least one anomaly was found, false otherwise.
      */
-    public boolean printAnomalies() {
+    public boolean printAnomalies() { //TODO Frage: Ist diese FUnktionalität so gewünscht? print+bool return -> ist ja OO-Design technisch nicht so schön...
         return printDeadDecisionValues() | printFalseOptionalDecisionValues();
     }
 

@@ -95,7 +95,7 @@ public class LessThan extends BinaryExpression {
     @Override
     public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
         //in our use case (Google OR CP solver) the expressions can only be DoubleLiteralExpression or DecisionValueCallExpression (calling a NumberDecision)
-        if (this.getLeftExpression() instanceof DecisionValueCallExpression l && l.getDecision() instanceof NumberDecision left && this.getRightExpression() instanceof DoubleLiteralExpression right) { //TODO das ist halt OO-Design technisch sehr unschön... wobei es bei SMT ja genauso ist...
+        if (this.getLeftExpression() instanceof DecisionValueCallExpression l && l.getDecision() instanceof NumberDecision left && this.getRightExpression() instanceof DoubleLiteralExpression right) { //todo das ist halt OO-Design technisch sehr unschön... wobei es bei SMT ja genauso ist...
             IntVar leftVar = cpVars.get(left).getFirst();
             long rightVal = right.getLiteralAsScaledLong();
 
@@ -127,7 +127,7 @@ public class LessThan extends BinaryExpression {
             return left.getLiteral() < right.getLiteral() ? model.trueLiteral() : model.falseLiteral();
         }
 
-        System.out.println("should not be reachable...!? GreaterThan.toCPLiteral(...)");//todo later only for debugging
+        System.out.println("should not be reachable...!? GreaterThan.toCPLiteral(...)");//todo remove later only for debugging
         return null;//not reachable
     }
 
