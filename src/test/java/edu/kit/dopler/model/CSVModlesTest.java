@@ -25,7 +25,7 @@ public class CSVModlesTest {
         Dopler doplerModel = DoplerUtils.readDOPLERModelFromFile(modelPath);
 
         assertNotNull(doplerModel);
-        assertTrue(doplerModel.getDecisions().isEmpty());
+        assertFalse(doplerModel.getDecisions().isEmpty());
 
         boolean isSat = SolverUtils.checkSat(doplerModel.toSMTStream());
 
@@ -69,6 +69,125 @@ public class CSVModlesTest {
     @Test
     public void testModelASEJ2ParsingAndValidity() throws Exception {
         Path modelPath = Paths.get("modelEval/ASEJ2.csv");
+
+        assertTrue("File does not exist: " + modelPath.toAbsolutePath(),
+                Files.exists(modelPath));
+
+        Dopler doplerModel = DoplerUtils.readDOPLERModelFromFile(modelPath);
+
+        assertNotNull(doplerModel);
+        assertFalse(doplerModel.getDecisions().isEmpty());
+
+        boolean isSat = SolverUtils.checkSat(doplerModel.toSMTStream());
+
+        assertTrue("Model is UNSAT", isSat);
+    }
+
+    @Test
+    public void testModelAllTheCombinationsParsingAndValidity() throws Exception {
+        Path modelPath = Paths.get("modelEval/AllTheCombinations.csv");
+
+        assertTrue("File does not exist: " + modelPath.toAbsolutePath(),
+                Files.exists(modelPath));
+
+        Dopler doplerModel = DoplerUtils.readDOPLERModelFromFile(modelPath);
+
+        assertNotNull(doplerModel);
+        assertFalse(doplerModel.getDecisions().isEmpty());
+
+        boolean isSat = SolverUtils.checkSat(doplerModel.toSMTStream());
+
+        assertTrue("Model is UNSAT", isSat);
+    }
+
+    @Test
+    public void testModelAlwaysTrueParsingAndValidity() throws Exception {
+        Path modelPath = Paths.get("modelEval/AlwaysTrue.csv");
+
+        assertTrue("File does not exist: " + modelPath.toAbsolutePath(),
+                Files.exists(modelPath));
+
+        Dopler doplerModel = DoplerUtils.readDOPLERModelFromFile(modelPath);
+
+        assertNotNull(doplerModel);
+        assertFalse(doplerModel.getDecisions().isEmpty());
+
+        boolean isSat = SolverUtils.checkSat(doplerModel.toSMTStream());
+
+        assertTrue("Model is UNSAT", isSat);
+    }
+
+    @Test
+    public void testModelArtefactsAndAssetsParsingAndValidity() throws Exception {
+        Path modelPath = Paths.get("modelEval/ArtefactsAndAssets.csv");
+
+        assertTrue("File does not exist: " + modelPath.toAbsolutePath(),
+                Files.exists(modelPath));
+
+        Dopler doplerModel = DoplerUtils.readDOPLERModelFromFile(modelPath);
+
+        assertNotNull(doplerModel);
+        assertFalse(doplerModel.getDecisions().isEmpty());
+
+        boolean isSat = SolverUtils.checkSat(doplerModel.toSMTStream());
+
+        assertTrue("Model is UNSAT", isSat);
+    }
+
+    @Test
+    public void testModelBankingSoftwareParsingAndValidity() throws Exception {
+        Path modelPath = Paths.get("modelEval/BankingSoftware.csv");
+
+        assertTrue("File does not exist: " + modelPath.toAbsolutePath(),
+                Files.exists(modelPath));
+
+        Dopler doplerModel = DoplerUtils.readDOPLERModelFromFile(modelPath);
+
+        assertNotNull(doplerModel);
+        assertFalse(doplerModel.getDecisions().isEmpty());
+
+        boolean isSat = SolverUtils.checkSat(doplerModel.toSMTStream());
+
+        assertTrue("Model is UNSAT", isSat);
+    }
+
+    @Test
+    public void testModelBerkeleyDBParsingAndValidity() throws Exception {
+        Path modelPath = Paths.get("modelEval/BerkeleyDB.csv");
+
+        assertTrue("File does not exist: " + modelPath.toAbsolutePath(),
+                Files.exists(modelPath));
+
+        Dopler doplerModel = DoplerUtils.readDOPLERModelFromFile(modelPath);
+
+        assertNotNull(doplerModel);
+        assertFalse(doplerModel.getDecisions().isEmpty());
+
+        boolean isSat = SolverUtils.checkSat(doplerModel.toSMTStream());
+
+        assertTrue("Model is UNSAT", isSat);
+    }
+
+    @Test
+    public void testModelBigDataSystemParsingAndValidity() throws Exception {
+        Path modelPath = Paths.get("modelEval/BigDataSystem.csv");
+
+        assertTrue("File does not exist: " + modelPath.toAbsolutePath(),
+                Files.exists(modelPath));
+
+        Dopler doplerModel = DoplerUtils.readDOPLERModelFromFile(modelPath);
+
+        assertNotNull(doplerModel);
+        assertFalse(doplerModel.getDecisions().isEmpty());
+
+        boolean isSat = SolverUtils.checkSat(doplerModel.toSMTStream());
+
+        assertTrue("Model is UNSAT", isSat);
+    }
+
+    @Test
+    public void testModelBusyboxParsingAndValidity() throws Exception {
+        Path modelPath = Paths.get("modelEval/Busybox.csv");
 
         assertTrue("File does not exist: " + modelPath.toAbsolutePath(),
                 Files.exists(modelPath));
