@@ -1,5 +1,6 @@
 package edu.kit.dopler.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -62,6 +63,9 @@ public class CSVModlesTest {
         assertFalse(doplerModel.getDecisions().isEmpty());
 
         boolean isSat = SolverUtils.checkSat(doplerModel.toSMTStream());
+
+        int amountDesicions = doplerModel.getDecisions().size();
+        assertEquals(amountDesicions, 3391);
 
         assertTrue("Model is UNSAT", isSat);
     }
