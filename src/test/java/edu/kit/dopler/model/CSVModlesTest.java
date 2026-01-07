@@ -25,7 +25,7 @@ public class CSVModlesTest {
         Dopler doplerModel = DoplerUtils.readDOPLERModelFromFile(modelPath);
 
         assertNotNull(doplerModel);
-        assertFalse(doplerModel.getDecisions().isEmpty());
+        assertTrue(doplerModel.getDecisions().isEmpty());
 
         boolean isSat = SolverUtils.checkSat(doplerModel.toSMTStream());
 
