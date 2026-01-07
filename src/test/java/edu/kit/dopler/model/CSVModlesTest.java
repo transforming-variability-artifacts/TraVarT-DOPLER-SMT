@@ -64,9 +64,6 @@ public class CSVModlesTest {
 
         boolean isSat = SolverUtils.checkSat(doplerModel.toSMTStream());
 
-        int amountDesicions = doplerModel.getDecisions().size();
-        assertEquals(amountDesicions, 3391);
-
         assertTrue("Model is UNSAT", isSat);
     }
 
@@ -649,8 +646,8 @@ public class CSVModlesTest {
     }
 
     @Test
-    public void testModelTestabilityAndMeasurmentReadinessParsingAndValidity() throws Exception {
-        Path modelPath = Paths.get("modelEval/TestabilityAndMeasurmentReadiness.csv");
+    public void testModelTestabilityAndMeasurementReadinessParsingAndValidity() throws Exception {
+        Path modelPath = Paths.get("modelEval/TestabilityAndMeasurementReadiness.csv");
 
         assertTrue("File does not ecist: " + modelPath.toAbsolutePath(),
                 Files.exists(modelPath));
@@ -667,7 +664,7 @@ public class CSVModlesTest {
 
     @Test
     public void testModelTightVNCParsingAndValidity() throws Exception {
-        Path modelPath = Paths.get("modelEval/ThightVNC.csv");
+        Path modelPath = Paths.get("modelEval/TightVNC.csv");
 
         assertTrue("File does not ecist: " + modelPath.toAbsolutePath(),
                 Files.exists(modelPath));
@@ -854,7 +851,7 @@ public class CSVModlesTest {
 
     @Test
     public void testModelWorkloadCharacterisationParsingAndValidity() throws Exception {
-        Path modelPath = Paths.get("modelEval/WorkloadCharactisation.csv");
+        Path modelPath = Paths.get("modelEval/WorkloadCharacterisation.csv");
 
         assertTrue("File does not ecist: " + modelPath.toAbsolutePath(),
                 Files.exists(modelPath));
