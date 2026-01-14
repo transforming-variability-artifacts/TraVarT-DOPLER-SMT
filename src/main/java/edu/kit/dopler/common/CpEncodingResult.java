@@ -31,6 +31,7 @@ public final class CpEncodingResult {
      * We use integers scaled with {@value CP_DOUBLES_SCALING_FACTOR} to emulate floating point values.
      */
     private static final Double CP_DOUBLES_SCALING_FACTOR = 0.0001;
+    private static final int MAX_SOLUTION_COUNT = 100_000;
 
     private final CpModel model;
     private final List<List<IntVar>> variables;
@@ -98,6 +99,10 @@ public final class CpEncodingResult {
             @Override
             public void onSolutionCallback() {
                 solutionCount++;
+                if (solutionCount >= MAX_SOLUTION_COUNT) {
+                    System.out.printf("Stopped counting after %d solutions.%n", MAX_SOLUTION_COUNT);
+                    stopSearch();
+                }
             }
 
             int getSolutionCount() {
