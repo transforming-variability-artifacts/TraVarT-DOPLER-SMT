@@ -31,7 +31,7 @@ public final class CpEncodingResult {
      * We use integers scaled with {@value CP_DOUBLES_SCALING_FACTOR} to emulate floating point values.
      */
     private static final Double CP_DOUBLES_SCALING_FACTOR = 0.0001;
-    private static final int MAX_SOLUTION_COUNT = 100_000;
+    private static final int MAX_SOLUTION_COUNT = 10_000;
 
     private final CpModel model;
     private final List<List<IntVar>> variables;
