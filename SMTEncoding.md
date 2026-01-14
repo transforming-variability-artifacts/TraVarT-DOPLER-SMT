@@ -72,8 +72,7 @@ The encoding of the decisions and the mappings get explained in the following.
         (visibilitycondition)  //if
         (and setTaken(true) rules)                  //if-part
         (and                //else-part
-            setTaken(false)
-            setDefaultValue                   
+            setTaken(false)                   
             mapPretoPostConst       
         )
     )
@@ -89,8 +88,7 @@ The encoding of the decisions and the mappings get explained in the following.
 
     (assert 
        (and                
-            setTaken(false)
-            setDefaultValue                   
+            setTaken(false)                   
             mapPretoPostConst       
         )
     )
@@ -110,8 +108,7 @@ The encoding of the decisions and the mappings get explained in the following.
                 )      
          )
         (and                //else-part
-            setTaken(false)
-            setDefaultValue                   
+            setTaken(false)                   
             mapPretoPostConst       
         )  
     )
@@ -126,8 +123,7 @@ The encoding of the decisions and the mappings get explained in the following.
             (validityconditions)    // condition
             (and setTaken(true) rules)            //if part
             (and                //else-part
-                setTaken(false)
-                setDefaultValue                   
+                setTaken(false)                   
                 mapPretoPostConst       
             )
          )                   
@@ -136,8 +132,7 @@ The encoding of the decisions and the mappings get explained in the following.
 # if LiteralExpression is False
     (assert
         (and                
-                setTaken(false)
-                setDefaultValue                   
+                setTaken(false)                
                 mapPretoPostConst       
         )
     )
@@ -150,8 +145,7 @@ The encoding of the decisions and the mappings get explained in the following.
     (ite (visibilitycondition)  //if
         (and setTaken(true) rules)            //if part
         (and                //else-part
-            setTaken(false)
-            setDefaultValue                   
+            setTaken(false)                  
             mapPretoPostConst       
         )
     )
@@ -161,8 +155,7 @@ The encoding of the decisions and the mappings get explained in the following.
 
 (assert 
     (and                
-            setTaken(false)
-            setDefaultValue                   
+            setTaken(false)             
             mapPretoPostConst       
     )
 ) 
