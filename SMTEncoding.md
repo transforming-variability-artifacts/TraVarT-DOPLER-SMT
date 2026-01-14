@@ -1,3 +1,11 @@
+# Encoding Design Decisions
+
+## Decision with false Visibility Condition
+In the case that a decision is not visible, the solver can still choose all different options for the decision variable and producesmore possible variants even if the decision is not visible.
+In order to overcome that issue, it could be argued that if the visibility is false, a default value is set for that decision value in order to restrict the solver s' solutions.
+But as the value of a decision can be set through actions in rules of other decisions, these basic restrictions could then lead to a more restricted solution space, which would not allow taking not visible decision by other decisions.
+Thus, we decided to leave the setting of default values out and filter the solver solutions only for valid ones, by leaving the solver iterations over the decision value with a false isTaken value out.
+
 ## SMT-LIB Standard
 The SMT-LIB standard defines a file format for describing decision problems.
 The benefit of a standardized file format is that it is easy to experiment with a range of solvers, and to replace the solver used in case better solvers are
@@ -16,6 +24,7 @@ The basic idea for the encoding with constant mapping comes from the [master the
 For the SMT Solver to check possible configuration several constants for every decision are needed.
 Especially enum decision need one constant for every enum value the enumeration can have.
 This is because the cardinality needs to be checked for the enumeration decision, because the dopler model allows the enumeration decision to have more then one value based on the given min and max cardinality.
+
 
 Also there have to be all constants for every decision, because every constant can only be assigned once.
 The constants are mapped then between the assert of the decision seen late in the ReadMe.
