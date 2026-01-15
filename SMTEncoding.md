@@ -1,6 +1,6 @@
 # Encoding Design Decisions
 
-## Decision with false Visibility Condition
+## Decision with false Visibility Condition(To be changed)
 In the case that a decision is not visible, the solver can still choose all different options for the decision variable and producesmore possible variants even if the decision is not visible.
 In order to overcome that issue, it could be argued that if the visibility is false, a default value is set for that decision value in order to restrict the solver s' solutions.
 But as the value of a decision can be set through actions in rules of other decisions, these basic restrictions could then lead to a more restricted solution space, which would not allow taking not visible decision by other decisions.
