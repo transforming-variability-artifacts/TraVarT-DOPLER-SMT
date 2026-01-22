@@ -1,0 +1,2 @@
+ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
+A;nothing;Boolean;true | false;;;false
