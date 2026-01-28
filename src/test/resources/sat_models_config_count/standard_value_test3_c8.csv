@@ -1,2 +1,0 @@
-standard_value_test1_c1.csvID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
-A;nothing;Enumeration;x | y | z;0:3;;false

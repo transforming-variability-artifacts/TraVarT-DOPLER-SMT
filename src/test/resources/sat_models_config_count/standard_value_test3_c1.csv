@@ -1,3 +1,3 @@
 standard_value_test1_c1.csvID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
-A;nothing;Double;0-100;;;!Helper
+A;nothing;Enumeration;x | y | z;0:3;;!Helper
 Helper;Used to bypass the cases where a visibility condition is the false literal.?;Boolean;true | false;;"if (true) {Helper = true;}";true

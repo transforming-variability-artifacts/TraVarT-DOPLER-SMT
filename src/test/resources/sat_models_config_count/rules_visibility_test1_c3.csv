@@ -1,4 +1,5 @@
 ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
 A;nothing;Boolean;true | false;;;true
-C;nothing;Boolean;true | false;;"if(C){A=true;}";false
+C;nothing;Boolean;true | false;;"if(C){A=true;}";!Helper
 D;nothing;Boolean;true | false;;"if(D){C=true;}";true
+Helper;Used to bypass the cases where a visibility condition is the false literal.?;Boolean;true | false;;"if (true) {Helper = true;}";true

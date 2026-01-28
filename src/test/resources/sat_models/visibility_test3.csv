@@ -1,3 +1,4 @@
 ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
 Cheese;Cheese?;Boolean;true | false;;"if (true) {Sauce = true;}";true
-Sauce;Sauce?;Boolean;true | false;;;false
+Sauce;Sauce?;Boolean;true | false;;;!Helper
+Helper;Used to bypass the cases where a visibility condition is the false literal.?;Boolean;true | false;;"if (true) {Helper = true;}";true

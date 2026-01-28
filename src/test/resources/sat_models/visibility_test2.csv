@@ -1,3 +1,4 @@
 visibility_test_1.csvID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
-Cheese;Cheese?;Boolean;true | false;;"if (true) {Sauce = true;}";false
+Cheese;Cheese?;Boolean;true | false;;"if (true) {Sauce = true;}";!Helper
 Sauce;Sauce?;Boolean;true | false;;;true
+Helper;Used to bypass the cases where a visibility condition is the false literal.?;Boolean;true | false;;"if (true) {Helper = true;}";true
