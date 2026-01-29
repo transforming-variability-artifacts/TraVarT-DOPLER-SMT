@@ -38,7 +38,7 @@ public class NumberDecisionTest extends TestCase {
     public void testSetValueWhichDontFullFillsValidityCondition() {
         DoubleLiteralExpression doubleLiteralExpression = new DoubleLiteralExpression(2.0);
         DecisionValueCallExpression decisionValueCallExpression = new DecisionValueCallExpression(numberDecision);
-        GreatherThan greatherThan = new GreatherThan(decisionValueCallExpression, doubleLiteralExpression);
+        GreaterThan greatherThan = new GreaterThan(decisionValueCallExpression, doubleLiteralExpression);
         Set<IExpression> expressions = new HashSet<>();
         expressions.add(greatherThan);
         numberDecision.setValidityConditions(expressions);

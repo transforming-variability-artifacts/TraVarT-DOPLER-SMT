@@ -129,7 +129,7 @@ public class DoplerModelWriter {
                 NumberDecision numberDecision = (NumberDecision) decision;
                 Set<IExpression> validityConditions = numberDecision.getValidityConditions();
                 for (IExpression con : validityConditions) {
-                    if (con instanceof GreatherThan gt) {
+                    if (con instanceof GreaterThan gt) {
                         DoubleLiteralExpression ngt = (DoubleLiteralExpression) gt.getLeftExpression();
                         numberRange = (ngt.getLiteral() + 1) + numberRange;
                     } else if (con instanceof LessThan lt) {

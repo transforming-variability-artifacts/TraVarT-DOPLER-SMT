@@ -100,7 +100,7 @@ public class DoplerDecisionCreator extends DecisionParserBase {
                                         new DoubleLiteralExpression(Double.parseDouble(left.getText())),
                                         new DecisionValueCallExpression(currentDecision))));
                         currentValidityConditions.add(new OR(
-                                new GreatherThan(
+                                new GreaterThan(
                                         new DoubleLiteralExpression(Double.parseDouble(right.getText())),
                                         new DecisionValueCallExpression(currentDecision)),
                                 new Equals(
