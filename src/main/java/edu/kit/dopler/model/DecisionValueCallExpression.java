@@ -46,8 +46,8 @@ public class DecisionValueCallExpression extends DecisionCallExpression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
-        return (BoolVar) cpVars.get(this.getDecision()).getFirst();
+    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+        return (BoolVar) decisionVars.get(this.getDecision()).getFirst();
         //todo later: for numbers and enums this method is not getting called (logic lies directly in Equals.java -> there I already mention that this is not good OO-Design)
     }
 

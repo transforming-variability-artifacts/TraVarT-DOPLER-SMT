@@ -31,5 +31,13 @@ public interface IExpression {
 
     void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst);
 
-    Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars);
+    /**
+     * Converts the current expression into a CP literal.
+     *
+     * @param model        the constraint programming model
+     * @param decisionVars a map associating each decision of a dopler model with a list of CP variables representing it
+     * @param isTakenVars  a map associating each decision of a dopler model with a boolean literal indicating whether the decision is taken
+     * @return a CP literal that represents the expression in the model
+     */
+    Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars);
 }

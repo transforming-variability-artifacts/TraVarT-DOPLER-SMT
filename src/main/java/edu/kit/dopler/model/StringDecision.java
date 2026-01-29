@@ -73,12 +73,12 @@ public class StringDecision extends ValueDecision<String> {
     }
 
     @Override
-    public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
+    public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars) {
         throw new UnsupportedOperationException("Not supported in the current CP-approach.");
     }
 
     @Override
-    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
+    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         throw new UnsupportedOperationException("Not supported in the current CP-approach.");
     }
 }

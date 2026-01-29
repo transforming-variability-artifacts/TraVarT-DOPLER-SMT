@@ -89,23 +89,47 @@ public class Dopler {
      */
     public CpEncodingResult toCPModel() {
         CpModel model = new CpModel();
-        Map<IDecision<?>, List<IntVar>> cpVars = new HashMap<>();
-        Map<IDecision<?>, List<Literal>> isTakenVars = new HashMap<>();
+
+        Map<IDecision<?>, List<IntVar>> decisionVars = new HashMap<>();         //maps each decision to a list of CP variables that will represent it in the constraint programming model
+
+        Map<IDecision<?>, Literal> isTakenVars = new HashMap<>();               //maps each decision to a CP boolean literal that will be logically equivalent to that decision being taken (or not)
+        Map<IDecision<?>, List<Literal>> isTakenConditions = new HashMap<>();   //(this is a helper, that) maps each decision to a list of CP variables that are used to add the constraints for isTakenVars to be logically correct
 
 
-        //iterate over all decisions and create the variables and rules (two separate loops, because the rules can only be created if all decision variables exist!)
+        //Iterate over all decisions to create CP variables and add constraints to the CP model, in a way that it represents the dopler model instance.
+        //Multiple loops are needed because the maps (from above) need to be filled for all decisions before they can be used for the next step(s).
+
         this.decisions.forEach(decision -> {
-            decision.createCPVariables(model, cpVars);
-            isTakenVars.put(decision, new ArrayList<>());
-        });
-        this.decisions.forEach(decision -> {
-            decision.mapRulesToCP(model, cpVars, isTakenVars);
-        });
-        this.decisions.forEach(decision -> {
-            decision.enforceStandardValueInCP(model, cpVars, isTakenVars);
+            decision.createCPVariables(model, decisionVars); //initialize the decisionVars (in the following there will only be reading accesses to the decisionVars)
+
+            isTakenVars.put(decision, model.newBoolVar("Decision_" + decision.getDisplayId() + "_isTaken")); //initialize the isTakenVars (in the following there will only be reading accesses to the isTakenVars)
+            isTakenConditions.put(decision, new ArrayList<>()); //initialize the helper map for the isTakenVars (these lists will be filled when the rules are mapped to CP)
         });
 
-        return new CpEncodingResult(model, cpVars.values().stream().toList());
+        this.decisions.forEach(decision -> { // (For this loop, the decisionVars and the isTakenVars need to be initialized!)
+            decision.mapRulesToCP(model, decisionVars, isTakenVars, isTakenConditions); //map rules to CP (= add constraints, representing the rules and their actions, to the model and fill the isTakenConditions map, which will then contain literals, each indicating whether a rule-action did enforce the value of a decision or not)
+
+            decision.enforceStandardValueInCP(model, decisionVars, isTakenVars); //adds constraints that enforce a standard value for a decision if necessary (= if it is not taken)
+        });
+
+        this.decisions.forEach(decision -> { // (For this loop, the decisionVars and the isTakenVars need to be initialized; and the isTakenConditions need to be completely filled!)
+            //Add the CP constraints that ensure that the isTakenVars are logically correct.
+            //A decision is taken if it is visible (1) or if it was enforced by a rule-action (from another decision) (2):
+            Literal isTakenVar = isTakenVars.get(decision);
+            Literal isVisibleVar = decision.getVisibilityCondition().toCPLiteral(model, decisionVars, isTakenVars); // (1)
+            List<Literal> isTakenConditionsList = isTakenConditions.get(decision); // (2)
+            isTakenConditionsList.add(isVisibleVar);
+
+            //ensure that: isTakenVar <=> or(isTakenConditionsList)
+            // "=>" as CNF
+            model.addBoolOr(isTakenConditionsList).onlyEnforceIf(isTakenVar);
+
+            // "<=" as CNF
+            isTakenConditionsList.forEach(var -> model.addBoolOr(new Literal[]{var.not(), isTakenVar}));
+        });
+
+
+        return new CpEncodingResult(model, decisionVars.values().stream().toList());
     }
 
     /**

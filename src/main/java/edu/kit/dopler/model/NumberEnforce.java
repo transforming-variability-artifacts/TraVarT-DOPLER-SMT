@@ -24,7 +24,7 @@ package edu.kit.dopler.model;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
-import edu.kit.dopler.common.CpEncodingResult;
+import edu.kit.dopler.common.CpUtils;
 import edu.kit.dopler.exceptions.ActionExecutionException;
 
 import java.util.List;
@@ -49,11 +49,11 @@ public class NumberEnforce extends Enforce {
     }
 
     @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
-        model.addEquality(cpVars.get(this.getDecision()).getFirst(), CpEncodingResult.scaleDoubleToCp(((DoubleValue) this.getValue()).getValue()))
+    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
+        model.addEquality(decisionVars.get(this.getDecision()).getFirst(), CpUtils.scaleDoubleToLong(((DoubleValue) this.getValue()).getValue()))
                 .onlyEnforceIf(conditionLiteral);
 
-        isTakenVars.get(this.getDecision()).add(conditionLiteral);
+        isTakenConditions.get(this.getDecision()).add(conditionLiteral);
     }
 
     @Override

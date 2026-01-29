@@ -44,7 +44,7 @@ public class StringLiteralExpression extends LiteralExpression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
+    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         throw new UnsupportedOperationException("Not supported in the current CP-approach.");
     }
 

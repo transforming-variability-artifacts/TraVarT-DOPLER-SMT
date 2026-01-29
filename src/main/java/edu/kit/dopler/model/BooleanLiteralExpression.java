@@ -45,7 +45,7 @@ public class BooleanLiteralExpression extends LiteralExpression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
+    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         return this.literal ? model.trueLiteral() : model.falseLiteral();
     }
 

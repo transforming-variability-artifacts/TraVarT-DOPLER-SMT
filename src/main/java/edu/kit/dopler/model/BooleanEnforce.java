@@ -43,13 +43,13 @@ public class BooleanEnforce extends Enforce {
     }
 
     @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
+    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
         //val to enforce = this.getValue()
-        //val to be enforced = cpVars.get(this.getDecision())
-        model.addEquality(cpVars.get(this.getDecision()).getFirst(), this.getValue().getCPValue(model))
+        //val to be enforced = decisionVars.get(this.getDecision())
+        model.addEquality(decisionVars.get(this.getDecision()).getFirst(), this.getValue().getCPValue(model))
                 .onlyEnforceIf(conditionLiteral);
 
-        isTakenVars.get(this.getDecision()).add(conditionLiteral);
+        isTakenConditions.get(this.getDecision()).add(conditionLiteral);
     }
 
     @Override

@@ -29,6 +29,8 @@ import edu.kit.dopler.exceptions.ActionExecutionException;
 import java.util.List;
 import java.util.Map;
 
+import static edu.kit.dopler.common.CpUtils.getEnumDecisionLiteralVariableName;
+
 public class EnumEnforce extends Enforce {
 
     public EnumEnforce(final EnumerationDecision decision, final IValue<?> value) {
@@ -48,15 +50,14 @@ public class EnumEnforce extends Enforce {
     }
 
     @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
-        String enforceString = this.getDecision().getDisplayId() + "_" + this.getValue().toString(); //this is the naming convention I use for the CP variables of enum decisions
+    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
+        String enforceString = getEnumDecisionLiteralVariableName((EnumerationDecision) this.getDecision(), this.getValue().toString());
 
-        for (IntVar cpVar : cpVars.get(this.getDecision())) {
+        //find the CP var representing the enum literal that is to be enforced:
+        for (IntVar cpVar : decisionVars.get(this.getDecision())) {
             if (cpVar.getName().equals(enforceString)) {
                 model.addEquality(cpVar, model.trueLiteral())
                         .onlyEnforceIf(conditionLiteral);
-
-                isTakenVars.get(this.getDecision()).add(conditionLiteral);
             }
         }
     }

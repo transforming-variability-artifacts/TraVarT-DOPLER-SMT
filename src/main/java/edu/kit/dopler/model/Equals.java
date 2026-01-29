@@ -20,12 +20,15 @@ import com.google.ortools.sat.BoolVar;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
+import edu.kit.dopler.common.CpUtils;
 import edu.kit.dopler.exceptions.EvaluationException;
 import edu.kit.dopler.exceptions.InvalidTypeInLiteralExpressionCheckException;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import static edu.kit.dopler.common.CpUtils.getEnumDecisionLiteralVariableName;
 
 public class Equals extends BinaryExpression {
 
@@ -107,14 +110,14 @@ public class Equals extends BinaryExpression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
-        if (this.getLeftExpression() instanceof DecisionValueCallExpression l && l.getDecision() instanceof NumberDecision left && this.getRightExpression() instanceof DoubleLiteralExpression right) { //TODO: das ist halt OO-Design technisch sehr unschön... wobei es bei SMT ja genauso ist...
-            IntVar leftVar = cpVars.get(left).getFirst();
-            long rightVal = right.getLiteralAsScaledLong();
+    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+        if (this.getLeftExpression() instanceof DecisionValueCallExpression l && l.getDecision() instanceof NumberDecision left && this.getRightExpression() instanceof DoubleLiteralExpression right) { //todo later: das ist halt OO-Design technisch sehr unschön... wobei es bei SMT ja ähnlich ist...
+            IntVar leftVar = decisionVars.get(left).getFirst();
+            long rightVal = CpUtils.scaleDoubleToLong(right.getLiteral());
 
             BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
-            //assure that: equivalentLiteral <=> (left == right)
+            //ensure that: equivalentLiteral <=> (left == right)
             // "=>": equivalentLiteral => (left == right)
             model.addEquality(leftVar, rightVal).onlyEnforceIf(equivalentLiteral);
 
@@ -123,12 +126,12 @@ public class Equals extends BinaryExpression {
 
             return equivalentLiteral;
         } else if (this.getLeftExpression() instanceof DoubleLiteralExpression left && this.getRightExpression() instanceof DecisionValueCallExpression r && r.getDecision() instanceof NumberDecision right) {
-            long leftVal = left.getLiteralAsScaledLong();
-            IntVar rightVar = cpVars.get(right).getFirst();
+            long leftVal = CpUtils.scaleDoubleToLong(left.getLiteral());
+            IntVar rightVar = decisionVars.get(right).getFirst();
 
             BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
-            //assure that: equivalentLiteral <=> (left == right)
+            //ensure that: equivalentLiteral <=> (left == right)
             // "=>": equivalentLiteral => (right == left)
             model.addEquality(rightVar, leftVal).onlyEnforceIf(equivalentLiteral); //we need to switch left and right here because of the method signature
 
@@ -137,17 +140,17 @@ public class Equals extends BinaryExpression {
 
             return equivalentLiteral;
         } else if (this.getLeftExpression() instanceof DoubleLiteralExpression left && this.getRightExpression() instanceof DoubleLiteralExpression right) {
-            return left.getLiteralAsScaledLong() == right.getLiteralAsScaledLong() ? model.trueLiteral() : model.falseLiteral();
+            return (long) CpUtils.scaleDoubleToLong(left.getLiteral()) == CpUtils.scaleDoubleToLong(right.getLiteral()) ? model.trueLiteral() : model.falseLiteral();
 
         } else if (this.getLeftExpression() instanceof DecisionValueCallExpression l && l.getDecision() instanceof EnumerationDecision enumerationDecision && this.getRightExpression() instanceof EnumeratorLiteralExpression enumeratorLiteralExpression) {
             //for enums:
-            String enumerationVarName = enumerationDecision.getDisplayId() + "_" + enumeratorLiteralExpression.getEnumerationLiteral().getValue();
+            String enumerationVarName = getEnumDecisionLiteralVariableName(enumerationDecision, enumeratorLiteralExpression.getEnumerationLiteral().getValue());
 
-            for (IntVar enumerationVar : cpVars.get(enumerationDecision)) {
+            for (IntVar enumerationVar : decisionVars.get(enumerationDecision)) {
                 if (enumerationVar.getName().equals(enumerationVarName)) {
                     BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
-                    //assure that: equivalentLiteral <=> (enumerationVar == true)
+                    //ensure that: equivalentLiteral <=> (enumerationVar == true)
                     // "=>" as CNF
                     model.addEquality(enumerationVar, model.trueLiteral()).onlyEnforceIf(equivalentLiteral);
 
@@ -160,12 +163,12 @@ public class Equals extends BinaryExpression {
             return null; //not reachable
         } else {
             //"normally" (with booleans)
-            Literal leftLiteral = this.getLeftExpression().toCPLiteral(model, cpVars);
-            Literal rightLiteral = this.getRightExpression().toCPLiteral(model, cpVars);
+            Literal leftLiteral = this.getLeftExpression().toCPLiteral(model, decisionVars, isTakenVars);
+            Literal rightLiteral = this.getRightExpression().toCPLiteral(model, decisionVars, isTakenVars);
 
             BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
-            //assure that: equivalentLiteral <=> (leftLiteral == rightLiteral)
+            //ensure that: equivalentLiteral <=> (leftLiteral == rightLiteral)
             // "=>" as CNF
             model.addBoolOr(new Literal[]{equivalentLiteral.not(), leftLiteral, rightLiteral.not()});
             model.addBoolOr(new Literal[]{equivalentLiteral.not(), leftLiteral.not(), rightLiteral});

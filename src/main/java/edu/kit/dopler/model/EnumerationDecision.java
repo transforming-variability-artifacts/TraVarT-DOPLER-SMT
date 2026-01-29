@@ -27,6 +27,8 @@ import edu.kit.dopler.exceptions.ValidityConditionException;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static edu.kit.dopler.common.CpUtils.getEnumDecisionLiteralVariableName;
+
 public class EnumerationDecision extends Decision<String> {
 
     private final AbstractValue<String> value;
@@ -77,38 +79,29 @@ public class EnumerationDecision extends Decision<String> {
     }
 
     @Override
-    public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
+    public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars) {
         Set<EnumerationLiteral> enumerationLiterals = this.getEnumeration().getEnumerationLiterals();
 
-        //create and add variables
+        //create and add variables (one for each enum entry)
         List<IntVar> enumVars = new ArrayList<>();
         for (EnumerationLiteral el : enumerationLiterals) {
-            enumVars.add(model.newBoolVar(this.getDisplayId() + "_" + el.getValue()));
+            enumVars.add(model.newBoolVar(getEnumDecisionLiteralVariableName(this, el.getValue())));
         }
 
-        cpVars.put(this, enumVars);
-
-        //add cardinality constraints
-        LinearExpr sum = LinearExpr.sum(enumVars.toArray(new IntVar[0]));
-        model.addGreaterOrEqual(sum, this.getMinCardinality());
-        model.addLessOrEqual(sum, this.getMaxCardinality());
+        decisionVars.put(this, enumVars);
     }
 
     @Override
-    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
-        System.out.println("todo frage"); //TODO Frage: was ist das gewünschte Verhalten? -> logisch wäre mmn dass cardinality.min elemente auf true und der rest auf false gesetzt werden...
-        //TODO Achtung! so habe ich es jetzt umgesetzt -> ohne sortierung von enumVars (wie ich es jetzt habe) sorgt das aber ggf für indeterministisches Verhalten
+    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+        decisionVars.get(this).forEach(var -> model.addEquality(var, model.falseLiteral())
+                .onlyEnforceIf(isTakenVars.get(this).not()));
 
-        Literal[] conditionLiterals = getEnforceStandardValueConditionLiterals(model, cpVars, isTakenVars);
-
-        List<IntVar> enumVars = cpVars.get(this);
-        for (int i = 0; i < enumVars.size(); i++) {
-            if (i < this.getMinCardinality()) {
-                model.addEquality(enumVars.get(i), model.trueLiteral()).onlyEnforceIf(conditionLiterals);
-            } else {
-                model.addEquality(enumVars.get(i), model.falseLiteral()).onlyEnforceIf(conditionLiterals);
-            }
-        }
+        //add cardinality constraints (only if the decision is taken)
+        LinearExpr sum = LinearExpr.sum(decisionVars.get(this).toArray(new IntVar[0]));
+        model.addGreaterOrEqual(sum, this.getMinCardinality())
+                .onlyEnforceIf(isTakenVars.get(this));
+        model.addLessOrEqual(sum, this.getMaxCardinality())
+                .onlyEnforceIf(isTakenVars.get(this));
     }
 
     public void setCardinality(int minCardinality, int maxCardinality) throws InvalidCardinalityException {

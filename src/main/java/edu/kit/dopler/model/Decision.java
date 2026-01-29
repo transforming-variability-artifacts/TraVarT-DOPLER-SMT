@@ -16,14 +16,16 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-import com.google.ortools.sat.BoolVar;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.ActionExecutionException;
 import edu.kit.dopler.exceptions.EvaluationException;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public abstract class Decision<T> implements IDecision<T> {
@@ -169,51 +171,23 @@ public abstract class Decision<T> implements IDecision<T> {
     }
 
     @Override
-    public void mapRulesToCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
-        Literal decisionVisibleLiteral = this.visibilityCondition.toCPLiteral(model, cpVars);
-
+    public void mapRulesToCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
         for (Rule rule : this.rules) {
-            Literal ruleCondtionLiteral = rule.getCondition().toCPLiteral(model, cpVars);
+            Literal ruleCondtionLiteral = rule.getCondition().toCPLiteral(model, decisionVars, isTakenVars);
 
-            Literal l = model.newBoolVar("decisionVisible_AND_ruleCondition");
-            // assure that: l <=> (decisionVisibleLiteral and ruleCondtionLiteral)
+            Literal conditionLiteral = model.newBoolVar("decisionTaken_AND_ruleCondition");
+            // ensure that: conditionLiteral <=> (isTakenVars.get(this) and ruleCondtionLiteral)
             // =>
-            model.addImplication(l, decisionVisibleLiteral);
-            model.addImplication(l, ruleCondtionLiteral);
+            model.addImplication(conditionLiteral, isTakenVars.get(this));
+            model.addImplication(conditionLiteral, ruleCondtionLiteral);
             // <=
-            model.addBoolOr(new Literal[]{decisionVisibleLiteral.not(), ruleCondtionLiteral.not(), l});
+            model.addBoolOr(new Literal[]{isTakenVars.get(this).not(), ruleCondtionLiteral.not(), conditionLiteral});
 
             for (IAction action : rule.getActions()) {
-                action.executeAsCP(model, l, cpVars, isTakenVars);
+                action.executeAsCP(model, conditionLiteral, decisionVars, isTakenVars, isTakenConditions);
             }
 
         }
-    }
-
-    protected Literal[] getEnforceStandardValueConditionLiterals(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
-        Literal decisionVisibleLiteral = this.getVisibilityCondition().toCPLiteral(model, cpVars);
-
-        ArrayList<Literal> literals = new ArrayList<>(); //only enforce std value if dec is not visible (1) and was not enforced/taken by a rule-action (from another decision, of course) (2)
-
-        literals.add(decisionVisibleLiteral.not()); //(1)
-
-        if (isTakenVars.get(this).isEmpty()) { //(2)
-            literals.add(model.trueLiteral());
-        } else { //(2)
-            BoolVar isTakenVar = model.newBoolVar("isTakenVar");
-
-            //assure that: isTakenVar <=> or(isTakenVars)
-            // "=>" as CNF
-            model.addBoolOr(isTakenVars.get(this)).onlyEnforceIf(isTakenVar);
-
-            // "<=" as CNF
-            isTakenVars.get(this).forEach(var -> model.addBoolOr(new Literal[]{var.not(), isTakenVar}));
-
-
-            literals.add(isTakenVar.not());
-        }
-
-        return literals.toArray(Literal[]::new);
     }
 
     /**

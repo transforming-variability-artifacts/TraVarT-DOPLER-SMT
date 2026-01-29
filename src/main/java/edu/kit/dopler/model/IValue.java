@@ -27,5 +27,11 @@ public interface IValue<T> {
 
     T getSMTValue();
 
+    /**
+     * Retrieves the CP representation of the current value for a given CP model.
+     *
+     * @param model the constraint programming model
+     * @return the CP representation of the value as a {@code LinearArgument}
+     */
     LinearArgument getCPValue(CpModel model);
 }

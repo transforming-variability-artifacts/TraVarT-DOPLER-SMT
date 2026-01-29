@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static edu.kit.dopler.common.CpUtils.getEnumDecisionLiteralVariableName;
+
 public class DisAllows extends ValueRestrictionAction {
 
     public static final String FUNCTION_NAME = "disAllow";
@@ -50,17 +52,15 @@ public class DisAllows extends ValueRestrictionAction {
     }
 
     @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
+    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
         //dissallow can only be called on enum literals:
 
-        String dissallowString = this.getDecision().getDisplayId() + "_" + this.disAllowValue.getValue().toString(); //this is the naming convention I use for the CP variables of enum decisions
+        String dissallowString = getEnumDecisionLiteralVariableName((EnumerationDecision) this.getDecision(), this.disAllowValue.getValue().toString());
 
-        for (IntVar cpVar : cpVars.get(this.getDecision())) {
+        for (IntVar cpVar : decisionVars.get(this.getDecision())) {
             if (cpVar.getName().equals(dissallowString)) {
                 model.addEquality(cpVar, model.falseLiteral())
                         .onlyEnforceIf(conditionLiteral);
-
-                isTakenVars.get(this.getDecision()).add(conditionLiteral);
             }
         }
     }

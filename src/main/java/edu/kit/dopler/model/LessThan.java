@@ -20,6 +20,7 @@ import com.google.ortools.sat.BoolVar;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
+import edu.kit.dopler.common.CpUtils;
 import edu.kit.dopler.exceptions.EvaluationException;
 
 import java.util.List;
@@ -93,15 +94,15 @@ public class LessThan extends BinaryExpression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
+    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         //in our use case (Google OR CP solver) the expressions can only be DoubleLiteralExpression or DecisionValueCallExpression (calling a NumberDecision)
-        if (this.getLeftExpression() instanceof DecisionValueCallExpression l && l.getDecision() instanceof NumberDecision left && this.getRightExpression() instanceof DoubleLiteralExpression right) { //todo das ist halt OO-Design technisch sehr unschön... wobei es bei SMT ja genauso ist...
-            IntVar leftVar = cpVars.get(left).getFirst();
-            long rightVal = right.getLiteralAsScaledLong();
+        if (this.getLeftExpression() instanceof DecisionValueCallExpression l && l.getDecision() instanceof NumberDecision left && this.getRightExpression() instanceof DoubleLiteralExpression right) { //todo later: same as in Equals.java
+            IntVar leftVar = decisionVars.get(left).getFirst();
+            long rightVal = CpUtils.scaleDoubleToLong(right.getLiteral());
 
             BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
-            //assure that: equivalentLiteral <=> (left < right)
+            //ensure that: equivalentLiteral <=> (left < right)
             // "=>": equivalentLiteral => (left <>> right)
             model.addLessThan(leftVar, rightVal).onlyEnforceIf(equivalentLiteral);
 
@@ -110,12 +111,12 @@ public class LessThan extends BinaryExpression {
 
             return equivalentLiteral;
         } else if (this.getLeftExpression() instanceof DoubleLiteralExpression left && this.getRightExpression() instanceof DecisionValueCallExpression r && r.getDecision() instanceof NumberDecision right) {
-            long leftVal = left.getLiteralAsScaledLong();
-            IntVar rightVar = cpVars.get(right).getFirst();
+            long leftVal = CpUtils.scaleDoubleToLong(left.getLiteral());
+            IntVar rightVar = decisionVars.get(right).getFirst();
 
             BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
-            //assure that: equivalentLiteral <=> (left < right)
+            //ensure that: equivalentLiteral <=> (left < right)
             // "=>": equivalentLiteral => (right > left)
             model.addGreaterThan(rightVar, leftVal).onlyEnforceIf(equivalentLiteral); //here we need to use addLessThan() and switch left and right because addGreaterThan can't handle (long,IntVar)
 
@@ -127,7 +128,7 @@ public class LessThan extends BinaryExpression {
             return left.getLiteral() < right.getLiteral() ? model.trueLiteral() : model.falseLiteral();
         }
 
-        System.out.println("should not be reachable...!? GreaterThan.toCPLiteral(...)");//todo remove later only for debugging
+        System.err.println("Should not be reachable! (LessThan.toCPLiteral(...))");
         return null;//not reachable
     }
 

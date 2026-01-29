@@ -19,7 +19,7 @@ package edu.kit.dopler.model;
 import com.google.ortools.sat.CpModel;
 import com.google.ortools.sat.IntVar;
 import com.google.ortools.sat.Literal;
-import edu.kit.dopler.common.CpEncodingResult;
+import edu.kit.dopler.common.CpUtils;
 import edu.kit.dopler.exceptions.EvaluationException;
 import edu.kit.dopler.exceptions.ValidityConditionException;
 
@@ -41,22 +41,22 @@ public class NumberDecision extends ValueDecision<Double> {
     }
 
     @Override
-    public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars) {
-        IntVar intVar = model.newIntVar(0, 120000, this.getDisplayId()); //todo later eig müsste hier Long min und max rein aber damit kann der solver nicht umgehen... - desshalb grad magic numbers -> bessere überlegen: Besser gehts nur wenn man den unteren todo umsetzt
+    public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars) {
+        IntVar intVar = model.newIntVar(0, 1_000_000, this.getDisplayId()); //todo later: eig müsste hier Long min und max rein (statt magic numbers) aber damit kann der solver nicht umgehen... man kann das problem nur lösen wenn man die range direkt parsed und hier als double variables zur verfügung stehen hat. So wie es jetzt gerade ist (als expressions) geht es nicht / bzw. man müsste halt wieder instanceoff benutzen und wenn mal mehr validity conditions kommen würde es crashen...
 
-        cpVars.put(this, List.of(intVar));
-
-        for (IExpression expression : this.getValidityConditions()) { //the range is encoded in the validityConditions
-            //todo later: hier könnte man wenn man für die range halt auch ganz easy model.addLinearConstraint() nutzen ohne extra overhead (vor allem da bei der range immer konkrete variablen genutzt werden) -> aber wsh nicht umsetzbar wegen dem dopler metamodell... (?)
-            model.addEquality(expression.toCPLiteral(model, cpVars), 1);
-        }
+        decisionVars.put(this, List.of(intVar));
     }
 
     @Override
-    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> cpVars, Map<IDecision<?>, List<Literal>> isTakenVars) {
-        //only enforce std value if dec is not visible and was not enforced by a rule-action (from another decision, of course)
-        model.addEquality(cpVars.get(this).getFirst(), model.newConstant(CpEncodingResult.scaleDoubleToCp(this.standardValue))) //todo later es ist design mäßig evtl. nicht so schön, dass dass CpEncodingResult diese scaling funktionalität static anbietet... ggf auslagern(?)
-                .onlyEnforceIf(getEnforceStandardValueConditionLiterals(model, cpVars, isTakenVars));
+    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+        model.addEquality(decisionVars.get(this).getFirst(), model.newConstant(CpUtils.scaleDoubleToLong(this.standardValue)))
+                .onlyEnforceIf(isTakenVars.get(this).not());
+
+        //add range constraints (only if the decision is taken)
+        for (IExpression expression : this.getValidityConditions()) { //the range is encoded in the validityConditions
+            model.addEquality(expression.toCPLiteral(model, decisionVars, isTakenVars), model.trueLiteral())
+                    .onlyEnforceIf(isTakenVars.get(this));
+        }
     }
 
     @Override

@@ -7,7 +7,7 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors:
- *    @author JOhannes von Geisau
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -21,17 +21,14 @@ import java.util.Objects;
 import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
 
+import static edu.kit.dopler.common.CpUtils.CP_ENUM_SEPARATOR;
+
 /**
  * Represents the result of encoding a DOPLER model in a constraint programming (CP) model.
- * Provides functionalities to check satisfiability, print configurations, and calculate the total number of solutions.
+ * Provides functionalities to check satisfiability, print configurations, calculate the total number of solutions, and perform anomaly analyses.
  */
 public final class CpEncodingResult {
-    /**
-     * CP does not support floating point values (only integers).
-     * We use integers scaled with {@value CP_DOUBLES_SCALING_FACTOR} to emulate floating point values.
-     */
-    private static final Double CP_DOUBLES_SCALING_FACTOR = 0.0001;
-    private static final int MAX_SOLUTION_COUNT = 10_000;
+    private static final int MAX_SOLUTION_COUNT = 20_000;
 
     private final CpModel model;
     private final List<List<IntVar>> variables;
@@ -46,20 +43,6 @@ public final class CpEncodingResult {
     public CpEncodingResult(CpModel model, List<List<IntVar>> variables) {
         this.model = Objects.requireNonNull(model);
         this.variables = List.copyOf(variables);
-    }
-
-    /**
-     * Scales a double value to a long value that can be used by the CP solver.
-     *
-     * @param value The double value to be scaled.
-     * @return The resulting long value after scaling and rounding.
-     */
-    public static Long scaleDoubleToCp(double value) {
-        return Math.round(value / CP_DOUBLES_SCALING_FACTOR);
-    }
-
-    private Double scaleCpToDouble(Long value) {
-        return value * CP_DOUBLES_SCALING_FACTOR;
     }
 
     public CpModel getModel() {
@@ -180,12 +163,12 @@ public final class CpEncodingResult {
                 System.out.printf("  %s = %s%n", variable.getName(), value == 1 ? "true" : "false");
             } else {
                 //number:
-                System.out.printf("  %s = %f%n", variable.getName(), scaleCpToDouble(value));
+                System.out.printf("  %s = %f%n", variable.getName(), CpUtils.scaleLongToDouble(value));
             }
         } else {
             //enum:
-            String literals = vars.stream().filter(var -> getValue.applyAsLong(var) == 1).map(var -> var.getName().split("_")[1]).sorted().collect(Collectors.joining(", "));
-            System.out.printf("  %s = [%s]%n", vars.getFirst().getName().split("_")[0], literals);
+            String literals = vars.stream().filter(var -> getValue.applyAsLong(var) == 1).map(var -> var.getName().split(CP_ENUM_SEPARATOR)[1]).sorted().collect(Collectors.joining(", "));
+            System.out.printf("  %s = [%s]%n", vars.getFirst().getName().split(CP_ENUM_SEPARATOR)[0], literals);
         }
     }
 
@@ -201,7 +184,7 @@ public final class CpEncodingResult {
      *
      * @return True if at least one anomaly was found, false otherwise.
      */
-    public boolean printAnomalies() { //TODO Frage: Ist diese FUnktionalität so gewünscht? print+bool return -> ist ja OO-Design technisch nicht so schön...
+    public boolean printAnomalies() { //TODO Frage: Ist diese Funktionalität so gewünscht? print+bool return -> ist ja OO-Design technisch nicht so schön (single responsibility)...
         return printDeadDecisionValues() | printFalseOptionalDecisionValues();
     }
 
