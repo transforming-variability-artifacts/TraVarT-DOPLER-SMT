@@ -178,25 +178,161 @@ public interface DoplerParserListener extends ParseTreeListener {
 	 */
 	void exitSubrange(DoplerParser.SubrangeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DoplerParser#expression}.
+	 * Enter a parse tree produced by the {@code isTaken}
+	 * labeled alternative in {@link DoplerParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpression(DoplerParser.ExpressionContext ctx);
+	void enterIsTaken(DoplerParser.IsTakenContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DoplerParser#expression}.
+	 * Exit a parse tree produced by the {@code isTaken}
+	 * labeled alternative in {@link DoplerParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpression(DoplerParser.ExpressionContext ctx);
+	void exitIsTaken(DoplerParser.IsTakenContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DoplerParser#unaryExpression}.
+	 * Enter a parse tree produced by the {@code xorExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterXorExpression(DoplerParser.XorExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code xorExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitXorExpression(DoplerParser.XorExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code decisionValueCallExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterDecisionValueCallExpression(DoplerParser.DecisionValueCallExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code decisionValueCallExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitDecisionValueCallExpression(DoplerParser.DecisionValueCallExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code greaterThanExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterGreaterThanExpression(DoplerParser.GreaterThanExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code greaterThanExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitGreaterThanExpression(DoplerParser.GreaterThanExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code greaterEqualsExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterGreaterEqualsExpression(DoplerParser.GreaterEqualsExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code greaterEqualsExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitGreaterEqualsExpression(DoplerParser.GreaterEqualsExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code lessEqualsExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterLessEqualsExpression(DoplerParser.LessEqualsExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code lessEqualsExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitLessEqualsExpression(DoplerParser.LessEqualsExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code orExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterOrExpression(DoplerParser.OrExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code orExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitOrExpression(DoplerParser.OrExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code andExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterAndExpression(DoplerParser.AndExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code andExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitAndExpression(DoplerParser.AndExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code parenthesizedExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterParenthesizedExpression(DoplerParser.ParenthesizedExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code parenthesizedExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitParenthesizedExpression(DoplerParser.ParenthesizedExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code equalityExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterEqualityExpression(DoplerParser.EqualityExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code equalityExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitEqualityExpression(DoplerParser.EqualityExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code lessThanExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterLessThanExpression(DoplerParser.LessThanExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code lessThanExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitLessThanExpression(DoplerParser.LessThanExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code unaryExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
 	 * @param ctx the parse tree
 	 */
 	void enterUnaryExpression(DoplerParser.UnaryExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DoplerParser#unaryExpression}.
+	 * Exit a parse tree produced by the {@code unaryExpression}
+	 * labeled alternative in {@link DoplerParser#expression}.
 	 * @param ctx the parse tree
 	 */
 	void exitUnaryExpression(DoplerParser.UnaryExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code primaryLiteral}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrimaryLiteral(DoplerParser.PrimaryLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code primaryLiteral}
+	 * labeled alternative in {@link DoplerParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrimaryLiteral(DoplerParser.PrimaryLiteralContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DoplerParser#decisionVisibilityCallExpression}.
 	 * @param ctx the parse tree
@@ -207,116 +343,6 @@ public interface DoplerParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDecisionVisibilityCallExpression(DoplerParser.DecisionVisibilityCallExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DoplerParser#isTaken}.
-	 * @param ctx the parse tree
-	 */
-	void enterIsTaken(DoplerParser.IsTakenContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DoplerParser#isTaken}.
-	 * @param ctx the parse tree
-	 */
-	void exitIsTaken(DoplerParser.IsTakenContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DoplerParser#decisionValueCallExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterDecisionValueCallExpression(DoplerParser.DecisionValueCallExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DoplerParser#decisionValueCallExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitDecisionValueCallExpression(DoplerParser.DecisionValueCallExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DoplerParser#binaryExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterBinaryExpression(DoplerParser.BinaryExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DoplerParser#binaryExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitBinaryExpression(DoplerParser.BinaryExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DoplerParser#andExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterAndExpression(DoplerParser.AndExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DoplerParser#andExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitAndExpression(DoplerParser.AndExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DoplerParser#orExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterOrExpression(DoplerParser.OrExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DoplerParser#orExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitOrExpression(DoplerParser.OrExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DoplerParser#xorExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterXorExpression(DoplerParser.XorExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DoplerParser#xorExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitXorExpression(DoplerParser.XorExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DoplerParser#equalityExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterEqualityExpression(DoplerParser.EqualityExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DoplerParser#equalityExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitEqualityExpression(DoplerParser.EqualityExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DoplerParser#greaterThanExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterGreaterThanExpression(DoplerParser.GreaterThanExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DoplerParser#greaterThanExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitGreaterThanExpression(DoplerParser.GreaterThanExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DoplerParser#lessThanExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterLessThanExpression(DoplerParser.LessThanExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DoplerParser#lessThanExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitLessThanExpression(DoplerParser.LessThanExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DoplerParser#greaterEqualsExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterGreaterEqualsExpression(DoplerParser.GreaterEqualsExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DoplerParser#greaterEqualsExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitGreaterEqualsExpression(DoplerParser.GreaterEqualsExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DoplerParser#lessEqualsExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterLessEqualsExpression(DoplerParser.LessEqualsExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DoplerParser#lessEqualsExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitLessEqualsExpression(DoplerParser.LessEqualsExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DoplerParser#literalExpression}.
 	 * @param ctx the parse tree
