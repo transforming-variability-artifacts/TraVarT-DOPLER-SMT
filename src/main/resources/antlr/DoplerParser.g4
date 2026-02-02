@@ -126,11 +126,11 @@ subrange
 
 // Expressions
 expression
-    : unaryExpression
+    : binaryExpression
+    | unaryExpression
     | literalExpression
     | isTaken
     | decisionValueCallExpression
-    | binaryExpression
     ;
 
 unaryExpression
@@ -139,8 +139,7 @@ unaryExpression
     ;
 
 decisionVisibilityCallExpression
-    : expression (( AND | OR | EQUALS | GREATER_THAN | LESS_THAN ) expression)*
-    | expression
+    : expression
     ;
 
 isTaken
@@ -165,35 +164,43 @@ binaryExpression
     ;
 
 andExpression
-    : LPAREN expression AND expression RPAREN
+    : expression AND expression
+    | LPAREN expression AND expression RPAREN
     ;
 
 orExpression
-    : LPAREN expression OR expression RPAREN
+    : expression OR expression
+    | LPAREN expression OR expression RPAREN
     ;
 
 xorExpression
-    : LPAREN expression XOR expression RPAREN
+    : expression XOR expression
+    | LPAREN expression XOR expression RPAREN
     ;
 
 equalityExpression
-    : LPAREN expression (EQUALS | SET) expression RPAREN
+    : expression (EQUALS | SET) expression
+    | LPAREN expression (EQUALS | SET) expression RPAREN
     ;
 
 greaterThanExpression
-    : LPAREN expression GREATER_THAN expression RPAREN
+    : expression GREATER_THAN expression
+    | LPAREN expression GREATER_THAN expression RPAREN
     ;
 
 lessThanExpression
-    : LPAREN expression LESS_THAN expression RPAREN
+    : expression LESS_THAN expression
+    | LPAREN expression LESS_THAN expression RPAREN
     ;
 
 greaterEqualsExpression
-    : LPAREN expression GREATER_EQUALS expression RPAREN
+    : expression GREATER_EQUALS expression
+    | LPAREN expression GREATER_EQUALS expression RPAREN
     ;
 
 lessEqualsExpression
-    : LPAREN expression LESS_EQUALS expression RPAREN
+    : expression LESS_EQUALS expression
+    | LPAREN expression LESS_EQUALS expression RPAREN
     ;
 
 // Literal Expressions

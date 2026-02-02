@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author David Kowal
- * 	@author Kevin Feichtinger
+ *    @author David Kowal
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -16,84 +16,25 @@
 
 package edu.kit.dopler.io.antlr;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import edu.kit.dopler.io.antlr.resources.DoplerParser;
+import edu.kit.dopler.io.antlr.resources.DoplerParser.*;
+import edu.kit.dopler.model.*;
+import edu.kit.dopler.model.Decision.DecisionType;
+import edu.kit.dopler.model.Enumeration;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import edu.kit.dopler.model.NumberDecision;
-import edu.kit.dopler.model.NumberEnforce;
-import edu.kit.dopler.model.OR;
-import edu.kit.dopler.model.Rule;
-import edu.kit.dopler.model.StringLiteralExpression;
-import edu.kit.dopler.model.XOR;
-import edu.kit.dopler.io.antlr.resources.DoplerParser;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.AllowsContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.AndExpressionContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.BooleanEnForceContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.BooleanLiteralExpressionContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.DecisionValueCallExpressionContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.DecisionVisibilityCallExpressionContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.DisallowsContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.DoubleEnForceContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.DoubleLiteralExpressionContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.DruleContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.EnumEnForceContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.EnumerationLiteralExpressionContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.EqualityExpressionContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.GreaterThanExpressionContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.IdContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.IsTakenContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.JsonObjectContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.LessThanExpressionContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.OrExpressionContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.RowContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.StringLiteralExpressionContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.UnaryExpressionContext;
-import edu.kit.dopler.io.antlr.resources.DoplerParser.XorExpressionContext;
-import edu.kit.dopler.model.AND;
-import edu.kit.dopler.model.Allows;
-import edu.kit.dopler.model.BooleanDecision;
-import edu.kit.dopler.model.BooleanEnforce;
-import edu.kit.dopler.model.BooleanLiteralExpression;
-import edu.kit.dopler.model.Decision.DecisionType;
-import edu.kit.dopler.model.DecisionValueCallExpression;
-import edu.kit.dopler.model.DisAllows;
-import edu.kit.dopler.model.Dopler;
-import edu.kit.dopler.model.DoubleLiteralExpression;
-import edu.kit.dopler.model.Enumeration;
-import edu.kit.dopler.model.EnumerationDecision;
-import edu.kit.dopler.model.EnumerationLiteral;
-import edu.kit.dopler.model.EnumeratorLiteralExpression;
-import edu.kit.dopler.model.Equals;
-import edu.kit.dopler.model.GreaterThan;
-import edu.kit.dopler.model.IAction;
-import edu.kit.dopler.model.IDecision;
-import edu.kit.dopler.model.IExpression;
-import edu.kit.dopler.model.IsTaken;
-import edu.kit.dopler.model.LessThan;
-import edu.kit.dopler.model.NOT;
-import edu.kit.dopler.model.BooleanValue;
-import edu.kit.dopler.model.DoubleValue;
-import edu.kit.dopler.model.EnumEnforce;
-import edu.kit.dopler.model.StringValue;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DoplerExpressionParser extends DecisionParserBase {
+	// Stack to traverse Expressions
+	Deque<IExpression> expressionStack = new ArrayDeque<>();
 	private boolean idSet;
-
 	// Variables of current Rule
 	private Set<Rule> currentRules = new HashSet<>();
 	// Actions of current Rule
 	private Set<IAction> currentActions = new HashSet<>();
-
-	// Stack to traverse Expressions
-	Deque<IExpression> expressionStack = new ArrayDeque<>();
-
 	private IExpression currentVisibilityCondition;
 
 	public DoplerExpressionParser(Dopler dopler) {
@@ -174,21 +115,21 @@ public class DoplerExpressionParser extends DecisionParserBase {
 			IExpression left = expressionStack.pop();
 
 			switch (operator.getSymbol().getType()) {
-			case DoplerParser.AND:
-				expressionStack.push(new AND(left, right));
-				break;
-			case DoplerParser.OR:
-				expressionStack.push(new OR(left, right));
-				break;
-			case DoplerParser.EQUALS:
-				expressionStack.push(new Equals(left, right));
-				break;
-			case DoplerParser.GREATER_THAN:
-				expressionStack.push(new GreaterThan(left, right));
-				break;
-			case DoplerParser.LESS_THAN:
-				expressionStack.push(new LessThan(left, right));
-				break;
+				case DoplerParser.AND:
+					expressionStack.push(new AND(left, right));
+					break;
+				case DoplerParser.OR:
+					expressionStack.push(new OR(left, right));
+					break;
+				case DoplerParser.EQUALS:
+					expressionStack.push(new Equals(left, right));
+					break;
+				case DoplerParser.GREATER_THAN:
+					expressionStack.push(new GreaterThan(left, right));
+					break;
+				case DoplerParser.LESS_THAN:
+					expressionStack.push(new LessThan(left, right));
+					break;
 			}
 		}
 
@@ -238,6 +179,17 @@ public class DoplerExpressionParser extends DecisionParserBase {
 		String[] enumerationArray = ctx.EnumerationLiteralExpression().getText().split("\\.");
 		if (enumerationArray.length < 2)
 			return;
+
+		// Find the parent to see if we are inside an action
+		org.antlr.v4.runtime.RuleContext parent = ctx.parent;
+		while (parent != null) {
+			if (parent instanceof EnumEnForceContext || parent instanceof AllowsContext || parent instanceof DisallowsContext) {
+				// If we are inside an action that already handles the literal, don't push it to the expression stack.
+				return;
+			}
+			parent = parent.parent;
+		}
+
 		IDecision<?> decision = findDecisionByID(enumerationArray[0]);
 		if (decision instanceof EnumerationDecision enumerationDecision) {
 			for (Enumeration enumeration : dopler.getEnumSet()) {
