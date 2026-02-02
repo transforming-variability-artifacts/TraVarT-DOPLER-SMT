@@ -19,11 +19,11 @@ import edu.kit.dopler.exceptions.EvaluationException;
 
 import java.util.stream.Stream;
 
-public class GreatherThan extends BinaryExpression{
+public class GreaterThan extends BinaryExpression{
 
 	private static final String SYMBOL = ">";
 	
-    public GreatherThan(IExpression leftExpression, IExpression rightExpression) {
+    public GreaterThan(IExpression leftExpression, IExpression rightExpression) {
         super(leftExpression, rightExpression);
     }
 

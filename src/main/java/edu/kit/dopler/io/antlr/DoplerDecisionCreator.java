@@ -42,7 +42,7 @@ import edu.kit.dopler.model.DoubleLiteralExpression;
 import edu.kit.dopler.model.Enumeration;
 import edu.kit.dopler.model.EnumerationDecision;
 import edu.kit.dopler.model.EnumerationLiteral;
-import edu.kit.dopler.model.GreatherThan;
+import edu.kit.dopler.model.GreaterThan;
 import edu.kit.dopler.model.IDecision;
 import edu.kit.dopler.model.IExpression;
 import edu.kit.dopler.model.LessThan;
@@ -113,7 +113,7 @@ public class DoplerDecisionCreator extends DecisionParserBase {
 					TerminalNode left = ctx.DoubleLiteralExpression(i);
 					TerminalNode right = ctx.DoubleLiteralExpression(i + 1);
 					currentValidityConditions
-							.add(new GreatherThan(new DoubleLiteralExpression(Double.parseDouble(left.getText()) - 1),
+							.add(new GreaterThan(new DoubleLiteralExpression(Double.parseDouble(left.getText()) - 1),
 									new DecisionValueCallExpression(currentDecision)));
 					currentValidityConditions
 							.add(new LessThan(new DoubleLiteralExpression(Double.parseDouble(right.getText()) + 1),

@@ -71,7 +71,7 @@ import edu.kit.dopler.model.EnumerationDecision;
 import edu.kit.dopler.model.EnumerationLiteral;
 import edu.kit.dopler.model.EnumeratorLiteralExpression;
 import edu.kit.dopler.model.Equals;
-import edu.kit.dopler.model.GreatherThan;
+import edu.kit.dopler.model.GreaterThan;
 import edu.kit.dopler.model.IAction;
 import edu.kit.dopler.model.IDecision;
 import edu.kit.dopler.model.IExpression;
@@ -184,7 +184,7 @@ public class DoplerExpressionParser extends DecisionParserBase {
 				expressionStack.push(new Equals(left, right));
 				break;
 			case DoplerParser.GREATER_THAN:
-				expressionStack.push(new GreatherThan(left, right));
+				expressionStack.push(new GreaterThan(left, right));
 				break;
 			case DoplerParser.LESS_THAN:
 				expressionStack.push(new LessThan(left, right));
@@ -371,7 +371,7 @@ public class DoplerExpressionParser extends DecisionParserBase {
 	public void exitGreaterThanExpression(GreaterThanExpressionContext ctx) {
 		IExpression right = expressionStack.pop();
 		IExpression left = expressionStack.pop();
-		expressionStack.push(new GreatherThan(left, right));
+		expressionStack.push(new GreaterThan(left, right));
 	}
 
 	@Override

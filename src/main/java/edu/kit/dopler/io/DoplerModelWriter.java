@@ -30,7 +30,7 @@ import edu.kit.dopler.model.Dopler;
 import edu.kit.dopler.model.DoubleLiteralExpression;
 import edu.kit.dopler.model.EnumerationDecision;
 import edu.kit.dopler.model.EnumerationLiteral;
-import edu.kit.dopler.model.GreatherThan;
+import edu.kit.dopler.model.GreaterThan;
 import edu.kit.dopler.model.IDecision;
 import edu.kit.dopler.model.IExpression;
 import edu.kit.dopler.model.LessThan;
@@ -142,7 +142,7 @@ public class DoplerModelWriter {
 	        	NumberDecision numberDecision = (NumberDecision) decision;
 	        	Set<IExpression> validityConditions = numberDecision.getValidityConditions();
 	        	for(IExpression con : validityConditions) {
-	        		if(con instanceof GreatherThan gt) {
+	        		if(con instanceof GreaterThan gt) {
 	        			DoubleLiteralExpression ngt = (DoubleLiteralExpression) gt.getLeftExpression();
 	        			numberRange = (ngt.getLiteral() + 1) + numberRange;
 	        		} else if (con instanceof LessThan lt) {
