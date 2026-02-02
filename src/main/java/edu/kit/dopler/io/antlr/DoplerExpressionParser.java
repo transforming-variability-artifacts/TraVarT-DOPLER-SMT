@@ -22,6 +22,7 @@ import edu.kit.dopler.model.*;
 import edu.kit.dopler.model.Decision.DecisionType;
 import edu.kit.dopler.model.Enumeration;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.*;
@@ -180,14 +181,8 @@ public class DoplerExpressionParser extends DecisionParserBase {
 		if (enumerationArray.length < 2)
 			return;
 
-		// Find the parent to see if we are inside an action
-		org.antlr.v4.runtime.RuleContext parent = ctx.parent;
-		while (parent != null) {
-			if (parent instanceof EnumEnForceContext || parent instanceof AllowsContext || parent instanceof DisallowsContext) {
-				// If we are inside an action that already handles the literal, don't push it to the expression stack.
-				return;
-			}
-			parent = parent.parent;
+		if (isInsideActionContext(ctx)) {
+			return;
 		}
 
 		IDecision<?> decision = findDecisionByID(enumerationArray[0]);
@@ -202,6 +197,26 @@ public class DoplerExpressionParser extends DecisionParserBase {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Checks if the current context is nested within an action that handles the literal
+	 * explicitly, meaning we should skip pushing it to the general expression stack.
+	 *
+	 * @param ctx The current RuleContext
+	 * @return true if the expression stack push should be skipped
+	 */
+	private boolean isInsideActionContext(RuleContext ctx) {
+		RuleContext parent = ctx.parent;
+		while (parent != null) {
+			if (parent instanceof EnumEnForceContext ||
+					parent instanceof AllowsContext ||
+					parent instanceof DisallowsContext) {
+				return true;
+			}
+			parent = parent.parent;
+		}
+		return false;
 	}
 
 	@Override
