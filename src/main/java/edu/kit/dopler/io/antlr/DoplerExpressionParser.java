@@ -21,7 +21,6 @@ import edu.kit.dopler.io.antlr.resources.DoplerParser.*;
 import edu.kit.dopler.model.*;
 import edu.kit.dopler.model.Decision.DecisionType;
 import edu.kit.dopler.model.Enumeration;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.*;
@@ -179,17 +178,6 @@ public class DoplerExpressionParser extends DecisionParserBase {
         String[] enumerationArray = ctx.EnumerationLiteralExpression().getText().split("\\.");
         if (enumerationArray.length < 2)
             return;
-
-        // Find the parent to see if we are inside an action
-        org.antlr.v4.runtime.RuleContext parent = ctx.parent;
-        while (parent != null) {
-            if (parent instanceof EnumEnForceContext || parent instanceof AllowsContext || parent instanceof DisallowsContext) {
-                // If we are inside an action that already handles the literal, don't push it to the expression stack.
-                return;
-            }
-            parent = parent.parent;
-        }
-
         IDecision<?> decision = findDecisionByID(enumerationArray[0]);
         if (decision instanceof EnumerationDecision enumerationDecision) {
             for (Enumeration enumeration : dopler.getEnumSet()) {
