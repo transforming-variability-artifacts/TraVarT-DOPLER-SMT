@@ -1,6 +1,0 @@
-ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
-Base;What type of base do you need for your chesspiece?;Enumeration;Base_onestrip | Base_twostrip;1:1;;TRUE
-Rod;Which rod length do you need for your chesspiece?;Enumeration;Rod_long | Rod_short;1:1;;TRUE
-Body;Which bodytype is the chesspiece?;Enumeration;Body_minor | Body_major;1:1;if (Body.Body_minor) { Base = Base_onestrip } if (Body.Body_minor) { Rod = Rod_short } if (Body.Body_major) { Base = Base_twostrip } if (Body.Body_major) { Rod = Rod_long };TRUE
-Body_minor;Which minor chesspiece should be produced?;Enumeration;Pawn_body | Bishop_body | Rook_body | Knight_body;1:1;; Body == Body_minor
-Body_major;Which minor chesspiece should be produced?;Enumeration;Queen_body | King_body;1:1;; Body == Body_major

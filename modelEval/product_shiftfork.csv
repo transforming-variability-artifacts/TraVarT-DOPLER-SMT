@@ -1,4 +1,0 @@
-ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
-Barrel1_2;Barrel1_2?;Boolean;true | false;;;TRUE
-Pipe;Pipe?;Enumeration;Pipe2 | Pipe3 | Pipe8;1:1;if (Pipe.Pipe2) { Barrel1_2 = true) } if (Pipe.Pipe8) { Barrel1_2 = true) } if (Pipe.Pipe3) { Barrel1_2 = false) };TRUE
-Lock;Lock?;Enumeration;Lock1 | Lock2 | Lock3;1:1;if (Lock.Lock1) { disAllow(Pipe.Pipe8) } if (!Lock.Lock1) { Allow(Pipe.Pipe8) } if (Lock.Lock2) { Pipe = Pipe3) } if (Lock.Lock3) { Pipe = Pipe8) };TRUE
