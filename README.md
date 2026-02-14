@@ -33,7 +33,11 @@ If there is a visibility condition associated with a decision, the user has to f
 
 ## SMT Encoding
 
-Detailed Explanation of the Encoding you can find [here](SMTEncoding.md)
+Detailed Explanation of the SMT Encoding you can find [here](SMTEncoding.md)
+
+## CP Encoding
+
+Detailed Explanation of the CP Encoding you can find [here](CPEncoding.md)
 
 ## CI Pipeline
 
