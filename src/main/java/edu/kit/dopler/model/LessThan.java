@@ -103,7 +103,7 @@ public class LessThan extends BinaryExpression {
             BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
             //ensure that: equivalentLiteral <=> (left < right)
-            // "=>": equivalentLiteral => (left <>> right)
+            // "=>": equivalentLiteral => (left < right)
             model.addLessThan(leftVar, rightVal).onlyEnforceIf(equivalentLiteral);
 
             // "<=": !equivalentLiteral => (left >= right)
