@@ -37,8 +37,8 @@ The following describes how the actions are encoded in the CP model.
 To enforce a boolean decision, we add the following constraint:
 > $conditionLiteral \implies (booleanDecision = value)$
 
-We use this implication to ensure that the action is executed if the condition literal holds.
-If the condition literal does not hold, we do not care whether the action is executed.
+We use this implication to ensure that the action is executed if the `conditionLiteral` holds.
+If the `conditionLiteral` does not hold, we do not care whether the action is executed.
 The Java code to achieve this is as follows:
 ```
  model.addEquality(booleanDecision, value).onlyEnforceIf(conditionLiteral);
@@ -57,13 +57,13 @@ To ensure that a given enumeration literal is not chosen, we perform an enumEnfo
 
 ##### Allows
 The allows action is only relevant for enumeration decisions.
-To ensure that a given enumeration literal can be chosen, we have to do nothing.
+To ensure that a given enumeration literal can be chosen, we have to do nothing since the CP solver already checks the whole range of possible values for each variable.
 
 
 #### Standard Values
 For every decision that is not taken, we add a constraint that enforces the standard value.
 
-<!-- TODO validity conditions: cardinality and range erklären-->
+<!-- TODO etwas ausführlicher hier + validity conditions: cardinality and range erklären-->
 
 
 ### Expression Literals
@@ -82,7 +82,7 @@ expression.not();
 
 #### IsTAKEN
 For the isTaken expression, we use the `Decision_<ID>_isTaken` variable indroduced above.
-> $ \text{Decision_}\text{<}\text{ID>_isTaken} $
+> $Decision\textunderscore\<ID\>\textunderscore isTaken$
 
 <!-- TODO hier evtl auch java code + ggf dann auch die 3 maps die ich nutze erklären -->
 
@@ -99,11 +99,11 @@ However, this is because the CP solver only allows a limited set of internal ope
 
 For this operation, we want to ensure that the following holds: $equivalentLiteral \iff (leftExpression \land rightExpression)$.
 
-To achieve this, we add constraints representing the bidirectional implications '$\implies$' and '$\impliedby$' to the CP model:
+To achieve this, we add constraints representing the bidirectional implications ' $\implies$ ' and ' $\impliedby$ ' to the CP model:
 
-> '$\implies$' : $(\lnot equivalentLiteral \lor leftExpression) \land (\lnot equivalentLiteral \lor rightLiteral)$
+> ' $\implies$ ' : $(\lnot equivalentLiteral \lor leftExpression) \land (\lnot equivalentLiteral \lor rightLiteral)$
 >
-> '$\impliedby$' : $\lnot leftExpression \lor \lnot rightExpression \lor equivalentLiteral$
+> ' $\impliedby$ ' : $\lnot leftExpression \lor \lnot rightExpression \lor equivalentLiteral$
 
 Java code to achieve this:
 ```
@@ -121,11 +121,11 @@ model.addBoolOr(new Literal[]{leftLiteral.not(), rightLiteral.not(), equivalentL
 ##### OR
 For this operation, we want to ensure that the following holds: $equivalentLiteral \iff (leftExpression \lor rightExpression)$.
 
-To achieve this, we add constraints representing the bidirectional implications '$\implies$' and '$\impliedby$' to the CP model:
+To achieve this, we add constraints representing the bidirectional implications ' $\implies$ ' and ' $\impliedby$ ' to the CP model:
 
-> '$\implies$' : $\lnot equivalentLiteral \lor leftExpression \lor rightExpression$
+> ' $\implies$ ' : $\lnot equivalentLiteral \lor leftExpression \lor rightExpression$
 >
-> '$\impliedby$' : $(\lnot leftExpression \lor equivalentLiteral) \land (\lnot rightExpression \lor equivalentLiteral)$
+> ' $\impliedby$ ' : $(\lnot leftExpression \lor equivalentLiteral) \land (\lnot rightExpression \lor equivalentLiteral)$
 
 Java code to achieve this:
 ```
@@ -143,11 +143,11 @@ model.addBoolOr(new Literal[]{rightLiteral.not(), equivalentLiteral});
 ##### XOR
 For this operation, we want to ensure that the following holds: $equivalentLiteral \iff (leftExpression \oplus rightExpression)$.
 
-To achieve this, we add constraints representing the bidirectional implications '$\implies$' and '$\impliedby$' to the CP model:
+To achieve this, we add constraints representing the bidirectional implications ' $\implies$ ' and ' $\impliedby$ ' to the CP model:
 
-> '$\implies$' : $(\lnot equivalentLiteral \lor  leftExpression \lor rightExpression) \land (\lnot equivalentLiteral \lor \lnot leftExpression \lor \lnot rightExpression)$
+> ' $\implies$ ' : $(\lnot equivalentLiteral \lor  leftExpression \lor rightExpression) \land (\lnot equivalentLiteral \lor \lnot leftExpression \lor \lnot rightExpression)$
 >
-> '$\impliedby$' : $(equivalentLiteral \lor  leftExpression \lor \lnot rightExpression) \land (equivalentLiteral \lor  \lnot leftExpression \lor rightExpression)$
+> ' $\impliedby$ ' : $(equivalentLiteral \lor  leftExpression \lor \lnot rightExpression) \land (equivalentLiteral \lor  \lnot leftExpression \lor rightExpression)$
 
 Java code to achieve this:
 ```
@@ -166,11 +166,11 @@ model.addBoolOr(new Literal[]{equivalentLiteral, leftLiteral.not(), rightLiteral
 ##### GreaterThan
 For this operation, we want to ensure that the following holds: $equivalentLiteral \iff (leftExpression \gt rightExpression)$.
 
-To achieve this, we add constraints representing the bidirectional implications '$\implies$' and '$\impliedby$' to the CP model:
+To achieve this, we add constraints representing the bidirectional implications ' $\implies$ ' and ' $\impliedby$ ' to the CP model:
 
-> '$\implies$' : $equivalentLiteral \implies (leftExpression \gt rightExpression)$
+> ' $\implies$ ' : $equivalentLiteral \implies (leftExpression \gt rightExpression)$
 >
-> '$\impliedby$' : $\lnot equivalentLiteral \implies (leftExpression \leq rightExpression)$
+> ' $\impliedby$ ' : $\lnot equivalentLiteral \implies (leftExpression \leq rightExpression)$
 
 Java code to achieve this:
 ```
@@ -187,11 +187,11 @@ model.addLessOrEqual(left, right).onlyEnforceIf(equivalentLiteral.not());
 ##### LessThan
 For this operation, we want to ensure that the following holds: $equivalentLiteral \iff (leftExpression \lt rightExpression)$.
 
-To achieve this, we add constraints representing the bidirectional implications '$\implies$' and '$\impliedby$' to the CP model:
+To achieve this, we add constraints representing the bidirectional implications ' $\implies$ ' and ' $\impliedby$ ' to the CP model:
 
-> '$\implies$' : $equivalentLiteral \implies (leftExpression \lt rightExpression)$
+> ' $\implies$ ' : $equivalentLiteral \implies (leftExpression \lt rightExpression)$
 >
-> '$\impliedby$' : $\lnot equivalentLiteral \implies (leftExpression \geq rightExpression)$
+> ' $\impliedby$ ' : $\lnot equivalentLiteral \implies (leftExpression \geq rightExpression)$
 
 Java code to achieve this:
 ```
@@ -208,11 +208,11 @@ model.addGreaterOrEqual(left, right).onlyEnforceIf(equivalentLiteral.not());
 ##### EQUALS
 For this operation, we want to ensure that the following holds: $equivalentLiteral \iff (leftExpression = rightExpression)$.
 
-To achieve this, we add constraints representing the bidirectional implications '$\implies$' and '$\impliedby$' to the CP model:
+To achieve this, we add constraints representing the bidirectional implications ' $\implies$ ' and ' $\impliedby$ ' to the CP model:
 
-> '$\implies$' : $equivalentLiteral \implies (leftExpression = rightExpression)$
+> ' $\implies$ ' : $equivalentLiteral \implies (leftExpression = rightExpression)$
 >
-> '$\impliedby$' : $\lnot equivalentLiteral \implies (leftExpression \neq rightExpression)$
+> ' $\impliedby$ ' : $\lnot equivalentLiteral \implies (leftExpression \neq rightExpression)$
 
 Java code to achieve this:
 ```
