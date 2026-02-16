@@ -10,20 +10,20 @@ It returns a `CpEncodingResult` which contains the constraints programming (CP) 
 This enables users to display satisfiable configurations later on.
 The encoding is described in detail below.
 
-TODO: Explain why string and java decisions are left out! 
-
 ### Decision Variables
 For every decision in the DOPLER model, one or more CP variables are created:
 - **Boolean Decisions**: A single `BoolVar`.
 - **Enumeration Decisions**: Multiple `BoolVar(s)`, one for each literal in the enumeration.
-- **Number Decisions**: An `IntVar`.
-
+- **Number Decisions**: An `IntVar`. Although the underlying type is an integer, real-valued decisions (e.g., doubles) are supported by a scaling factor (e.g., 0.0001). The `CpUtils` class manages this scaling process to ensure the correct conversion between the scaled integer representation and the actual double value.
+- 
 Additionally, for each decision, a `BoolVar` named `Decision_<ID>_isTaken` is created to track whether the decision is taken in a current configuration.
+
+The current CP encoding does not support String and Java Decisions because the solver does not natively support them.
+Adding support would require substantial custom extensions and represent a significant development effort.
 
 ### Constraints
 After the decision variables are created, different constraints are added to the model.
-First, the constraints representing the rules of the decision are added, and then constraints for potential standard values are added.
-These constraints are described in detail below.
+These constraints, representing the decision rules, validity conditions, and possible standard values, are described in detail below.
 
 #### Rules
 A decision rule consists of a condition expression and associated actions.
@@ -40,7 +40,7 @@ To enforce a boolean decision, we add the following constraint:
 We use this implication to ensure that the action is executed if the `conditionLiteral` holds.
 If the `conditionLiteral` does not hold, we do not care whether the action is executed.
 The Java code to achieve this is as follows:
-```
+```java
  model.addEquality(booleanDecision, value).onlyEnforceIf(conditionLiteral);
 ```
 
@@ -60,10 +60,33 @@ The allows action is only relevant for enumeration decisions.
 To ensure that a given enumeration literal can be chosen, we have to do nothing since the CP solver already checks the whole range of possible values for each variable.
 
 
+#### Validity Conditions
+Some decision types have validity conditions.
+These are enforced if they are taken:
+> $isTaken \implies enforceValidityCondition
+
+The following describes how these validity conditions are enforced in more detail.
+
+##### Cardinality (Enumeration Decision)
+The cardinality of an enumeration decision, such as `1:3`, is encoded using a helper `IntVar`, called `sum`.
+This variable describes the number of true enumeration literal CP variables of the enumeration decision:
+> $sum = \sum_{i=1}^{\\# enumLiterals} {𝟙}_{enumLiteral_i = true} $
+
+Then we can add the cardinality constraints to the `sum` variable.
+Java code to achieve this:
+```java
+LinearExpr sum = LinearExpr.sum(enumDecisionLiteralVariables);
+
+model.addGreaterOrEqual(sum, minCardinality).onlyEnforceIf(isTaken);
+model.addLessOrEqual(sum, maxCardinality).onlyEnforceIf(isTaken);
+```
+
+##### Range (Number Decision)
+The range of a number decision, such as `0-10`, is encoded using the corresponding greater than, less than, and equal to expressions.
+
 #### Standard Values
 For every decision that is not taken, we add a constraint that enforces the standard value.
-
-<!-- TODO etwas ausführlicher hier + validity conditions: cardinality and range erklären-->
+> $\lnot isTaken \implies enforceStdValue$
 
 
 ### Expression Literals
@@ -76,15 +99,34 @@ The CP solver natively supports negations.
 > $\lnot expression$
 
 Java code to achieve this:
-```
+```java
 expression.not();
 ```
 
 #### IsTAKEN
-For the isTaken expression, we use the `Decision_<ID>_isTaken` variable indroduced above.
+For the isTaken expression, we use the `Decision_<ID>_isTaken` variable introduced above.
 > $Decision\textunderscore\<ID\>\textunderscore isTaken$
 
-<!-- TODO hier evtl auch java code + ggf dann auch die 3 maps die ich nutze erklären -->
+A Decision is taken if it is visible or if it was enforced by a rule-action (from another decision).
+
+To represent this logic with the `Decision_<ID>_isTaken` variable, we use a list of helper boolean CP variables (per decision) called `isTakenConditionsList`.
+Each entry in `isTakenConditionsList` indicates whether a rule action of another decision was performed or not.
+We construct this list by accumulating all the `conditionLiteral` variables (see [section on rule](#rules)) of rule-actions that enforce the associated decision's value.
+Then we add the following constraint to the CP model:
+> $Decision\textunderscore\<ID\>\textunderscore isTaken = \bigvee_{condition \in (isTakenConditionsList \cup \lbrace Decision\textunderscore\<ID\>\textunderscore IsVisible \rbrace)} $> 
+
+Java code to achieve this:
+```java
+List<Literal> conditionsList = isTakenConditionsList;
+conditionsList.add(decisionIsVisibleVar);
+
+//ensure that: isTakenVar <=> or(conditionsList)
+// "=>" as CNF
+model.addBoolOr(conditionsList).onlyEnforceIf(isTakenVar);
+
+// "<=" as CNF
+conditionsList.forEach(var -> model.addBoolOr(new Literal[]{var.not(), isTakenVar}));
+```
 
 #### Binary Expressions
 All binary expressions follow the general form: `leftExpression <operation> rightExpression`.
@@ -106,7 +148,7 @@ To achieve this, we add constraints representing the bidirectional implications 
 > ' $\impliedby$ ' : $\lnot leftExpression \lor \lnot rightExpression \lor equivalentLiteral$
 
 Java code to achieve this:
-```
+```java
 BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
 //ensure that: equivalentLiteral <=> (leftLiteral and rightLiteral)
@@ -128,7 +170,7 @@ To achieve this, we add constraints representing the bidirectional implications 
 > ' $\impliedby$ ' : $(\lnot leftExpression \lor equivalentLiteral) \land (\lnot rightExpression \lor equivalentLiteral)$
 
 Java code to achieve this:
-```
+```java
 BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
 //ensure that: equivalentLiteral <=> (leftLiteral or rightLiteral)
@@ -150,7 +192,7 @@ To achieve this, we add constraints representing the bidirectional implications 
 > ' $\impliedby$ ' : $(equivalentLiteral \lor  leftExpression \lor \lnot rightExpression) \land (equivalentLiteral \lor  \lnot leftExpression \lor rightExpression)$
 
 Java code to achieve this:
-```
+```java
 BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
 //ensure that: equivalentLiteral <=> (leftLiteral xor rightLiteral)
@@ -173,7 +215,7 @@ To achieve this, we add constraints representing the bidirectional implications 
 > ' $\impliedby$ ' : $\lnot equivalentLiteral \implies (leftExpression \leq rightExpression)$
 
 Java code to achieve this:
-```
+```java
 BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
 //ensure that: equivalentLiteral <=> (left > right)
@@ -194,7 +236,7 @@ To achieve this, we add constraints representing the bidirectional implications 
 > ' $\impliedby$ ' : $\lnot equivalentLiteral \implies (leftExpression \geq rightExpression)$
 
 Java code to achieve this:
-```
+```java
 BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
 //ensure that: equivalentLiteral <=> (left < right)
@@ -215,7 +257,7 @@ To achieve this, we add constraints representing the bidirectional implications 
 > ' $\impliedby$ ' : $\lnot equivalentLiteral \implies (leftExpression \neq rightExpression)$
 
 Java code to achieve this:
-```
+```java
 BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 
 //ensure that: equivalentLiteral <=> (left == right)
