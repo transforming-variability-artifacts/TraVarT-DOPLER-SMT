@@ -15,7 +15,7 @@ For every decision in the DOPLER model, one or more CP variables are created:
 - **Boolean Decisions**: A single `BoolVar`.
 - **Enumeration Decisions**: Multiple `BoolVar(s)`, one for each literal in the enumeration.
 - **Number Decisions**: An `IntVar`. Although the underlying type is an integer, real-valued decisions (e.g., doubles) are supported by a scaling factor (e.g., 0.0001). The `CpUtils` class manages this scaling process to ensure the correct conversion between the scaled integer representation and the actual double value.
-- 
+
 Additionally, for each decision, a `BoolVar` named `Decision_<ID>_isTaken` is created to track whether the decision is taken in a current configuration.
 
 The current CP encoding does not support String and Java Decisions because the solver does not natively support them.
@@ -63,7 +63,7 @@ To ensure that a given enumeration literal can be chosen, we have to do nothing 
 #### Validity Conditions
 Some decision types have validity conditions.
 These are enforced if they are taken:
-> $isTaken \implies enforceValidityCondition
+> $isTaken \implies enforceValidityCondition$
 
 The following describes how these validity conditions are enforced in more detail.
 
@@ -91,7 +91,7 @@ For every decision that is not taken, we add a constraint that enforces the stan
 
 ### Expression Literals
 For every DOPLER expression, there is a `toCPLiteral` method that returns a corresponding CP literal.
-This literal can then be used in constraints (see [above](#constraints)).
+This literal can then be used in constraints (see [section on constraints](#constraints)).
 The following describes how each expression is represented as a CP literal.
 
 #### NOT
@@ -111,7 +111,7 @@ A Decision is taken if it is visible or if it was enforced by a rule-action (fro
 
 To represent this logic with the `Decision_<ID>_isTaken` variable, we use a list of helper boolean CP variables (per decision) called `isTakenConditionsList`.
 Each entry in `isTakenConditionsList` indicates whether a rule action of another decision was performed or not.
-We construct this list by accumulating all the `conditionLiteral` variables (see [section on rule](#rules)) of rule-actions that enforce the associated decision's value.
+We construct this list by accumulating all the `conditionLiteral` variables (see [section on rules](#rules)) of rule-actions that enforce the associated decision's value.
 Then we add the following constraint to the CP model:
 > $Decision\textunderscore\<ID\>\textunderscore isTaken = \bigvee_{condition \in (isTakenConditionsList \cup \lbrace Decision\textunderscore\<ID\>\textunderscore IsVisible \rbrace)} $> 
 
