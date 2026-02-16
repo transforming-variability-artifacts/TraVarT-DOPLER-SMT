@@ -96,7 +96,7 @@ public class EnumerationDecision extends Decision<String> {
         decisionVars.get(this).forEach(var -> model.addEquality(var, model.falseLiteral())
                 .onlyEnforceIf(isTakenVars.get(this).not()));
 
-        //add cardinality constraints (only if the decision is taken) //TODO 1 das muss eig auch in ne extra methode ausgelagert werden!! (hat ja nix mit dem std value zu tun)
+        //add cardinality constraints (only if the decision is taken)
         LinearExpr sum = LinearExpr.sum(decisionVars.get(this).toArray(new IntVar[0]));
         model.addGreaterOrEqual(sum, this.getMinCardinality())
                 .onlyEnforceIf(isTakenVars.get(this));
