@@ -113,7 +113,7 @@ To represent this logic with the `Decision_<ID>_isTaken` variable, we use a list
 Each entry in `isTakenConditionsList` indicates whether a rule action of another decision was performed or not.
 We construct this list by accumulating all the `conditionLiteral` variables (see [section on rules](#rules)) of rule-actions that enforce the associated decision's value.
 Then we add the following constraint to the CP model:
-> $Decision\textunderscore\<ID\>\textunderscore isTaken = \bigvee_{condition \in (isTakenConditionsList \cup \lbrace Decision\textunderscore\<ID\>\textunderscore IsVisible \rbrace)} $> 
+> $Decision\textunderscore\<ID\>\textunderscore isTaken = \bigvee_{condition \in (isTakenConditionsList \cup \lbrace Decision\textunderscore\<ID\>\textunderscore IsVisible \rbrace)} $
 
 Java code to achieve this:
 ```java
@@ -137,8 +137,6 @@ The formulas may seem confusing or unnecessarily complex at first.
 However, this is because the CP solver only allows a limited set of internal operators. Therefore, complex logic, such as equivalences, must be encoded via these formulas.
 
 ##### AND
-<!-- TODO vllt kann man den redundanten text kürzen... -->
-
 For this operation, we want to ensure that the following holds: $equivalentLiteral \iff (leftExpression \land rightExpression)$.
 
 To achieve this, we add constraints representing the bidirectional implications ' $\implies$ ' and ' $\impliedby$ ' to the CP model:
