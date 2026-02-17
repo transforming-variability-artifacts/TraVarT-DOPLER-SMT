@@ -29,7 +29,7 @@ These constraints, representing the decision rules, validity conditions, and pos
 A decision rule consists of a condition expression and associated actions.
 If the condition holds and the decision is taken, those actions are executed.
 The CP literal `conditionLiteral` encodes this logic:
-> $conditionLiteral \iff (isTaken \land ruleCondition)$
+> $conditionLiteral \iff (Decision\textunderscore\<ID\>\textunderscore isTaken \land ruleCondition)$
 
 The following describes how the actions are encoded in the CP model.
 
@@ -63,7 +63,7 @@ To ensure that a given enumeration literal can be chosen, we have to do nothing 
 #### Validity Conditions
 Some decision types have validity conditions.
 These are enforced if they are taken:
-> $isTaken \implies enforceValidityCondition$
+> $Decision\textunderscore\<ID\>\textunderscore isTaken \implies enforceValidityCondition$
 
 The following describes how these validity conditions are enforced in more detail.
 
@@ -86,7 +86,7 @@ The range of a number decision, such as `0-10`, is encoded using the correspondi
 
 #### Standard Values
 For every decision that is not taken, we add a constraint that enforces the standard value.
-> $\lnot isTaken \implies enforceStdValue$
+> $\lnot Decision\textunderscore\<ID\>\textunderscore isTaken \implies enforceStdValue$
 
 
 ### Expression Literals
