@@ -110,6 +110,8 @@ public class Dopler {
             decision.mapRulesToCP(model, decisionVars, isTakenVars, isTakenConditions); //map rules to CP (= add constraints, representing the rules and their actions, to the model and fill the isTakenConditions map, which will then contain literals, each indicating whether a rule-action did enforce the value of a decision or not)
 
             decision.enforceStandardValueInCP(model, decisionVars, isTakenVars); //adds constraints that enforce a standard value for a decision if necessary (= if it is not taken)
+
+            decision.enforceValidityConditionsInCP(model, decisionVars, isTakenVars); //adds constraints that enforce validity conditions for a decision if necessary (= if it is taken)
         });
 
         this.decisions.forEach(decision -> { // (For this loop, the decisionVars and the isTakenVars need to be initialized; and the isTakenConditions need to be completely filled!)

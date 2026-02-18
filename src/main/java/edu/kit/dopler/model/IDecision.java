@@ -109,4 +109,13 @@ public interface IDecision<T> {
      * @param isTakenVars  a map associating each decision of a dopler model with a boolean literal indicating whether the decision is taken
      */
     void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars);
+
+    /**
+     * Adds constraints that enforce validity conditions for a decision if necessary (= if it is taken)
+     *
+     * @param model        the constraint programming model to which the constraints will be added
+     * @param decisionVars a map associating each decision of a dopler model with a list of CP variables representing it
+     * @param isTakenVars  a map associating each decision of a dopler model with a boolean literal indicating whether the decision is taken
+     */
+    void enforceValidityConditionsInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars);
 }

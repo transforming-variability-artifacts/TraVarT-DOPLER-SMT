@@ -52,6 +52,11 @@ public class BooleanDecision extends Decision<Boolean> {
     }
 
     @Override
+    public void enforceValidityConditionsInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+        //nothing to do here
+    }
+
+    @Override
     public Boolean getStandardValue() {
         return false;
     }

@@ -51,7 +51,10 @@ public class NumberDecision extends ValueDecision<Double> {
     public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         model.addEquality(decisionVars.get(this).getFirst(), model.newConstant(CpUtils.scaleDoubleToLong(this.standardValue)))
                 .onlyEnforceIf(isTakenVars.get(this).not());
+    }
 
+    @Override
+    public void enforceValidityConditionsInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         //add range constraints (only if the decision is taken)
         for (IExpression expression : this.getValidityConditions()) { //the range is encoded in the validityConditions
             model.addEquality(expression.toCPLiteral(model, decisionVars, isTakenVars), model.trueLiteral())

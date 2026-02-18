@@ -95,7 +95,10 @@ public class EnumerationDecision extends Decision<String> {
     public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         decisionVars.get(this).forEach(var -> model.addEquality(var, model.falseLiteral())
                 .onlyEnforceIf(isTakenVars.get(this).not()));
+    }
 
+    @Override
+    public void enforceValidityConditionsInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         //add cardinality constraints (only if the decision is taken)
         LinearExpr sum = LinearExpr.sum(decisionVars.get(this).toArray(new IntVar[0]));
         model.addGreaterOrEqual(sum, this.getMinCardinality())
