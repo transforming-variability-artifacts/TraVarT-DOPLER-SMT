@@ -25,8 +25,8 @@ public class ParserTest {
             stream.filter(Files::isRegularFile).forEach(file -> {
 
                 try {
-                    Dopler model = DoplerUtils.readDOPLERModelFromFile(file);
-                    if (model.getDecisions().isEmpty()) {
+                    Dopler doplerModel = DoplerUtils.readDOPLERModelFromFile(file);
+                    if (doplerModel.getDecisions().isEmpty()) {
                         collector.addError(new AssertionError(
                                 "Decisions empty in file: " + file.getFileName()));
                     }
