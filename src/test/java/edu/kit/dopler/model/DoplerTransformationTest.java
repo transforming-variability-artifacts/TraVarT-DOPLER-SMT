@@ -42,6 +42,10 @@ public class DoplerTransformationTest {
 
                     Dopler rereadModel = DoplerUtils.readDOPLERModelFromFile(tempPath);
 
+                    assertEquals(
+                            originalModel.getDecisions().size(),
+                            rereadModel.getDecisions().size());
+
                     if (!originalModel.getDecisions()
                             .equals(rereadModel.getDecisions())) {
 
