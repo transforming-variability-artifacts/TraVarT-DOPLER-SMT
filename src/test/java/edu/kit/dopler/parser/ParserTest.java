@@ -1,40 +1,43 @@
 package edu.kit.dopler.parser;
 
-import junit.framework.TestCase;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ErrorCollector;
+
+import edu.kit.dopler.common.DoplerUtils;
+import edu.kit.dopler.model.Dopler;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.stream.Stream;
 
-import static edu.kit.dopler.common.DoplerUtils.readDOPLERModelFromFile;
+public class ParserTest {
 
-public class ParserTest extends TestCase {
+    @Rule
+    public ErrorCollector collector = new ErrorCollector();
 
-    @Test(expected = IOException.class)
-    public void testParseOfAllDM() {
+    @Test
+    public void testParseAllModels() throws IOException {
 
-        Path dir = Paths.get("modelCSVs/");
+        Path dir = Paths.get("modelEval");
 
         try (Stream<Path> stream = Files.walk(dir)) {
-
             stream.filter(Files::isRegularFile).forEach(file -> {
-                System.out.println("Parse file " + file.getFileName().toString());
 
                 try {
-                    assertNotNull(readDOPLERModelFromFile(file));
-                    // TODO Assert For Command Line Prints from the Parser
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    Dopler model = DoplerUtils.readDOPLERModelFromFile(file);
+                    if (model.getDecisions().isEmpty()) {
+                        collector.addError(new AssertionError(
+                                "Decisions empty in file: " + file.getFileName()));
+                    }
+
+                } catch (Exception e) {
+                    collector.addError(
+                            new AssertionError("Parsing failed for file: "
+                                    + file.getFileName(), e));
                 }
 
             });
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
     }
-
 }
