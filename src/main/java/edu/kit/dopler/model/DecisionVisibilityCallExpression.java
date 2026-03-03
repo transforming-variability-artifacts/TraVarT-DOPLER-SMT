@@ -54,8 +54,8 @@ public class DecisionVisibilityCallExpression extends DecisionCallExpression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
-        return this.getDecision().getVisibilityCondition().toCPLiteral(model, decisionVars, isTakenVars);
+    public Literal toCpLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+        return this.getDecision().getVisibilityCondition().toCpLiteral(model, decisionVars, isTakenVars);
     }
 
     @Override

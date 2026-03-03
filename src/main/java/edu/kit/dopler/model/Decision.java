@@ -171,9 +171,9 @@ public abstract class Decision<T> implements IDecision<T> {
     }
 
     @Override
-    public void mapRulesToCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
+    public void mapRulesToCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
         for (Rule rule : this.rules) {
-            Literal ruleCondtionLiteral = rule.getCondition().toCPLiteral(model, decisionVars, isTakenVars);
+            Literal ruleCondtionLiteral = rule.getCondition().toCpLiteral(model, decisionVars, isTakenVars);
 
             Literal conditionLiteral = model.newBoolVar("decisionTaken_AND_ruleCondition");
             // ensure that: conditionLiteral <=> (isTakenVars.get(this) and ruleCondtionLiteral)

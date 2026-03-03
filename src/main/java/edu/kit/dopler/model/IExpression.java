@@ -39,5 +39,5 @@ public interface IExpression {
      * @param isTakenVars  a map associating each decision of a dopler model with a boolean literal indicating whether the decision is taken
      * @return a CP literal that represents the expression in the model
      */
-    Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars);
+    Literal toCpLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars);
 }

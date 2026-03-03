@@ -88,7 +88,7 @@ public interface IDecision<T> {
      * @param decisionVars a map associating each decision of a dopler model with a list of CP variables representing it
      * @param isTakenVars  a map associating each decision of a dopler model with a boolean literal indicating whether the decision is taken
      */
-    void createCPDecisionVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars);
+    void createCpDecisionVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars);
 
     /**
      * Maps the rules associated with the current decisions into the CP model.
@@ -100,7 +100,7 @@ public interface IDecision<T> {
      * @param isTakenVars       a map associating each decision of a dopler model with a boolean literal indicating whether the decision is taken
      * @param isTakenConditions a (helper) map associating each decision of a dopler model with a list of boolean literals that can later be used to add constraints for isTakenVars to be logically correct in the model
      */
-    void mapRulesToCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions);
+    void mapRulesToCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions);
 
     /**
      * Adds constraints that enforce a standard (default) value for the current decision if necessary (= if it is not taken).
@@ -109,5 +109,5 @@ public interface IDecision<T> {
      * @param decisionVars a map associating each decision of a dopler model with a list of CP variables representing it
      * @param isTakenVars  a map associating each decision of a dopler model with a boolean literal indicating whether the decision is taken
      */
-    void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars);
+    void enforceStandardValueInCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars);
 }

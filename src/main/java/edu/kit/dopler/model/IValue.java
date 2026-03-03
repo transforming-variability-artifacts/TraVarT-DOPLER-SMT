@@ -33,5 +33,5 @@ public interface IValue<T> {
      * @param model the constraint programming model
      * @return the CP representation of the value as a {@code LinearArgument}
      */
-    LinearArgument getCPValue(CpModel model);
+    LinearArgument getCpValue(CpModel model);
 }

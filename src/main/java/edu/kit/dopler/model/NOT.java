@@ -46,8 +46,8 @@ public class NOT extends UnaryExpression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
-        return this.getOperand().toCPLiteral(model, decisionVars, isTakenVars).not();
+    public Literal toCpLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+        return this.getOperand().toCpLiteral(model, decisionVars, isTakenVars).not();
     }
 
     @Override

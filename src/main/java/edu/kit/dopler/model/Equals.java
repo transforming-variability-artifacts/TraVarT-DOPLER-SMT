@@ -122,7 +122,7 @@ public class Equals extends BinaryExpression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+    public Literal toCpLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         if (this.getLeftExpression() instanceof DecisionValueCallExpression l && l.getDecision() instanceof NumberDecision left && this.getRightExpression() instanceof DoubleLiteralExpression right) {
             IntVar leftVar = decisionVars.get(left).getFirst();
             long rightVal = CpUtils.scaleDoubleToLong(right.getLiteral());
@@ -175,8 +175,8 @@ public class Equals extends BinaryExpression {
             return null; //not reachable
         } else {
             //"normally" (with booleans)
-            Literal leftLiteral = this.getLeftExpression().toCPLiteral(model, decisionVars, isTakenVars);
-            Literal rightLiteral = this.getRightExpression().toCPLiteral(model, decisionVars, isTakenVars);
+            Literal leftLiteral = this.getLeftExpression().toCpLiteral(model, decisionVars, isTakenVars);
+            Literal rightLiteral = this.getRightExpression().toCpLiteral(model, decisionVars, isTakenVars);
 
             BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 

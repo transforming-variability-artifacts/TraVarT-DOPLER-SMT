@@ -39,7 +39,7 @@ public final class BooleanValue extends AbstractValue<Boolean> {
     }
 
     @Override
-    public LinearArgument getCPValue(CpModel model) {
+    public LinearArgument getCpValue(CpModel model) {
         return getValue() ? model.trueLiteral() : model.falseLiteral();
     }
 

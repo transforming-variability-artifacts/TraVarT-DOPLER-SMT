@@ -39,14 +39,14 @@ public class BooleanDecision extends Decision<Boolean> {
     }
 
     @Override
-    public void createCPDecisionVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+    public void createCpDecisionVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         BoolVar boolVar = model.newBoolVar(this.getDisplayId());
 
         decisionVars.put(this, List.of(boolVar));
     }
 
     @Override
-    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+    public void enforceStandardValueInCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         model.addEquality(decisionVars.get(this).getFirst(), this.getStandardValue() ? model.trueLiteral() : model.falseLiteral())
                 .onlyEnforceIf(isTakenVars.get(this).not());
     }

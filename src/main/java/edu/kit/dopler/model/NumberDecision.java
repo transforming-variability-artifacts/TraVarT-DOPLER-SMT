@@ -41,7 +41,7 @@ public class NumberDecision extends ValueDecision<Double> {
     }
 
     @Override
-    public void createCPDecisionVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+    public void createCpDecisionVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         IntVar intVar = model.newIntVar(0, 1_000_000, this.getDisplayId());
         // normally, one should use Long min/max values as bounds here, but the solver can't handle that.
         // This problem could only be solved if the range is parsed directly and available here as double variables.
@@ -51,16 +51,16 @@ public class NumberDecision extends ValueDecision<Double> {
     }
 
     @Override
-    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+    public void enforceStandardValueInCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         model.addEquality(decisionVars.get(this).getFirst(), model.newConstant(CpUtils.scaleDoubleToLong(this.standardValue)))
                 .onlyEnforceIf(isTakenVars.get(this).not());
     }
 
     @Override
-    public void enforceValidityConditionsInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+    public void enforceValidityConditionsInCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         //add range constraints (only if the decision is taken)
         for (IExpression expression : this.getValidityConditions()) { //the range is encoded in the validityConditions
-            model.addEquality(expression.toCPLiteral(model, decisionVars, isTakenVars), model.trueLiteral())
+            model.addEquality(expression.toCpLiteral(model, decisionVars, isTakenVars), model.trueLiteral())
                     .onlyEnforceIf(isTakenVars.get(this));
         }
     }

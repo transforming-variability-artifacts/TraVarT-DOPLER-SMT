@@ -64,7 +64,7 @@ class CPEncoderTest {
         System.out.println("Testing: " + csvFile.getFileName().toString());
         Dopler dopler = assertDoesNotThrow(() -> readDOPLERModelFromFile(csvFile), "DOPLER model creation failed!");
 
-        CpEncodingResult cpEncoding = dopler.toCPModel();
+        CpEncodingResult cpEncoding = dopler.toCpModel();
         cpEncoding.printAllConfigs();
 
         assertTrue(cpEncoding.checkSat(), "Expected SAT for: " + csvFile.getFileName().toString());
@@ -76,7 +76,7 @@ class CPEncoderTest {
         System.out.println("Testing: " + csvFile.getFileName().toString());
         Dopler dopler = assertDoesNotThrow(() -> readDOPLERModelFromFile(csvFile), "DOPLER model creation failed!");
 
-        CpEncodingResult cpEncoding = dopler.toCPModel();
+        CpEncodingResult cpEncoding = dopler.toCpModel();
 
         assertTrue(cpEncoding.checkSat(), "Expected SAT for: " + csvFile.getFileName().toString());
     }
@@ -87,7 +87,7 @@ class CPEncoderTest {
         System.out.println("Testing: " + csvFile.getFileName().toString());
         Dopler dopler = assertDoesNotThrow(() -> readDOPLERModelFromFile(csvFile), "DOPLER model creation failed!");
 
-        CpEncodingResult cpEncoding = dopler.toCPModel();
+        CpEncodingResult cpEncoding = dopler.toCpModel();
 
         if (expectedConfigCount == 0) {
             assertFalse(cpEncoding.checkSat(), "Expected UNSAT for: " + csvFile.getFileName().toString());
@@ -105,7 +105,7 @@ class CPEncoderTest {
         System.out.println("Testing: " + csvFile.getFileName().toString());
         Dopler dopler = assertDoesNotThrow(() -> readDOPLERModelFromFile(csvFile), "DOPLER model creation failed!");
 
-        CpEncodingResult cpEncoding = dopler.toCPModel();
+        CpEncodingResult cpEncoding = dopler.toCpModel();
 
         assertFalse(cpEncoding.checkSat(), "Expected UNSAT for: " + csvFile.getFileName().toString());
     }

@@ -76,9 +76,9 @@ public class AND extends BinaryExpression {
     }
 
     @Override
-    public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
-        Literal leftLiteral = this.getLeftExpression().toCPLiteral(model, decisionVars, isTakenVars);
-        Literal rightLiteral = this.getRightExpression().toCPLiteral(model, decisionVars, isTakenVars);
+    public Literal toCpLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+        Literal leftLiteral = this.getLeftExpression().toCpLiteral(model, decisionVars, isTakenVars);
+        Literal rightLiteral = this.getRightExpression().toCpLiteral(model, decisionVars, isTakenVars);
 
         BoolVar equivalentLiteral = model.newBoolVar("equivalentLiteral");
 

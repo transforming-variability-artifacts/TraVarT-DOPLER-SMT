@@ -79,7 +79,7 @@ public class EnumerationDecision extends Decision<String> {
     }
 
     @Override
-    public void createCPDecisionVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+    public void createCpDecisionVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         Set<EnumerationLiteral> enumerationLiterals = this.getEnumeration().getEnumerationLiterals();
 
         //create and add variables (one for each enum entry)
@@ -97,7 +97,7 @@ public class EnumerationDecision extends Decision<String> {
     }
 
     @Override
-    public void enforceStandardValueInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+    public void enforceStandardValueInCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         decisionVars.get(this).forEach(var -> model.addEquality(var, model.falseLiteral())
                 .onlyEnforceIf(isTakenVars.get(this).not()));
     }

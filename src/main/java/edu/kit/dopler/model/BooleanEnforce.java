@@ -46,7 +46,7 @@ public class BooleanEnforce extends Enforce {
     public void addCpConstraints(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
         //decision to be enforced = decisionVars.get(this.getDecision())
         //value to enforce = this.getValue()
-        model.addEquality(decisionVars.get(this.getDecision()).getFirst(), this.getValue().getCPValue(model))
+        model.addEquality(decisionVars.get(this.getDecision()).getFirst(), this.getValue().getCpValue(model))
                 .onlyEnforceIf(conditionLiteral);
 
         isTakenConditions.get(this.getDecision()).add(conditionLiteral);

@@ -33,7 +33,7 @@ public class DoubleValue extends AbstractValue<Double> {
     }
 
     @Override
-    public LinearArgument getCPValue(CpModel model) {
+    public LinearArgument getCpValue(CpModel model) {
         throw new UnsupportedOperationException("should not be called in CP-approach"); //the CP approach uses getValue() and then the utility method scaleDoubleToCp(double value) to get a cp usable DoubleValue
     }
 

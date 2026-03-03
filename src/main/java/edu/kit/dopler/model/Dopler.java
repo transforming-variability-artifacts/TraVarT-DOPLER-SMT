@@ -87,7 +87,7 @@ public class Dopler {
      *
      * @return A CpEncodingResult object containing the generated CP model and the variables associated with each decision.
      */
-    public CpEncodingResult toCPModel() {
+    public CpEncodingResult toCpModel() {
         CpModel model = new CpModel();
 
         Map<IDecision<?>, List<IntVar>> decisionVars = new HashMap<>();         //maps each decision to a list of CP variables that will represent it in the constraint programming model
@@ -110,7 +110,6 @@ public class Dopler {
         // 4. Ensure logical consistency for isTaken literals
         enforceIsTakenConsistencyInCp(isTakenVars, model, decisionVars, isTakenConditions);
 
-
         return new CpEncodingResult(model, decisionVars.values().stream().toList());
     }
 
@@ -123,18 +122,18 @@ public class Dopler {
 
     private void createDecisionVariablesInCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         this.decisions.forEach(decision -> {
-            decision.createCPDecisionVariables(model, decisionVars, isTakenVars); //initialize the decisionVars (in the following there will only be reading accesses to the decisionVars)
+            decision.createCpDecisionVariables(model, decisionVars, isTakenVars); //initialize the decisionVars (in the following there will only be reading accesses to the decisionVars)
         });
     }
 
     private void mapLogicToConstraintsInCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
         this.decisions.forEach(decision -> { // (For this loop, the decisionVars and the isTakenVars need to be initialized!)
-            decision.mapRulesToCP(model, decisionVars, isTakenVars, isTakenConditions); //map rules to CP (= add constraints, representing the rules and their actions, to the model and fill the isTakenConditions map, which will then contain literals, each indicating whether a rule-action did enforce the value of a decision or not)
+            decision.mapRulesToCp(model, decisionVars, isTakenVars, isTakenConditions); //map rules to CP (= add constraints, representing the rules and their actions, to the model and fill the isTakenConditions map, which will then contain literals, each indicating whether a rule-action did enforce the value of a decision or not)
 
-            decision.enforceStandardValueInCP(model, decisionVars, isTakenVars); //adds constraints that enforce a standard value for a decision if necessary (= if it is not taken)
+            decision.enforceStandardValueInCp(model, decisionVars, isTakenVars); //adds constraints that enforce a standard value for a decision if necessary (= if it is not taken)
 
             if (decision instanceof ValueDecision<?> valueDecision) {
-                valueDecision.enforceValidityConditionsInCP(model, decisionVars, isTakenVars); //adds constraints that enforce validity conditions for a decision if necessary (= if it is taken)
+                valueDecision.enforceValidityConditionsInCp(model, decisionVars, isTakenVars); //adds constraints that enforce validity conditions for a decision if necessary (= if it is taken)
             }
         });
     }
@@ -144,7 +143,7 @@ public class Dopler {
             //Add the CP constraints that ensure that the isTakenVars are logically correct.
             //A decision is taken if it is visible (1) or if it was enforced by a rule-action (from another decision) (2):
             Literal isTakenVar = isTakenVars.get(decision);
-            Literal isVisibleVar = decision.getVisibilityCondition().toCPLiteral(model, decisionVars, isTakenVars); // (1)
+            Literal isVisibleVar = decision.getVisibilityCondition().toCpLiteral(model, decisionVars, isTakenVars); // (1)
             List<Literal> isTakenConditionsList = isTakenConditions.get(decision); // (2)
             isTakenConditionsList.add(isVisibleVar);
 

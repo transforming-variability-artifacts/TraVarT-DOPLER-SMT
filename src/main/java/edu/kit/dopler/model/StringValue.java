@@ -33,7 +33,7 @@ public class StringValue extends AbstractValue<String> {
     }
 
     @Override
-    public LinearArgument getCPValue(CpModel model) {
+    public LinearArgument getCpValue(CpModel model) {
         throw new UnsupportedOperationException("Not supported in the current CP-approach.");
     }
 
