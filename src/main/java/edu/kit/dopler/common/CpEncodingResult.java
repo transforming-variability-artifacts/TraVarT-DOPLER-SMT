@@ -173,7 +173,7 @@ public final class CpEncodingResult {
     }
 
     /**
-     * Identifies and prints anomalies in the CpEncodingResult.
+     * Prints anomalies in the CpEncodingResult.
      * Specifically, this method analyzes and outputs dead decision values and false optional decision values.
      * <p>
      * It achieves this by invoking the respective methods:
@@ -182,18 +182,57 @@ public final class CpEncodingResult {
      *     <li>{@link #printFalseOptionalDecisionValues()}</li>
      * </ul>
      *
-     * @return True if at least one anomaly was found, false otherwise.
      */
-    public boolean printAnomalies() { //TODO Frage: Ist diese Funktionalität so gewünscht? print+bool return -> ist ja OO-Design technisch nicht so schön (single responsibility)...
-        return printDeadDecisionValues() | printFalseOptionalDecisionValues();
+    public void printAnomalies() {
+        printDeadDecisionValues();
+        printFalseOptionalDecisionValues();
     }
 
     /**
-     * Identifies and prints dead decisions (that can never be true) in the CpEncodingResult.
+     * Identifies whether there are anomalies in the CpEncodingResult.
+     * Specifically, this method analyzes dead decision values and false optional decision values.
+     * <p>
+     * It achieves this by invoking the respective methods:
+     * <ul>
+     *     <li>{@link #hasDeadDecisionValues()}</li>
+     *     <li>{@link #hasFalseOptionalDecisionValues()}</li>
+     * </ul>
+     *
+     * @return True if at least one anomaly was found, false otherwise.
+     */
+    public boolean hasAnomalies() {
+        return hasDeadDecisionValues() || hasFalseOptionalDecisionValues();
+    }
+
+    /**
+     * Prints dead decisions (that can never be true) in the CpEncodingResult.
+     */
+    public void printDeadDecisionValues() {
+        if (this.checkSat()) {
+            for (List<IntVar> vars : this.variables) {
+                for (IntVar var : vars) {
+                    if (var instanceof BoolVar) { //number decisions not regarded here
+                        CpModel testModel = this.model.getClone();
+                        testModel.addEquality(var, testModel.trueLiteral());
+                        CpSolver solver = new CpSolver();
+                        CpSolverStatus status = solver.solve(testModel);
+                        if (status == CpSolverStatus.INFEASIBLE) {
+                            System.out.println("Dead Decision Value: " + var.getName());
+                        }
+                    }
+                }
+            }
+        } else {
+            System.out.println("Model is unsatisfiable!");
+        }
+    }
+
+    /**
+     * Identifies whether there are dead decisions (that can never be true) in the CpEncodingResult.
      *
      * @return True if at least one dead decision was found, false otherwise.
      */
-    public boolean printDeadDecisionValues() {
+    public boolean hasDeadDecisionValues() {
         boolean foundDeadDecision = false;
 
         if (this.checkSat()) {
@@ -206,7 +245,29 @@ public final class CpEncodingResult {
                         CpSolverStatus status = solver.solve(testModel);
                         if (status == CpSolverStatus.INFEASIBLE) {
                             foundDeadDecision = true;
-                            System.out.println("Dead Decision Value: " + var.getName());
+                        }
+                    }
+                }
+            }
+        }
+
+        return foundDeadDecision;
+    }
+
+    /**
+     * Prints false optional decisions (that can never be false) in the CpEncodingResult.
+     */
+    public void printFalseOptionalDecisionValues() {
+        if (this.checkSat()) {
+            for (List<IntVar> vars : this.variables) {
+                for (IntVar var : vars) {
+                    if (var instanceof BoolVar) { //number decisions not regarded here
+                        CpModel testModel = this.model.getClone();
+                        testModel.addEquality(var, testModel.falseLiteral());
+                        CpSolver solver = new CpSolver();
+                        CpSolverStatus status = solver.solve(testModel);
+                        if (status == CpSolverStatus.INFEASIBLE) {
+                            System.out.println("False Optional Decision Value: " + var.getName());
                         }
                     }
                 }
@@ -214,16 +275,14 @@ public final class CpEncodingResult {
         } else {
             System.out.println("Model is unsatisfiable!");
         }
-
-        return foundDeadDecision;
     }
 
     /**
-     * Identifies and prints false optional decisions (that can never be false) in the CpEncodingResult.
+     * Identifies whether there are optional decisions (that can never be false) in the CpEncodingResult.
      *
      * @return True if at least one false optional decision was found, false otherwise.
      */
-    public boolean printFalseOptionalDecisionValues() {
+    public boolean hasFalseOptionalDecisionValues() {
         boolean foundFalseOptionalDecision = false;
 
         if (this.checkSat()) {
@@ -236,13 +295,10 @@ public final class CpEncodingResult {
                         CpSolverStatus status = solver.solve(testModel);
                         if (status == CpSolverStatus.INFEASIBLE) {
                             foundFalseOptionalDecision = true;
-                            System.out.println("False Optional Decision Value: " + var.getName());
                         }
                     }
                 }
             }
-        } else {
-            System.out.println("Model is unsatisfiable!");
         }
 
         return foundFalseOptionalDecision;
