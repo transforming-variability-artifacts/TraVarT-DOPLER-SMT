@@ -123,7 +123,7 @@ public class Equals extends BinaryExpression {
 
     @Override
     public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
-        if (this.getLeftExpression() instanceof DecisionValueCallExpression l && l.getDecision() instanceof NumberDecision left && this.getRightExpression() instanceof DoubleLiteralExpression right) { //todo later: das ist halt OO-Design technisch sehr unschön... wobei es bei SMT ja ähnlich ist...
+        if (this.getLeftExpression() instanceof DecisionValueCallExpression l && l.getDecision() instanceof NumberDecision left && this.getRightExpression() instanceof DoubleLiteralExpression right) {
             IntVar leftVar = decisionVars.get(left).getFirst();
             long rightVal = CpUtils.scaleDoubleToLong(right.getLiteral());
 

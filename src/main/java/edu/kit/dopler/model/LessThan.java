@@ -96,7 +96,7 @@ public class LessThan extends BinaryExpression {
     @Override
     public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         //in our use case (Google OR CP solver) the expressions can only be DoubleLiteralExpression or DecisionValueCallExpression (calling a NumberDecision)
-        if (this.getLeftExpression() instanceof DecisionValueCallExpression l && l.getDecision() instanceof NumberDecision left && this.getRightExpression() instanceof DoubleLiteralExpression right) { //todo later: same as in Equals.java
+        if (this.getLeftExpression() instanceof DecisionValueCallExpression l && l.getDecision() instanceof NumberDecision left && this.getRightExpression() instanceof DoubleLiteralExpression right) {
             IntVar leftVar = decisionVars.get(left).getFirst();
             long rightVal = CpUtils.scaleDoubleToLong(right.getLiteral());
 

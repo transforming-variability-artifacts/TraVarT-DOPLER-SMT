@@ -46,7 +46,6 @@ public class EnumeratorLiteralExpression extends LiteralExpression {
 
     @Override
     public Literal toCPLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
-        //todo later: nicht so schönes design... (hängt wie immer mit equals etc. zusammen)
         throw new UnsupportedOperationException("Not supported.");
     }
 
