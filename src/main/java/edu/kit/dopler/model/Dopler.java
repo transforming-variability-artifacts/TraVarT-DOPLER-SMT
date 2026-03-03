@@ -100,10 +100,12 @@ public class Dopler {
         //Multiple loops are needed because the maps (from above) need to be filled for all decisions before they can be used for the next step(s).
 
         this.decisions.forEach(decision -> {
-            decision.createCPVariables(model, decisionVars); //initialize the decisionVars (in the following there will only be reading accesses to the decisionVars)
-
             isTakenVars.put(decision, model.newBoolVar("Decision_" + decision.getDisplayId() + "_isTaken")); //initialize the isTakenVars (in the following there will only be reading accesses to the isTakenVars)
             isTakenConditions.put(decision, new ArrayList<>()); //initialize the helper map for the isTakenVars (these lists will be filled when the rules are mapped to CP)
+        });
+
+        this.decisions.forEach(decision -> {
+            decision.createCPDecisionVariables(model, decisionVars, isTakenVars); //initialize the decisionVars (in the following there will only be reading accesses to the decisionVars)
         });
 
         this.decisions.forEach(decision -> { // (For this loop, the decisionVars and the isTakenVars need to be initialized!)
@@ -111,7 +113,9 @@ public class Dopler {
 
             decision.enforceStandardValueInCP(model, decisionVars, isTakenVars); //adds constraints that enforce a standard value for a decision if necessary (= if it is not taken)
 
-            decision.enforceValidityConditionsInCP(model, decisionVars, isTakenVars); //adds constraints that enforce validity conditions for a decision if necessary (= if it is taken)
+            if (decision instanceof ValueDecision<?> valueDecision) {
+                valueDecision.enforceValidityConditionsInCP(model, decisionVars, isTakenVars); //adds constraints that enforce validity conditions for a decision if necessary (= if it is taken)
+            }
         });
 
         this.decisions.forEach(decision -> { // (For this loop, the decisionVars and the isTakenVars need to be initialized; and the isTakenConditions need to be completely filled!)

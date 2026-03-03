@@ -15,9 +15,14 @@
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.EvaluationException;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -65,4 +70,13 @@ public abstract class ValueDecision<T> extends Decision<T> {
             toSMTStreamRules(builder, decisions);
         }
     }
+
+    /**
+     * Adds constraints that enforce validity conditions for a decision if necessary (= if it is taken)
+     *
+     * @param model        the constraint programming model to which the constraints will be added
+     * @param decisionVars a map associating each decision of a dopler model with a list of CP variables representing it
+     * @param isTakenVars  a map associating each decision of a dopler model with a boolean literal indicating whether the decision is taken
+     */
+    protected abstract void enforceValidityConditionsInCP(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars);
 }

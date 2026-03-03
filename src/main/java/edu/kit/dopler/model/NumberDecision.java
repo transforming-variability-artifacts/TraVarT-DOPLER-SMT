@@ -41,7 +41,7 @@ public class NumberDecision extends ValueDecision<Double> {
     }
 
     @Override
-    public void createCPVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars) {
+    public void createCPDecisionVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
         IntVar intVar = model.newIntVar(0, 1_000_000, this.getDisplayId()); //todo later: eig müsste hier Long min und max rein (statt magic numbers) aber damit kann der solver nicht umgehen... man kann das problem nur lösen wenn man die range direkt parsed und hier als double variables zur verfügung stehen hat. So wie es jetzt gerade ist (als expressions) geht es nicht / bzw. man müsste halt wieder instanceoff benutzen und wenn mal mehr validity conditions kommen würde es crashen...
 
         decisionVars.put(this, List.of(intVar));
