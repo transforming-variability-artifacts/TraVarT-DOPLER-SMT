@@ -13,13 +13,27 @@ The encoding is described in detail below.
 ### Decision Variables
 For every decision in the DOPLER model, one or more CP variables are created:
 - **Boolean Decisions**: A single `BoolVar`.
-- **Enumeration Decisions**: Multiple `BoolVar(s)`, one for each literal in the enumeration.
+- **Enumeration Decisions**: Multiple `BoolVar(s)`, one for each literal in the enumeration. Additionaly constraints enforcing the cardinality of the enumeration decision are added (see [below](#cardinality-enumeration-decision)).
 - **Number Decisions**: An `IntVar`. Although the underlying type is an integer, real-valued decisions (e.g., doubles) are supported by a scaling factor (e.g., 0.0001). The `CpUtils` class manages this scaling process to ensure the correct conversion between the scaled integer representation and the actual double value.
 
 Additionally, for each decision, a `BoolVar` named `Decision_<ID>_isTaken` is created to track whether the decision is taken in a current configuration.
 
 The current CP encoding does not support String and Java Decisions because the solver does not natively support them.
 Adding support would require substantial custom extensions and represent a significant development effort.
+
+#### Cardinality (Enumeration Decision)
+The cardinality of an enumeration decision, such as `1:3`, is encoded using a helper `IntVar`, called `sum`.
+This variable describes the number of true enumeration literal CP variables of the enumeration decision:
+> $sum = \sum_{i=1}^{\\# enumLiterals} {𝟙}_{enumLiteral_i = true} $
+
+Then we can add the cardinality constraints to the `sum` variable.
+Java code to achieve this:
+```java
+LinearExpr sum = LinearExpr.sum(enumDecisionLiteralVariables);
+
+model.addGreaterOrEqual(sum, minCardinality).onlyEnforceIf(isTaken);
+model.addLessOrEqual(sum, maxCardinality).onlyEnforceIf(isTaken);
+```
 
 ### Constraints
 After the decision variables are created, different constraints are added to the model.
@@ -66,20 +80,6 @@ These are enforced if they are taken:
 > $Decision\textunderscore\<ID\>\textunderscore isTaken \implies enforceValidityCondition$
 
 The following describes how these validity conditions are enforced in more detail.
-
-##### Cardinality (Enumeration Decision)
-The cardinality of an enumeration decision, such as `1:3`, is encoded using a helper `IntVar`, called `sum`.
-This variable describes the number of true enumeration literal CP variables of the enumeration decision:
-> $sum = \sum_{i=1}^{\\# enumLiterals} {𝟙}_{enumLiteral_i = true} $
-
-Then we can add the cardinality constraints to the `sum` variable.
-Java code to achieve this:
-```java
-LinearExpr sum = LinearExpr.sum(enumDecisionLiteralVariables);
-
-model.addGreaterOrEqual(sum, minCardinality).onlyEnforceIf(isTaken);
-model.addLessOrEqual(sum, maxCardinality).onlyEnforceIf(isTaken);
-```
 
 ##### Range (Number Decision)
 The range of a number decision, such as `0-10`, is encoded using the corresponding greater than, less than, and equal to expressions.
