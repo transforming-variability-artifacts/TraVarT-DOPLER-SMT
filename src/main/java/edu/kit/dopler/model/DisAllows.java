@@ -52,7 +52,7 @@ public class DisAllows extends ValueRestrictionAction {
     }
 
     @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
+    public void addCpConstraints(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
         //dissallow can only be called on enum literals:
 
         String dissallowString = getEnumDecisionLiteralVariableName((EnumerationDecision) this.getDecision(), this.disAllowValue.getValue().toString());

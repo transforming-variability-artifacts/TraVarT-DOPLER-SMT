@@ -184,7 +184,7 @@ public abstract class Decision<T> implements IDecision<T> {
             model.addBoolOr(new Literal[]{isTakenVars.get(this).not(), ruleCondtionLiteral.not(), conditionLiteral});
 
             for (IAction action : rule.getActions()) {
-                action.executeAsCP(model, conditionLiteral, decisionVars, isTakenVars, isTakenConditions);
+                action.addCpConstraints(model, conditionLiteral, decisionVars, isTakenVars, isTakenConditions);
             }
 
         }

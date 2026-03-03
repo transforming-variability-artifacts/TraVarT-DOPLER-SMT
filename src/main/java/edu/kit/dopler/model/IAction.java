@@ -43,6 +43,6 @@ public interface IAction {
      * @param isTakenVars       a map associating each decision of a dopler model with a boolean literal indicating whether the decision is taken
      * @param isTakenConditions a (helper) map associating each decision of a dopler model with a list of boolean literals that can later be used to add constraints for isTakenVars to be logically correct in the model
      */
-    void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions);
+    void addCpConstraints(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions);
 
 }

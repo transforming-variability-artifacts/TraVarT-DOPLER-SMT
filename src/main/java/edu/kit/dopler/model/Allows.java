@@ -57,7 +57,7 @@ public class Allows extends ValueRestrictionAction {
     }
 
     @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
+    public void addCpConstraints(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
         //nothing to do here, since the CP solver already checks the whole range of possible values for each variable.
     }
 

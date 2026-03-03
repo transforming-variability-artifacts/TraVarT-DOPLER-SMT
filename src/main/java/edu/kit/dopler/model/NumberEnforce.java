@@ -49,7 +49,7 @@ public class NumberEnforce extends Enforce {
     }
 
     @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
+    public void addCpConstraints(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
         model.addEquality(decisionVars.get(this.getDecision()).getFirst(), CpUtils.scaleDoubleToLong(((DoubleValue) this.getValue()).getValue()))
                 .onlyEnforceIf(conditionLiteral);
 

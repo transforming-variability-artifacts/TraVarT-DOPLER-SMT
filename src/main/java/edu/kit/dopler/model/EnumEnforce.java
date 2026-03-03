@@ -50,7 +50,7 @@ public class EnumEnforce extends Enforce {
     }
 
     @Override
-    public void executeAsCP(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
+    public void addCpConstraints(CpModel model, Literal conditionLiteral, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
         String enforceString = getEnumDecisionLiteralVariableName((EnumerationDecision) this.getDecision(), this.getValue().toString());
 
         //find the CP var representing the enum literal that is to be enforced:
