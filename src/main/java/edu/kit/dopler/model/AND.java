@@ -90,6 +90,10 @@ public class AND extends BinaryExpression {
         // "<=" as CNF
         model.addBoolOr(new Literal[]{leftLiteral.not(), rightLiteral.not(), equivalentLiteral});
 
+        /*the following is actually equivalent to the CNF used above. It's possibly personal preference which to use...
+        model.addBoolAnd(new Literal[]{leftLiteral, rightLiteral}).onlyEnforceIf(equivalentLiteral);
+        model.addBoolOr(new Literal[]{leftLiteral.not(), rightLiteral.not()}).onlyEnforceIf(equivalentLiteral.not());*/
+
         return equivalentLiteral;
     }
 
