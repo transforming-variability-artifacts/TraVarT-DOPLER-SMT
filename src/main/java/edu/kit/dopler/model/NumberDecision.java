@@ -66,6 +66,13 @@ public class NumberDecision extends ValueDecision<Double> {
     }
 
     @Override
+    public void mapLogicToConstraintsInCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
+        this.enforceValidityConditionsInCp(model, decisionVars, isTakenVars); //adds constraints that enforce validity conditions for a decision if necessary (= if it is taken)
+
+        super.mapLogicToConstraintsInCp(model, decisionVars, isTakenVars, isTakenConditions);
+    }
+
+    @Override
     public Double getStandardValue() {
         return standardValue;
     }

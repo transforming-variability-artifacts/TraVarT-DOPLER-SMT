@@ -91,23 +91,13 @@ public interface IDecision<T> {
     void createCpDecisionVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars);
 
     /**
-     * Maps the rules associated with the current decisions into the CP model.
-     * This involves adding constraints, representing the rules and their actions, to the model.
-     * Additionally, the isTakenConditions map gets filled with CP literals, each indicating whether a rule-action did enforce the value of a decision or not
+     * Adds constraints that map model-level logic (rules, standard values, and validity conditions) to CP constraints
      *
      * @param model             the constraint programming model to which the constraints will be added
      * @param decisionVars      a map associating each decision of a dopler model with a list of CP variables representing it
      * @param isTakenVars       a map associating each decision of a dopler model with a boolean literal indicating whether the decision is taken
      * @param isTakenConditions a (helper) map associating each decision of a dopler model with a list of boolean literals that can later be used to add constraints for isTakenVars to be logically correct in the model
      */
-    void mapRulesToCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions);
+    void mapLogicToConstraintsInCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions);
 
-    /**
-     * Adds constraints that enforce a standard (default) value for the current decision if necessary (= if it is not taken).
-     *
-     * @param model        the constraint programming model to which the constraints will be added
-     * @param decisionVars a map associating each decision of a dopler model with a list of CP variables representing it
-     * @param isTakenVars  a map associating each decision of a dopler model with a boolean literal indicating whether the decision is taken
-     */
-    void enforceStandardValueInCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars);
 }

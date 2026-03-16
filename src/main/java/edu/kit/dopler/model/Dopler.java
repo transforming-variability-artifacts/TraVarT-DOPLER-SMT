@@ -102,10 +102,14 @@ public class Dopler {
         initializeTakenMapsInCp(isTakenVars, model, isTakenConditions);
 
         // 2. Create CP variables for each decision
-        createDecisionVariablesInCp(model, decisionVars, isTakenVars);
+        this.decisions.forEach(decision -> {
+            decision.createCpDecisionVariables(model, decisionVars, isTakenVars); //initialize the decisionVars (in the following there will only be reading accesses to the decisionVars)
+        });
 
         // 3. Map model-level logic (rules, standard values and validity) to CP constraints
-        mapLogicToConstraintsInCp(model, decisionVars, isTakenVars, isTakenConditions);
+        this.decisions.forEach(decision -> { // (For this loop, the decisionVars and the isTakenVars need to be initialized!)
+            decision.mapLogicToConstraintsInCp(model, decisionVars, isTakenVars, isTakenConditions);
+        });
 
         // 4. Ensure logical consistency for isTaken literals
         enforceIsTakenConsistencyInCp(isTakenVars, model, decisionVars, isTakenConditions);
@@ -117,24 +121,6 @@ public class Dopler {
         this.decisions.forEach(decision -> {
             isTakenVars.put(decision, model.newBoolVar("Decision_" + decision.getDisplayId() + "_isTaken")); //initialize the isTakenVars (in the following there will only be reading accesses to the isTakenVars)
             isTakenConditions.put(decision, new ArrayList<>()); //initialize the helper map for the isTakenVars (these lists will be filled when the rules are mapped to CP)
-        });
-    }
-
-    private void createDecisionVariablesInCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
-        this.decisions.forEach(decision -> {
-            decision.createCpDecisionVariables(model, decisionVars, isTakenVars); //initialize the decisionVars (in the following there will only be reading accesses to the decisionVars)
-        });
-    }
-
-    private void mapLogicToConstraintsInCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars, Map<IDecision<?>, List<Literal>> isTakenConditions) {
-        this.decisions.forEach(decision -> { // (For this loop, the decisionVars and the isTakenVars need to be initialized!)
-            decision.mapRulesToCp(model, decisionVars, isTakenVars, isTakenConditions); //map rules to CP (= add constraints, representing the rules and their actions, to the model and fill the isTakenConditions map, which will then contain literals, each indicating whether a rule-action did enforce the value of a decision or not)
-
-            decision.enforceStandardValueInCp(model, decisionVars, isTakenVars); //adds constraints that enforce a standard value for a decision if necessary (= if it is not taken)
-
-            if (decision instanceof ValueDecision<?> valueDecision) {
-                valueDecision.enforceValidityConditionsInCp(model, decisionVars, isTakenVars); //adds constraints that enforce validity conditions for a decision if necessary (= if it is taken)
-            }
         });
     }
 
