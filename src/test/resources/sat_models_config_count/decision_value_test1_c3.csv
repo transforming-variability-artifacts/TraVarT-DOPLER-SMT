@@ -1,0 +1,3 @@
+ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
+b;B;Boolean;true | false;;;true
+a;DecisionValue?;Boolean;true | false;;;b

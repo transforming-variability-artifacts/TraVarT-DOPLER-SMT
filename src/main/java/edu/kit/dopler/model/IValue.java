@@ -7,19 +7,31 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
-public interface IValue<T>{
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.LinearArgument;
+
+public interface IValue<T> {
 
     T getValue();
 
     void setValue(T value);
 
     T getSMTValue();
+
+    /**
+     * Retrieves the CP representation of the current value for a given CP model.
+     *
+     * @param model the constraint programming model
+     * @return the CP representation of the value as a {@code LinearArgument}
+     */
+    LinearArgument getCpValue(CpModel model);
 }

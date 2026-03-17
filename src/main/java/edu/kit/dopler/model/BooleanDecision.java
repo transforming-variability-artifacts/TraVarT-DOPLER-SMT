@@ -7,48 +7,69 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.BoolVar;
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
+
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
 public class BooleanDecision extends Decision<Boolean> {
 
-	private AbstractValue<Boolean> value;
+    private AbstractValue<Boolean> value;
 
-	public BooleanDecision(String displayId, String question, String description, IExpression visibilityCondition,
-			Set<Rule> rules) {
-		super(displayId, question, description, visibilityCondition, rules, DecisionType.BOOLEAN);
-		value = BooleanValue.getFalse();
+    public BooleanDecision(String displayId, String question, String description, IExpression visibilityCondition,
+                           Set<Rule> rules) {
+        super(displayId, question, description, visibilityCondition, rules, DecisionType.BOOLEAN);
+        value = BooleanValue.getFalse();
 
-	}
+    }
 
-	@Override
-	public Boolean getStandardValue() {
-		return false;
-	}
+    @Override
+    public void createCpDecisionVariables(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+        BoolVar boolVar = model.newBoolVar(this.getDisplayId());
 
-	@Override
-	public IValue<Boolean> getValue() {
-		return value;
-	}
+        decisionVars.put(this, List.of(boolVar));
+    }
 
-	@Override
-	public void setValue(IValue<Boolean> value) {
-		this.value = (Objects.requireNonNull(value.getValue())) ? BooleanValue.getTrue() : BooleanValue.getFalse();
-		setSelected(value.getValue());
-	}
+    @Override
+    public void enforceStandardValueInCp(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+        model.addEquality(decisionVars.get(this).getFirst(), this.getStandardValue() ? model.trueLiteral() : model.falseLiteral())
+                .onlyEnforceIf(isTakenVars.get(this).not());
+    }
 
-	@Override
-	public void setDefaultValueInSMT(Stream.Builder<String> builder) {
-		builder.add(
-				"(= " + toStringConstforSMT() + "_" + toStringConstforSMT() + "_POST" + " " + getStandardValue() + ")");
-	}
+    @Override
+    public Boolean getStandardValue() {
+        return false;
+    }
+
+    @Override
+    public IValue<Boolean> getValue() {
+        return value;
+    }
+
+    @Override
+    public void setValue(IValue<Boolean> value) {
+        this.value = (Objects.requireNonNull(value.getValue())) ? BooleanValue.getTrue() : BooleanValue.getFalse();
+        setSelected(value.getValue());
+    }
+
+    @Override
+    public void setDefaultValueInSMT(Stream.Builder<String> builder) {
+        builder.add(
+                "(= " + toStringConstforSMT() + "_" + toStringConstforSMT() + "_POST" + " " + getStandardValue() + ")");
+    }
 }

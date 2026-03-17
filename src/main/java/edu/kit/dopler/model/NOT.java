@@ -7,40 +7,51 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.IntVar;
+import com.google.ortools.sat.Literal;
 import edu.kit.dopler.exceptions.EvaluationException;
 
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class NOT extends UnaryExpression {
-	
-	private static final String SYMBOL = "!";
 
-	public NOT(IExpression operand) {
-		super(operand);
-	}
+    private static final String SYMBOL = "!";
 
-	@Override
-	public boolean evaluate() throws EvaluationException {
-		return !getOperand().evaluate();
-	}
+    public NOT(IExpression operand) {
+        super(operand);
+    }
 
-	@Override
-	public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
-		builder.add("(not ");
-		getOperand().toSMTStream(builder, callingDecisionConst);
-		builder.add(")");
-	}
+    @Override
+    public boolean evaluate() throws EvaluationException {
+        return !getOperand().evaluate();
+    }
 
-	@Override
-	public String toString() {
-		return String.format("%s%s", SYMBOL, getOperand());
-	}
+    @Override
+    public void toSMTStream(Stream.Builder<String> builder, String callingDecisionConst) {
+        builder.add("(not ");
+        getOperand().toSMTStream(builder, callingDecisionConst);
+        builder.add(")");
+    }
+
+    @Override
+    public Literal toCpLiteral(CpModel model, Map<IDecision<?>, List<IntVar>> decisionVars, Map<IDecision<?>, Literal> isTakenVars) {
+        return this.getOperand().toCpLiteral(model, decisionVars, isTakenVars).not();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s%s", SYMBOL, getOperand());
+    }
 }

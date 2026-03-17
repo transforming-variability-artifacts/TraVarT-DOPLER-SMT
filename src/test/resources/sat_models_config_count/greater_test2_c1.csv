@@ -1,0 +1,2 @@
+ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
+a;GREATER?;Boolean;true | false;;;(1.0 > 2.0)

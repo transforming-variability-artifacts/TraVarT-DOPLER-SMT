@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -20,17 +20,17 @@ import java.util.Set;
 
 public class Enumeration {
 
-	Set<EnumerationLiteral> enumerationLiterals = new HashSet<>();
+    Set<EnumerationLiteral> enumerationLiterals = new HashSet<>();
 
-	public Enumeration(Set<EnumerationLiteral> enumerationLiterals) {
-		this.enumerationLiterals = enumerationLiterals;
-	}
+    public Enumeration(Set<EnumerationLiteral> enumerationLiterals) {
+        this.enumerationLiterals = enumerationLiterals;
+    }
 
-	public void addEnumLiteral(EnumerationLiteral enumLiteral) {
-		enumerationLiterals.add(enumLiteral);
-	}
+    public void addEnumLiteral(EnumerationLiteral enumLiteral) {
+        enumerationLiterals.add(enumLiteral);
+    }
 
-	public Set<EnumerationLiteral> getEnumerationLiterals() {
-		return enumerationLiterals;
-	}
+    public Set<EnumerationLiteral> getEnumerationLiterals() {
+        return enumerationLiterals;
+    }
 }

@@ -7,17 +7,21 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
 
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.LinearArgument;
+
 import java.util.Objects;
 
-public class StringValue extends AbstractValue<String>{
+public class StringValue extends AbstractValue<String> {
 
     public StringValue(String value) {
         super(Objects.requireNonNull(value));
@@ -27,9 +31,14 @@ public class StringValue extends AbstractValue<String>{
     public String getSMTValue() {
         return " \"" + getValue() + "\"";
     }
-    
+
+    @Override
+    public LinearArgument getCpValue(CpModel model) {
+        throw new UnsupportedOperationException("Not supported in the current CP-approach.");
+    }
+
     @Override
     public String toString() {
-    	return getValue();
+        return getValue();
     }
 }
