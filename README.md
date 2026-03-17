@@ -1,4 +1,4 @@
-# SMT based Analysis for Decision Models
+# Analysis of Decision Models
 
 ## Run
 This tool invokes the Z3 SMT solver. You can now pass the path to your Z3 binary when starting the program:
