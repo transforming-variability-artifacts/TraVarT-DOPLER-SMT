@@ -126,74 +126,25 @@ subrange
 
 // Expressions
 expression
-    : unaryExpression
-    | literalExpression
-    | isTaken
-    | decisionValueCallExpression
-    | binaryExpression
+    : LPAREN expression RPAREN              # parenthesizedExpression
+    | NOT expression                        # unaryExpression
+    | ISTAKEN LPAREN IDENTIFIER RPAREN      # isTaken
+    | GETVALUE LPAREN IDENTIFIER RPAREN     # decisionValueCallExpression
+    | expression (EQUALS | SET) expression  # equalityExpression
+    | expression GREATER_THAN expression    # greaterThanExpression
+    | expression LESS_THAN expression       # lessThanExpression
+    | expression GREATER_EQUALS expression  # greaterEqualsExpression
+    | expression LESS_EQUALS expression     # lessEqualsExpression
+    | expression AND expression             # andExpression
+    | expression OR expression              # orExpression
+    | expression XOR expression             # xorExpression
+    | literalExpression                     # primaryLiteral
+    | IDENTIFIER                            # decisionValueCallExpression
     ;
 
-unaryExpression
-    : NOT expression
-    | NOT EnumerationLiteralExpression
-    ;
-
+// Re-add this rule so DoplerExpressionParser.java still finds the class
 decisionVisibilityCallExpression
-    : expression (( AND | OR | EQUALS | GREATER_THAN | LESS_THAN ) expression)*
-    | expression
-    ;
-
-isTaken
-    : ISTAKEN LPAREN IDENTIFIER RPAREN
-    ;
-
-decisionValueCallExpression
-    : GETVALUE LPAREN IDENTIFIER RPAREN
-    | IDENTIFIER
-    ;
-
-// Binary Expressions
-binaryExpression
-    :  andExpression
-    |  orExpression
-    |  xorExpression
-    |  equalityExpression
-    |  greaterThanExpression
-    |  lessThanExpression
-    |  greaterEqualsExpression
-    |  lessEqualsExpression
-    ;
-
-andExpression
-    : LPAREN expression AND expression RPAREN
-    ;
-
-orExpression
-    : LPAREN expression OR expression RPAREN
-    ;
-
-xorExpression
-    : LPAREN expression XOR expression RPAREN
-    ;
-
-equalityExpression
-    : LPAREN expression (EQUALS | SET) expression RPAREN
-    ;
-
-greaterThanExpression
-    : LPAREN expression GREATER_THAN expression RPAREN
-    ;
-
-lessThanExpression
-    : LPAREN expression LESS_THAN expression RPAREN
-    ;
-
-greaterEqualsExpression
-    : LPAREN expression GREATER_EQUALS expression RPAREN
-    ;
-
-lessEqualsExpression
-    : LPAREN expression LESS_EQUALS expression RPAREN
+    : expression
     ;
 
 // Literal Expressions
