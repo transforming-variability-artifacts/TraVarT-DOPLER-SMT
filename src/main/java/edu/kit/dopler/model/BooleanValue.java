@@ -7,13 +7,17 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
+ *    @author Johannes von Geisau
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
  *******************************************************************************/
 package edu.kit.dopler.model;
+
+import com.google.ortools.sat.CpModel;
+import com.google.ortools.sat.LinearArgument;
 
 public final class BooleanValue extends AbstractValue<Boolean> {
 
@@ -33,9 +37,14 @@ public final class BooleanValue extends AbstractValue<Boolean> {
     public Boolean getSMTValue() {
         return getValue();
     }
-    
+
+    @Override
+    public LinearArgument getCpValue(CpModel model) {
+        return getValue() ? model.trueLiteral() : model.falseLiteral();
+    }
+
     @Override
     public String toString() {
-    	return String.valueOf(getValue());
+        return String.valueOf(getValue());
     }
 }

@@ -1,0 +1,3 @@
+ID;Question;Type;Range;Cardinality;Constraint/Rule;Visible/relevant if
+Enum;nothing;Enumeration;x | y | z;1:3;;true
+B;nothing;Boolean;true | false;;"if(true){disAllow(Enum.x);}if(true){disAllow(Enum.y);}";true

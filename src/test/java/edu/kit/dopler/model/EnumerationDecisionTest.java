@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -30,35 +30,35 @@ public class EnumerationDecisionTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        Set<EnumerationLiteral>  enumerationLiterals = new HashSet<>();
+        Set<EnumerationLiteral> enumerationLiterals = new HashSet<>();
         enumerationLiterals.add(new EnumerationLiteral("test1"));
         enumerationLiterals.add((new EnumerationLiteral("test2")));
         Enumeration enumeration = new edu.kit.dopler.model.Enumeration(enumerationLiterals);
         Expression expression = new BooleanLiteralExpression(true);
-        enumerationDecision = new EnumerationDecision("test", "test","test",expression, new HashSet<>(),enumeration,0,2);
+        enumerationDecision = new EnumerationDecision("test", "test", "test", expression, new HashSet<>(), enumeration, 0, 2);
     }
 
-    public void testSetValueWithOutOfRangeValue(){
-        assertThrows(ValidityConditionException.class,() -> enumerationDecision.setValue(new StringValue("test3")));
+    public void testSetValueWithOutOfRangeValue() {
+        assertThrows(ValidityConditionException.class, () -> enumerationDecision.setValue(new StringValue("test3")));
     }
 
-    public void testSetValueWithDisallowedValue(){
+    public void testSetValueWithDisallowedValue() {
         enumerationDecision.addDissallowed(new EnumerationLiteral("test2"));
-        assertThrows(ValidityConditionException.class,() -> enumerationDecision.setValue(new StringValue("test2")));
+        assertThrows(ValidityConditionException.class, () -> enumerationDecision.setValue(new StringValue("test2")));
 
     }
 
     public void testSetValueCorrect() throws ValidityConditionException {
         assertFalse(enumerationDecision.isTaken());
-        assertSame(enumerationDecision.getValue().getValue(),enumerationDecision.getStandardValue());
+        assertSame(enumerationDecision.getValue().getValue(), enumerationDecision.getStandardValue());
         IValue<String> testLiteral = new StringValue("test1");
         enumerationDecision.setValue(testLiteral);
-        assertSame(enumerationDecision.getValue().getValue(),testLiteral.getValue());
+        assertSame(enumerationDecision.getValue().getValue(), testLiteral.getValue());
         assertTrue(enumerationDecision.isTaken());
     }
 
-    public void testStandardValue(){
-        assertSame(enumerationDecision.getStandardValue(),"null");
+    public void testStandardValue() {
+        assertSame(enumerationDecision.getStandardValue(), "null");
     }
 
 }

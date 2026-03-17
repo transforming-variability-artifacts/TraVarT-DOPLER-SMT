@@ -7,8 +7,8 @@
  * https://mozilla.org/MPL/2.0/.
  *
  * Contributors: 
- * 	@author Fabian Eger
- * 	@author Kevin Feichtinger
+ *    @author Fabian Eger
+ *    @author Kevin Feichtinger
  *
  * Copyright 2024 Karlsruhe Institute of Technology (KIT)
  * KASTEL - Dependability of Software-intensive Systems
@@ -20,37 +20,37 @@ import java.util.Set;
 
 public class Assets {
 
-	public Assets(final String description, final IExpression inclusionCondition) {
-		this.description = description;
-		this.inclusionCondition = inclusionCondition;
-	}
+    private String description;
+    private IExpression inclusionCondition;
+    private Set<Assets> assets = Collections.emptySet();
 
-	private String description;
-	private IExpression inclusionCondition;
-	private Set<Assets> assets = Collections.emptySet();
+    public Assets(final String description, final IExpression inclusionCondition) {
+        this.description = description;
+        this.inclusionCondition = inclusionCondition;
+    }
 
-	void setDescription(final String description) {
-		this.description = description;
-	}
+    String getDescription() {
+        return description;
+    }
 
-	String getDescription() {
-		return description;
-	}
+    void setDescription(final String description) {
+        this.description = description;
+    }
 
-	public void setInclusionCondition(final IExpression inclusionCondition) {
-		this.inclusionCondition = inclusionCondition;
-	}
+    IExpression getInclusionCondition() {
+        return inclusionCondition;
+    }
 
-	IExpression getInclusionCondition() {
-		return inclusionCondition;
-	}
+    public void setInclusionCondition(final IExpression inclusionCondition) {
+        this.inclusionCondition = inclusionCondition;
+    }
 
-	public Set<Assets> getAssets() {
-		return assets;
-	}
+    public Set<Assets> getAssets() {
+        return assets;
+    }
 
-	public void setAssets(final Set<Assets> assets) {
-		this.assets = assets;
-	}
+    public void setAssets(final Set<Assets> assets) {
+        this.assets = assets;
+    }
 
 }
